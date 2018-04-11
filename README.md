@@ -40,8 +40,8 @@ The implementation of this environment consists of three steps:
 # EXAMPLES AND DOCUMENTATION
 For examples and documentation about the framework, please refer to the:
 
- - English whitepaper
- - Spanish whitepaper
+ - [English whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_english.pdf)
+ - [Spanish whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_spanish.pdf)
 
 # CONTACT
 shramos@protonmail.com
