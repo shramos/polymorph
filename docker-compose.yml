@@ -1,0 +1,47 @@
+version: '3.5'
+
+services: 
+  polymorph:
+    container_name: polymorph
+    hostname: polymorph
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      - ./:/var/develop
+      - kali-root:/root
+      - kali-postgresql:/var/lib/postgresql
+    privileged: true
+    tty: true
+    networks:
+      vnetwork:
+        ipv4_address: 10.24.0.2
+  alice:
+    container_name: alice
+    hostname: alice
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-victim
+    networks:
+      vnetwork:
+        ipv4_address: 10.24.0.3
+  bob:
+    container_name: bob
+    hostname: bob
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile-victim
+    networks:
+      vnetwork:
+        ipv4_address: 10.24.0.4
+
+volumes:
+  kali-root:
+  kali-postgresql:
+
+networks:
+  vnetwork:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.24.0.0/16

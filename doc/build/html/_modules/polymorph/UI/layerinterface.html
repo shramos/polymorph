@@ -1,0 +1,517 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>polymorph.UI.layerinterface &#8212; Polymorph 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.UI.layerinterface</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">polymorph.UI.interface</span> <span class="k">import</span> <span class="n">Interface</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit</span> <span class="k">import</span> <span class="n">prompt</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit</span> <span class="k">import</span> <span class="n">HTML</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">polymorph.UI.command_parser</span> <span class="k">import</span> <span class="n">CommandParser</span>
+<span class="kn">from</span> <span class="nn">termcolor</span> <span class="k">import</span> <span class="n">colored</span>
+<span class="kn">from</span> <span class="nn">polymorph.tfield</span> <span class="k">import</span> <span class="n">TField</span>
+<span class="kn">from</span> <span class="nn">polymorph.UI.fieldinterface</span> <span class="k">import</span> <span class="n">FieldInterface</span>
+<span class="kn">import</span> <span class="nn">hexdump</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.history</span> <span class="k">import</span> <span class="n">FileHistory</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.contrib.completers</span> <span class="k">import</span> <span class="n">WordCompleter</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.auto_suggest</span> <span class="k">import</span> <span class="n">AutoSuggestFromHistory</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.shortcuts</span> <span class="k">import</span> <span class="n">CompleteStyle</span>
+<span class="kn">import</span> <span class="nn">construct</span>
+
+
+<div class="viewcode-block" id="LayerInterface"><a class="viewcode-back" href="../../../polymorph.UI.html#polymorph.UI.layerinterface.LayerInterface">[docs]</a><span class="k">class</span> <span class="nc">LayerInterface</span><span class="p">(</span><span class="n">Interface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class is responsible for parsing and respond to user commands in</span>
+<span class="sd">    the tlist interface, when the user already has a packet capture.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">tindex</span><span class="p">,</span> <span class="n">poisoner</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method of the class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        layer : obj:`TLayer`</span>
+<span class="sd">            The layer object.</span>
+<span class="sd">        tindex : int</span>
+<span class="sd">            The index of the `Template` of the `TLayer`.</span>
+<span class="sd">        poisoner : obj:`ARPpoisones`</span>
+<span class="sd">            The poisoner object, if exist</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Constructor of the parent class</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LayerInterface</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Class Attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_l</span> <span class="o">=</span> <span class="n">layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tindex</span> <span class="o">=</span> <span class="n">tindex</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_poisoner</span> <span class="o">=</span> <span class="n">poisoner</span>
+
+<div class="viewcode-block" id="LayerInterface.run"><a class="viewcode-back" href="../../../polymorph.UI.html#polymorph.UI.layerinterface.LayerInterface.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Runs the interface and waits for user input commands.&quot;&quot;&quot;</span>
+        <span class="n">completer</span> <span class="o">=</span> <span class="n">WordCompleter</span><span class="p">([</span><span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;field&#39;</span><span class="p">,</span> <span class="s1">&#39;fields&#39;</span><span class="p">,</span>
+                                   <span class="s1">&#39;dump&#39;</span><span class="p">,</span> <span class="s1">&#39;recalculate&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">,</span> <span class="s1">&#39;back&#39;</span><span class="p">])</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">FileHistory</span><span class="p">(</span><span class="s1">&#39;.linterface_history&#39;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;bold&gt;PH:cap/t</span><span class="si">%d</span><span class="s2">/&lt;red&gt;</span><span class="si">%s</span><span class="s2">&lt;/red&gt; &gt; &lt;/bold&gt;&quot;</span> <span class="o">%</span>
+                                      <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tindex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">name</span><span class="p">)),</span>
+                                 <span class="n">history</span><span class="o">=</span><span class="n">history</span><span class="p">,</span>
+                                 <span class="n">completer</span><span class="o">=</span><span class="n">completer</span><span class="p">,</span>
+                                 <span class="n">complete_style</span><span class="o">=</span><span class="n">CompleteStyle</span><span class="o">.</span><span class="n">READLINE_LIKE</span><span class="p">,</span>
+                                 <span class="n">auto_suggest</span><span class="o">=</span><span class="n">AutoSuggestFromHistory</span><span class="p">(),</span>
+                                 <span class="n">enable_history_search</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exit_program</span><span class="p">()</span>
+                <span class="k">continue</span>
+            <span class="c1"># Argument parsing</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">EXIT</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exit_program</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RET</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;s&quot;</span><span class="p">,</span> <span class="s2">&quot;show&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_show</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_field</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fields&quot;</span><span class="p">,</span> <span class="s2">&quot;fs&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dump&quot;</span><span class="p">,</span> <span class="s2">&quot;d&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dump</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;recalculate&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_recalculate</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;clear&quot;</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_clear</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_wrong_command</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shows the contents of the `TLayer`&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Parsing the arguemnts</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_show_opts</span><span class="p">())</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Print the help</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_show_help</span><span class="p">())</span>
+        <span class="c1"># Shows a particular field</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">getlayer</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_show_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the show command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;shows a particular field.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;show&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;show [-option]&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Prints information about the layer.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_show_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-f&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span>
+
+    <span class="k">def</span> <span class="nf">_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Manages the name of the `TLayer`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Parsing the arguments</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_name_opts</span><span class="p">())</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Print the help</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_name_help</span><span class="p">())</span>
+        <span class="c1"># Add a new name</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-n&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-n&quot;</span><span class="p">]</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_print_info</span><span class="p">(</span><span class="s2">&quot;New name </span><span class="si">%s</span><span class="s2"> added&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;-n&#39;</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_name_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the name command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-n&quot;</span><span class="p">,</span> <span class="s2">&quot;set a new name to the layer.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;name [-option]&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Manage the name of the layer.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_name_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-n&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span>
+
+    <span class="k">def</span> <span class="nf">_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Show all the fields in the layer.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">()),</span> <span class="s1">&#39;cyan&#39;</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Parsing arguments</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_fields_opts</span><span class="p">())</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Print the help</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_fields_help</span><span class="p">())</span>
+        <span class="c1"># Prints the custom fields</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-c&quot;</span><span class="p">]:</span>
+            <span class="n">cfields</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">customfields</span><span class="p">()]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cfields</span><span class="p">),</span> <span class="s1">&#39;cyan&#39;</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fields_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the fields command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the custom fields.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;fields&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;fields [-option]&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Prints the fields of the layer.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_fields_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-c&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span>
+
+    <span class="k">def</span> <span class="nf">_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Manages the access an creation of `TField`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_field_help</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">fieldnames</span><span class="p">():</span>
+            <span class="n">fi</span> <span class="o">=</span> <span class="n">FieldInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">getfield</span><span class="p">(</span><span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tindex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poisoner</span><span class="p">)</span>
+            <span class="n">fi</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_field_opts</span><span class="p">())</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="c1"># Print the help</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_field_help</span><span class="p">())</span>
+            <span class="c1"># Adds a new field</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-a&quot;</span><span class="p">]:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">color_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Start byte of the custom field: &quot;</span><span class="p">)</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;End byte of the custom field: &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">start</span><span class="o">.</span><span class="n">isdecimal</span><span class="p">()</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">end</span><span class="o">.</span><span class="n">isdecimal</span><span class="p">():</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_print_error</span><span class="p">(</span><span class="s2">&quot;The start or end byte is not a number&quot;</span><span class="p">)</span>
+                    <span class="k">return</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fslice</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">end</span><span class="p">))</span>
+                    <span class="n">fvalue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">fslice</span><span class="p">]</span>
+                    <span class="n">fsize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fvalue</span><span class="p">)</span>
+                    <span class="n">new_field</span> <span class="o">=</span> <span class="n">TField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-a&quot;</span><span class="p">],</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="n">fvalue</span><span class="p">,</span>
+                                       <span class="n">tslice</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">fslice</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span>
+                                       <span class="n">custom</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">size</span><span class="o">=</span><span class="n">fsize</span><span class="p">,</span>
+                                       <span class="n">raw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span>
+                                       <span class="n">layer</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="p">)</span>
+                    <span class="c1"># Set the type</span>
+                    <span class="n">ftype</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Field type [int/str/bytes/hex]: &quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;int&quot;</span><span class="p">:</span>
+                        <span class="n">new_field</span><span class="o">.</span><span class="n">to_int</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;str&quot;</span><span class="p">:</span>
+                        <span class="n">new_field</span><span class="o">.</span><span class="n">to_str</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;hex&quot;</span><span class="p">:</span>
+                        <span class="n">new_field</span><span class="o">.</span><span class="n">to_hex</span><span class="p">()</span>
+                    <span class="k">elif</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s2">&quot;bytes&quot;</span><span class="p">:</span>
+                        <span class="n">new_field</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">()</span>
+                    <span class="c1"># Add the field to the layer</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">addfield</span><span class="p">(</span><span class="n">new_field</span><span class="p">)</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_print_info</span><span class="p">(</span><span class="s2">&quot;Field </span><span class="si">%s</span><span class="s2"> added to the layer&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;-a&#39;</span><span class="p">])</span>
+            <span class="c1"># Deletes a field from the layer</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">]:</span>
+                <span class="n">del_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">getfield</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">del_field</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">delfield</span><span class="p">(</span><span class="n">del_field</span><span class="p">)</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_print_info</span><span class="p">(</span><span class="s2">&quot;Field </span><span class="si">%s</span><span class="s2"> deleted from the layer&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_print_error</span><span class="p">(</span><span class="s2">&quot;The field </span><span class="si">%s</span><span class="s2"> is not in the layer&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_field_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the field command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;adds a new field to the layer.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="s2">&quot;deletes a custom field from the layer.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;field&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;field &lt;name&gt; [-option]&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;access and manage the fields of the layer.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_field_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-a&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                <span class="s2">&quot;-d&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span>
+
+    <span class="k">def</span> <span class="nf">_dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Dumps the layer bytes in different formats.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">color_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Parsing the arguments</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_dump_opts</span><span class="p">())</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-hex&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">color_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-b&quot;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span><span class="p">:]),</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;hexstr&quot;</span><span class="p">]:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">hexdump</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span><span class="p">:]),</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_dump_help</span><span class="p">())</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_dump_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the dump command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-hex&quot;</span><span class="p">,</span> <span class="s2">&quot;dump the packet bytes encoded in hexadecimal.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-b&quot;</span><span class="p">,</span> <span class="s2">&quot;dump the packet bytes without encoding.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-hexstr&quot;</span><span class="p">,</span> <span class="s2">&quot;dump the packet bytes as an hexadecimal stream.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;dump&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;dump [-option]&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Dumps the layer bytes in different formats.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_dump_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-hex&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                         <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-hexstr&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span>
+
+    <span class="k">def</span> <span class="nf">_recalculate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Manages all the recalculate options for the fields of the layer.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_recalculate_help</span><span class="p">())</span>
+            <span class="k">return</span>
+        <span class="c1"># Parsing the arguments</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_recalculate_opts</span><span class="p">())</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Print the help</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">LayerInterface</span><span class="o">.</span><span class="n">_recalculate_help</span><span class="p">())</span>
+        <span class="c1"># Adds a new recalculate expression</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-sb&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-e&quot;</span><span class="p">]:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">LayerInterface</span><span class="o">.</span><span class="n">_extrac_deps</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-sb&quot;</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-e&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">add_struct</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">],</span> <span class="n">fields</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-sb&quot;</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-e&quot;</span><span class="p">])</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_print_info</span><span class="p">(</span><span class="s2">&quot;Struct added to field </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-f&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_print_error</span><span class="p">(</span>
+                    <span class="s2">&quot;Wrong syntax for referring to the fields. Please use &#39;this.field&#39; syntax&quot;</span><span class="p">)</span>
+        <span class="c1"># Tests a created struct</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-t&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">is_struct</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-t&quot;</span><span class="p">]):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">test_struct</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-t&quot;</span><span class="p">]),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">construct</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">StreamError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_print_error</span><span class="p">(</span>
+                        <span class="s2">&quot;The Struct is not well formed. Please check the fields and their type.</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_print_error</span><span class="p">(</span>
+                    <span class="s2">&quot;The Struct </span><span class="si">%s</span><span class="s2"> is not in the layer&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;-t&#39;</span><span class="p">])</span>
+        <span class="c1"># Show the struct for a particular field</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">show_structs</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-s&quot;</span><span class="p">])</span>
+        <span class="c1"># Deletes a struct for a field</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">is_struct</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_l</span><span class="o">.</span><span class="n">del_struct</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">])</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_print_info</span><span class="p">(</span><span class="s2">&quot;Struct deleted for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_print_error</span><span class="p">(</span>
+                    <span class="s2">&quot;The Struct </span><span class="si">%s</span><span class="s2"> is not in the layer&quot;</span> <span class="o">%</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-d&quot;</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_extrac_deps</span><span class="p">(</span><span class="n">start_byte</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+        <span class="n">patterns</span> <span class="o">=</span> <span class="n">start_byte</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">expression</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">patterns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;this.&#39;</span> <span class="ow">in</span> <span class="n">p</span> <span class="ow">and</span> <span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">:]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">5</span><span class="p">:])</span>
+        <span class="k">return</span> <span class="n">fields</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_recalculate_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the recalculate command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;field to be recalculated&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-sb&quot;</span><span class="p">,</span> <span class="s2">&quot;start byte of the field that you want to recalculate.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-e&quot;</span><span class="p">,</span> <span class="s2">&quot;expression that recalculates the field&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;tests a previously created structure&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-s&quot;</span><span class="p">,</span> <span class="s2">&quot;shows the struct for a particular field&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="s2">&quot;deletes a struct from a field.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;recalculate&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;recalculate &lt;-option&gt;&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Creates a structure that relates a field to other fields of the layer, so that its value &quot;</span>
+                            <span class="s2">&quot;can be calculated dynamically at run time.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_recalculate_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-s&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                <span class="s2">&quot;-f&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                <span class="s2">&quot;-sb&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                        <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                <span class="s2">&quot;-e&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                <span class="s2">&quot;-d&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                <span class="s2">&quot;-t&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Santiago Hernández.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,794 @@
+{
+    "Name": "Template:/Ether/IP/TCP/Raw",
+    "Description": "",
+    "Version": "0.1",
+    "Timestamp": "2018-03-27 23:42:54.460552",
+    "Functions": {
+        "preconditions": {},
+        "executions": {},
+        "postconditions": {}
+    },
+    "layers": [
+        {
+            "name": "ETHER",
+            "custom": false,
+            "lslice": "736c69636528302c203737322c204e6f6e6529",
+            "fields": [
+                {
+                    "name": "dst",
+                    "value": "080027168473",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 6,
+                    "slice": "736c69636528302c20362c204e6f6e6529",
+                    "frepr": "08:00:27:16:84:73",
+                    "custom": false
+                },
+                {
+                    "name": "src",
+                    "value": "0015c7b27000",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 6,
+                    "slice": "736c69636528362c2031322c204e6f6e6529",
+                    "frepr": "00:15:c7:b2:70:00",
+                    "custom": false
+                },
+                {
+                    "name": "type",
+                    "value": "0800",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652831322c2031342c204e6f6e6529",
+                    "frepr": 2048,
+                    "custom": false
+                }
+            ],
+            "structs": {}
+        },
+        {
+            "name": "IP",
+            "custom": false,
+            "lslice": "736c6963652831342c203737322c204e6f6e6529",
+            "fields": [
+                {
+                    "name": "version",
+                    "value": "45",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 1,
+                    "slice": "736c6963652831342c2031352c204e6f6e6529",
+                    "frepr": 4,
+                    "custom": false
+                },
+                {
+                    "name": "ihl",
+                    "value": "45",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 1,
+                    "slice": "736c6963652831342c2031352c204e6f6e6529",
+                    "frepr": 5,
+                    "custom": false
+                },
+                {
+                    "name": "tos",
+                    "value": "20",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 1,
+                    "slice": "736c6963652831352c2031362c204e6f6e6529",
+                    "frepr": 32,
+                    "custom": false
+                },
+                {
+                    "name": "len",
+                    "value": "02f6",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652831362c2031382c204e6f6e6529",
+                    "frepr": 758,
+                    "custom": false
+                },
+                {
+                    "name": "id",
+                    "value": "3025",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652831382c2032302c204e6f6e6529",
+                    "frepr": 12325,
+                    "custom": false
+                },
+                {
+                    "name": "flags",
+                    "value": "0000",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652832302c2032322c204e6f6e6529",
+                    "frepr": "",
+                    "custom": false
+                },
+                {
+                    "name": "frag",
+                    "value": "0000",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652832302c2032322c204e6f6e6529",
+                    "frepr": 0,
+                    "custom": false
+                },
+                {
+                    "name": "ttl",
+                    "value": "32",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 1,
+                    "slice": "736c6963652832322c2032332c204e6f6e6529",
+                    "frepr": 50,
+                    "custom": false
+                },
+                {
+                    "name": "proto",
+                    "value": "06",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 1,
+                    "slice": "736c6963652832332c2032342c204e6f6e6529",
+                    "frepr": 6,
+                    "custom": false
+                },
+                {
+                    "name": "chksum",
+                    "value": "c20b",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652832342c2032362c204e6f6e6529",
+                    "frepr": 49675,
+                    "custom": false
+                },
+                {
+                    "name": "src",
+                    "value": "d83ac98e",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 4,
+                    "slice": "736c6963652832362c2033302c204e6f6e6529",
+                    "frepr": "216.58.201.142",
+                    "custom": false
+                },
+                {
+                    "name": "dst",
+                    "value": "0a5fe789",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 4,
+                    "slice": "736c6963652833302c2033342c204e6f6e6529",
+                    "frepr": "10.95.231.137",
+                    "custom": false
+                },
+                {
+                    "name": "options",
+                    "value": "0a5fe789",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 4,
+                    "slice": "736c6963652833302c2033342c204e6f6e6529",
+                    "frepr": "[]",
+                    "custom": false
+                }
+            ],
+            "structs": {}
+        },
+        {
+            "name": "TCP",
+            "custom": false,
+            "lslice": "736c6963652833342c203737322c204e6f6e6529",
+            "fields": [
+                {
+                    "name": "sport",
+                    "value": "0050",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652833342c2033362c204e6f6e6529",
+                    "frepr": 80,
+                    "custom": false
+                },
+                {
+                    "name": "dport",
+                    "value": "ed60",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652833362c2033382c204e6f6e6529",
+                    "frepr": 60768,
+                    "custom": false
+                },
+                {
+                    "name": "seq",
+                    "value": "3bdb9eb3",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 4,
+                    "slice": "736c6963652833382c2034322c204e6f6e6529",
+                    "frepr": 1004248755,
+                    "custom": false
+                },
+                {
+                    "name": "ack",
+                    "value": "06d1be10",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 4,
+                    "slice": "736c6963652834322c2034362c204e6f6e6529",
+                    "frepr": 114408976,
+                    "custom": false
+                },
+                {
+                    "name": "dataofs",
+                    "value": "8018",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652834362c2034382c204e6f6e6529",
+                    "frepr": 8,
+                    "custom": false
+                },
+                {
+                    "name": "reserved",
+                    "value": "8018",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652834362c2034382c204e6f6e6529",
+                    "frepr": 0,
+                    "custom": false
+                },
+                {
+                    "name": "flags",
+                    "value": "8018",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652834362c2034382c204e6f6e6529",
+                    "frepr": "PA",
+                    "custom": false
+                },
+                {
+                    "name": "window",
+                    "value": "00af",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652834382c2035302c204e6f6e6529",
+                    "frepr": 175,
+                    "custom": false
+                },
+                {
+                    "name": "chksum",
+                    "value": "80ee",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652835302c2035322c204e6f6e6529",
+                    "frepr": 33006,
+                    "custom": false
+                },
+                {
+                    "name": "urgptr",
+                    "value": "0000",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652835322c2035342c204e6f6e6529",
+                    "frepr": 0,
+                    "custom": false
+                },
+                {
+                    "name": "options",
+                    "value": "0101080a96ec32e43e61e0f6",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 12,
+                    "slice": "736c6963652835342c2036362c204e6f6e6529",
+                    "frepr": "[('NOP', None), ('NOP', None), ('Timestamp', (2532061924, 1046601974))]",
+                    "custom": false
+                }
+            ],
+            "structs": {}
+        },
+        {
+            "name": "RAW",
+            "custom": false,
+            "lslice": "736c6963652836362c203737322c204e6f6e6529",
+            "fields": [
+                {
+                    "name": "load",
+                    "value": "485454502f312e3120323030204f4b0d0a436f6e74656e742d547970653a206170706c69636174696f6e2f6f6373702d726573706f6e73650d0a446174653a205475652c203036204d617220323031382030393a35333a353920474d540d0a43616368652d436f6e74726f6c3a207075626c69632c206d61782d6167653d3334353630300d0a5365727665723a206f6373705f726573706f6e6465720d0a436f6e74656e742d4c656e6774683a203436330d0a582d5853532d50726f74656374696f6e3a20313b206d6f64653d626c6f636b0d0a582d4672616d652d4f7074696f6e733a2053414d454f524947494e0d0a0d0a308201cb0a0100a08201c4308201c006092b0601050507300101048201b1308201ad308196a216041477c2b8509a677676b12dc286d083a07ea67eba4b180f32303138303330363037353332345a306b30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a300d06092a864886f70d01010b05000382010100614e02608b7f8f1b601fae2b8916e0caeb050922864728c76f6f81e2acbd2e2d50fbb65c687d61b40ca56df982c109a690ac8c2e0586b6c4423abf4f748a03ea6808155e9a95fa6f2a6f2071f477578cd9079fc13f129d0ae25c7d4373374f518d12df36d14d04e805ff814a4b68b71cbd22cb1de8f6606306eb00500e47ee66dd41d60fbec6e32f48cc9c5f8e36167aac31f32333fa72f2ca700e77d2a072aaa4c96a3cc773235acd48de951e5868c21c3b7602d6ab23960b87efe0faab706675340894462e723d1e025023914dd9d9572762b86533397e3764edd6956c216fbdc257f8d2336a63ba657246de1cdb69d00582558b808a6a4ae3c030eb595a28",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 706,
+                    "slice": "736c6963652836362c203737322c204e6f6e6529",
+                    "frepr": "b'HTTP/1.1 200 OK\\r\\nContent-Type: application/ocsp-response\\r\\nDate: Tue, 06 Mar 2018 09:53:59 GMT\\r\\nCache-Control: public, max-age=345600\\r\\nServer: ocsp_responder\\r\\nContent-Length: 463\\r\\nX-XSS-Protection: 1; mode=block\\r\\nX-Frame-Options: SAMEORIGIN\\r\\n\\r\\n0\\x82\\x01\\xcb\\n\\x01\\x00\\xa0\\x82\\x01\\xc40\\x82\\x01\\xc0\\x06\\t+\\x06\\x01\\x05\\x05\\x070\\x01\\x01\\x04\\x82\\x01\\xb10\\x82\\x01\\xad0\\x81\\x96\\xa2\\x16\\x04\\x14w\\xc2\\xb8P\\x9agvv\\xb1-\\xc2\\x86\\xd0\\x83\\xa0~\\xa6~\\xbaK\\x18\\x0f20180306075324Z0k0i0A0\\t\\x06\\x05+\\x0e\\x03\\x02\\x1a\\x05\\x00\\x04\\x14\\xf6\\xed\\xb0cb2\\x81\\x9a5\\xf6\\x8du\\xa0\\x9d\\x02J\\x11\\xaal\\xad\\x04\\x14w\\xc2\\xb8P\\x9agvv\\xb1-\\xc2\\x86\\xd0\\x83\\xa0~\\xa6~\\xbaK\\x02\\x08;\\\\\\x00\\xbb\\xe2\\xfb\\\\\\xb6\\x80\\x00\\x18\\x0f20180306075324Z\\xa0\\x11\\x18\\x0f20180313075324Z0\\r\\x06\\t*\\x86H\\x86\\xf7\\r\\x01\\x01\\x0b\\x05\\x00\\x03\\x82\\x01\\x01\\x00aN\\x02`\\x8b\\x7f\\x8f\\x1b`\\x1f\\xae+\\x89\\x16\\xe0\\xca\\xeb\\x05\\t\"\\x86G(\\xc7oo\\x81\\xe2\\xac\\xbd.-P\\xfb\\xb6\\\\h}a\\xb4\\x0c\\xa5m\\xf9\\x82\\xc1\\t\\xa6\\x90\\xac\\x8c.\\x05\\x86\\xb6\\xc4B:\\xbfOt\\x8a\\x03\\xeah\\x08\\x15^\\x9a\\x95\\xfao*o q\\xf4wW\\x8c\\xd9\\x07\\x9f\\xc1?\\x12\\x9d\\n\\xe2\\\\}Cs7OQ\\x8d\\x12\\xdf6\\xd1M\\x04\\xe8\\x05\\xff\\x81JKh\\xb7\\x1c\\xbd\"\\xcb\\x1d\\xe8\\xf6`c\\x06\\xeb\\x00P\\x0eG\\xeef\\xddA\\xd6\\x0f\\xbe\\xc6\\xe3/H\\xcc\\x9c_\\x8e6\\x16z\\xac1\\xf3#3\\xfar\\xf2\\xcap\\x0ew\\xd2\\xa0r\\xaa\\xa4\\xc9j<\\xc7s#Z\\xcdH\\xde\\x95\\x1eXh\\xc2\\x1c;v\\x02\\xd6\\xab#\\x96\\x0b\\x87\\xef\\xe0\\xfa\\xabpfu4\\x08\\x94F.r=\\x1e\\x02P#\\x91M\\xd9\\xd9W\\'b\\xb8e39~7d\\xed\\xd6\\x95l!o\\xbd\\xc2W\\xf8\\xd23jc\\xbaerF\\xde\\x1c\\xdbi\\xd0\\x05\\x82U\\x8b\\x80\\x8ajJ\\xe3\\xc00\\xebYZ('",
+                    "custom": false
+                }
+            ],
+            "structs": {}
+        },
+        {
+            "name": "RAW.HTTP",
+            "custom": true,
+            "lslice": "736c6963652836362c203737322c204e6f6e6529",
+            "fields": [
+                {
+                    "name": "request.version",
+                    "value": "485454502f312e31",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 8,
+                    "slice": "736c6963652836362c2037342c204e6f6e6529",
+                    "frepr": "HTTP/1.1",
+                    "custom": true
+                },
+                {
+                    "name": "response.code",
+                    "value": "323030",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 3,
+                    "slice": "736c6963652837352c2037382c204e6f6e6529",
+                    "frepr": 200,
+                    "custom": true
+                },
+                {
+                    "name": "response.code.desc",
+                    "value": "323030",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 3,
+                    "slice": "736c6963652837352c2037382c204e6f6e6529",
+                    "frepr": "OK",
+                    "custom": true
+                },
+                {
+                    "name": "response.phrase",
+                    "value": "4f4b",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 2,
+                    "slice": "736c6963652837392c2038312c204e6f6e6529",
+                    "frepr": "OK",
+                    "custom": true
+                },
+                {
+                    "name": "content_type",
+                    "value": "436f6e74656e742d547970653a206170706c69636174696f6e2f6f6373702d726573706f6e73650d0a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 41,
+                    "slice": "736c6963652838332c203132342c204e6f6e6529",
+                    "frepr": "application/ocsp-response",
+                    "custom": true
+                },
+                {
+                    "name": "response.line",
+                    "value": "436f6e74656e742d547970653a206170706c69636174696f6e2f6f6373702d726573706f6e73650d0a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 41,
+                    "slice": "736c6963652838332c203132342c204e6f6e6529",
+                    "frepr": "Content-Type: application/ocsp-response\\xd\\xa",
+                    "custom": true
+                },
+                {
+                    "name": "date",
+                    "value": "446174653a205475652c203036204d617220323031382030393a35333a353920474d540d0a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 37,
+                    "slice": "736c696365283132342c203136312c204e6f6e6529",
+                    "frepr": "Tue, 06 Mar 2018 09:53:59 GMT",
+                    "custom": true
+                },
+                {
+                    "name": "cache_control",
+                    "value": "43616368652d436f6e74726f6c3a207075626c69632c206d61782d6167653d3334353630300d0a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 39,
+                    "slice": "736c696365283136312c203230302c204e6f6e6529",
+                    "frepr": "public, max-age=345600",
+                    "custom": true
+                },
+                {
+                    "name": "server",
+                    "value": "5365727665723a206f6373705f726573706f6e6465720d0a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 24,
+                    "slice": "736c696365283230302c203232342c204e6f6e6529",
+                    "frepr": "ocsp_responder",
+                    "custom": true
+                },
+                {
+                    "name": "content_length_header",
+                    "value": "436f6e74656e742d4c656e6774683a203436330d0a",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 21,
+                    "slice": "736c696365283232342c203234352c204e6f6e6529",
+                    "frepr": 463,
+                    "custom": true
+                },
+                {
+                    "name": "content_length",
+                    "value": "436f6e74656e742d4c656e6774683a203436330d0a",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 21,
+                    "slice": "736c696365283232342c203234352c204e6f6e6529",
+                    "frepr": 463,
+                    "custom": true
+                },
+                {
+                    "name": "file_data",
+                    "value": "308201cb0a0100a08201c4308201c006092b0601050507300101048201b1308201ad308196a216041477c2b8509a677676b12dc286d083a07ea67eba4b180f32303138303330363037353332345a306b30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a300d06092a864886f70d01010b05000382010100614e02608b7f8f1b601fae2b8916e0caeb050922864728c76f6f81e2acbd2e2d50fbb65c687d61b40ca56df982c109a690ac8c2e0586b6c4423abf4f748a03ea6808155e9a95fa6f2a6f2071f477578cd9079fc13f129d0ae25c7d4373374f518d12df36d14d04e805ff814a4b68b71cbd22cb1de8f6606306eb00500e47ee66dd41d60fbec6e32f48cc9c5f8e36167aac31f32333fa72f2ca700e77d2a072aaa4c96a3cc773235acd48de951e5868c21c3b7602d6ab23960b87efe0faab706675340894462e723d1e025023914dd9d9572762b86533397e3764edd6956c216fbdc257f8d2336a63ba657246de1cdb69d00582558b808a6a4ae3c030eb595a28",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 463,
+                    "slice": "736c696365283330392c203737322c204e6f6e6529",
+                    "frepr": "0\\xef\\xbf\\xbd\\x1\\xef\\xbf\\xbd\\xa\\x1",
+                    "custom": true
+                }
+            ],
+            "structs": {}
+        },
+        {
+            "name": "RAW.OCSP",
+            "custom": true,
+            "lslice": "736c696365283331352c203737322c204e6f6e6529",
+            "fields": [
+                {
+                    "name": "responsestatus",
+                    "value": "00",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 1,
+                    "slice": "736c696365283331352c203331362c204e6f6e6529",
+                    "frepr": 0,
+                    "custom": true
+                },
+                {
+                    "name": "responsebytes_element",
+                    "value": "308201c006092b0601050507300101048201b1308201ad308196a216041477c2b8509a677676b12dc286d083a07ea67eba4b180f32303138303330363037353332345a306b30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a300d06092a864886f70d01010b05000382010100614e02608b7f8f1b601fae2b8916e0caeb050922864728c76f6f81e2acbd2e2d50fbb65c687d61b40ca56df982c109a690ac8c2e0586b6c4423abf4f748a03ea6808155e9a95fa6f2a6f2071f477578cd9079fc13f129d0ae25c7d4373374f518d12df36d14d04e805ff814a4b68b71cbd22cb1de8f6606306eb00500e47ee66dd41d60fbec6e32f48cc9c5f8e36167aac31f32333fa72f2ca700e77d2a072aaa4c96a3cc773235acd48de951e5868c21c3b7602d6ab23960b87efe0faab706675340894462e723d1e025023914dd9d9572762b86533397e3764edd6956c216fbdc257f8d2336a63ba657246de1cdb69d00582558b808a6a4ae3c030eb595a28",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 452,
+                    "slice": "736c696365283332302c203737322c204e6f6e6529",
+                    "frepr": "responseBytes",
+                    "custom": true
+                },
+                {
+                    "name": "responsetype.id",
+                    "value": "2b0601050507300101",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 9,
+                    "slice": "736c696365283332362c203333352c204e6f6e6529",
+                    "frepr": "1.3.6.1.5.5.7.48.1.1",
+                    "custom": true
+                },
+                {
+                    "name": "basicocspresponse_element",
+                    "value": "308201ad308196a216041477c2b8509a677676b12dc286d083a07ea67eba4b180f32303138303330363037353332345a306b30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a300d06092a864886f70d01010b05000382010100614e02608b7f8f1b601fae2b8916e0caeb050922864728c76f6f81e2acbd2e2d50fbb65c687d61b40ca56df982c109a690ac8c2e0586b6c4423abf4f748a03ea6808155e9a95fa6f2a6f2071f477578cd9079fc13f129d0ae25c7d4373374f518d12df36d14d04e805ff814a4b68b71cbd22cb1de8f6606306eb00500e47ee66dd41d60fbec6e32f48cc9c5f8e36167aac31f32333fa72f2ca700e77d2a072aaa4c96a3cc773235acd48de951e5868c21c3b7602d6ab23960b87efe0faab706675340894462e723d1e025023914dd9d9572762b86533397e3764edd6956c216fbdc257f8d2336a63ba657246de1cdb69d00582558b808a6a4ae3c030eb595a28",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 433,
+                    "slice": "736c696365283333392c203737322c204e6f6e6529",
+                    "frepr": "BasicOCSPResponse",
+                    "custom": true
+                },
+                {
+                    "name": "tbsresponsedata_element",
+                    "value": "308196a216041477c2b8509a677676b12dc286d083a07ea67eba4b180f32303138303330363037353332345a306b30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 153,
+                    "slice": "736c696365283334332c203439362c204e6f6e6529",
+                    "frepr": "tbsResponseData",
+                    "custom": true
+                },
+                {
+                    "name": "responderid",
+                    "value": "041477c2b8509a677676b12dc286d083a07ea67eba4b",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 22,
+                    "slice": "736c696365283334382c203337302c204e6f6e6529",
+                    "frepr": 2,
+                    "custom": true
+                },
+                {
+                    "name": "bykey",
+                    "value": "77c2b8509a677676b12dc286d083a07ea67eba4b",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 20,
+                    "slice": "736c696365283335302c203337302c204e6f6e6529",
+                    "frepr": "77:c2:b8:50:9a:67:76:76:b1:2d:c2:86:d0:83:a0:7e:a6:7e:ba:4b",
+                    "custom": true
+                },
+                {
+                    "name": "producedat",
+                    "value": "32303138303330363037353332345a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 15,
+                    "slice": "736c696365283337322c203338372c204e6f6e6529",
+                    "frepr": "2018-03-06 07:53:24 (UTC)",
+                    "custom": true
+                },
+                {
+                    "name": "responses",
+                    "value": "30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 107,
+                    "slice": "736c696365283338392c203439362c204e6f6e6529",
+                    "frepr": 1,
+                    "custom": true
+                },
+                {
+                    "name": "singleresponse_element",
+                    "value": "30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 107,
+                    "slice": "736c696365283338392c203439362c204e6f6e6529",
+                    "frepr": "SingleResponse",
+                    "custom": true
+                },
+                {
+                    "name": "certid_element",
+                    "value": "3041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb6",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 67,
+                    "slice": "736c696365283339312c203435382c204e6f6e6529",
+                    "frepr": "certID",
+                    "custom": true
+                },
+                {
+                    "name": "hashalgorithm_element",
+                    "value": "300906052b0e03021a0500",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 11,
+                    "slice": "736c696365283339332c203430342c204e6f6e6529",
+                    "frepr": "hashAlgorithm (SHA-1)",
+                    "custom": true
+                },
+                {
+                    "name": "algorithm.id",
+                    "value": "2b0e03021a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 5,
+                    "slice": "736c696365283339372c203430322c204e6f6e6529",
+                    "frepr": "1.3.14.3.2.26",
+                    "custom": true
+                },
+                {
+                    "name": "issuernamehash",
+                    "value": "f6edb0636232819a35f68d75a09d024a11aa6cad",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 20,
+                    "slice": "736c696365283430362c203432362c204e6f6e6529",
+                    "frepr": "f6:ed:b0:63:62:32:81:9a:35:f6:8d:75:a0:9d:02:4a:11:aa:6c:ad",
+                    "custom": true
+                },
+                {
+                    "name": "issuerkeyhash",
+                    "value": "77c2b8509a677676b12dc286d083a07ea67eba4b",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 20,
+                    "slice": "736c696365283432382c203434382c204e6f6e6529",
+                    "frepr": "77:c2:b8:50:9a:67:76:76:b1:2d:c2:86:d0:83:a0:7e:a6:7e:ba:4b",
+                    "custom": true
+                },
+                {
+                    "name": "serialnumber",
+                    "value": "3b5c00bbe2fb5cb6",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 8,
+                    "slice": "736c696365283435302c203435382c204e6f6e6529",
+                    "frepr": 4277294553062137014,
+                    "custom": true
+                },
+                {
+                    "name": "thisupdate",
+                    "value": "32303138303330363037353332345a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 15,
+                    "slice": "736c696365283436322c203437372c204e6f6e6529",
+                    "frepr": "2018-03-06 07:53:24 (UTC)",
+                    "custom": true
+                },
+                {
+                    "name": "nextupdate",
+                    "value": "32303138303331333037353332345a",
+                    "type": [
+                        "<class 'str'>",
+                        null
+                    ],
+                    "size": 15,
+                    "slice": "736c696365283438312c203439362c204e6f6e6529",
+                    "frepr": "2018-03-13 07:53:24 (UTC)",
+                    "custom": true
+                },
+                {
+                    "name": "signaturealgorithm_element",
+                    "value": "300d06092a864886f70d01010b0500",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 15,
+                    "slice": "736c696365283439362c203531312c204e6f6e6529",
+                    "frepr": "signatureAlgorithm (sha256WithRSAEncryption)",
+                    "custom": true
+                },
+                {
+                    "name": "bitstring.padding",
+                    "value": "00",
+                    "type": [
+                        "<class 'int'>",
+                        "big"
+                    ],
+                    "size": 1,
+                    "slice": "736c696365283531352c203531362c204e6f6e6529",
+                    "frepr": 0,
+                    "custom": true
+                },
+                {
+                    "name": "signature",
+                    "value": "614e02608b7f8f1b601fae2b8916e0caeb050922864728c76f6f81e2acbd2e2d50fbb65c687d61b40ca56df982c109a690ac8c2e0586b6c4423abf4f748a03ea6808155e9a95fa6f2a6f2071f477578cd9079fc13f129d0ae25c7d4373374f518d12df36d14d04e805ff814a4b68b71cbd22cb1de8f6606306eb00500e47ee66dd41d60fbec6e32f48cc9c5f8e36167aac31f32333fa72f2ca700e77d2a072aaa4c96a3cc773235acd48de951e5868c21c3b7602d6ab23960b87efe0faab706675340894462e723d1e025023914dd9d9572762b86533397e3764edd6956c216fbdc257f8d2336a63ba657246de1cdb69d00582558b808a6a4ae3c030eb595a28",
+                    "type": [
+                        "<class 'str'>",
+                        "hex"
+                    ],
+                    "size": 256,
+                    "slice": "736c696365283531362c203737322c204e6f6e6529",
+                    "frepr": "61:4e:02:60:8b:7f:8f:1b:60:1f:ae:2b:89:16:e0:ca:eb:05:09:22:86:47:28:c7:6f:6f:81:e2:ac:bd:2e:2d:50:fb:b6:5c:68:7d:61:b4:0c:a5:6d:f9:82:c1:09:a6:90:ac:8c:2e:05:86:b6:c4:42:3a:bf:4f:74:8a:03:ea:68:08:15:5e:9a:95:fa:6f:2a:6f:20:71:f4:77:57:8c:d9:07:9f:c1:3f:12:9d:0a:e2:5c:7d:43:73:37:4f:51:8d:12:df:36:d1:4d:04:e8:05:ff:81:4a:4b:68:b7:1c:bd:22:cb:1d:e8:f6:60:63:06:eb:00:50:0e:47:ee:66:dd:41:d6:0f:be:c6:e3:2f:48:cc:9c:5f:8e:36:16:7a:ac:31:f3:23:33:fa:72:f2:ca:70:0e:77:d2:a0:72:aa:a4:c9:6a:3c:c7:73:23:5a:cd:48:de:95:1e:58:68:c2:1c:3b:76:02:d6:ab:23:96:0b:87:ef:e0:fa:ab:70:66:75:34:08:94:46:2e:72:3d:1e:02:50:23:91:4d:d9:d9:57:27:62:b8:65:33:39:7e:37:64:ed:d6:95:6c:21:6f:bd:c2:57:f8:d2:33:6a:63:ba:65:72:46:de:1c:db:69:d0:05:82:55:8b:80:8a:6a:4a:e3:c0:30:eb:59:5a:28",
+                    "custom": true
+                }
+            ],
+            "structs": {}
+        }
+    ],
+    "raw": "0800271684730015c7b270000800452002f6302500003206c20bd83ac98e0a5fe7890050ed603bdb9eb306d1be10801800af80ee00000101080a96ec32e43e61e0f6485454502f312e3120323030204f4b0d0a436f6e74656e742d547970653a206170706c69636174696f6e2f6f6373702d726573706f6e73650d0a446174653a205475652c203036204d617220323031382030393a35333a353920474d540d0a43616368652d436f6e74726f6c3a207075626c69632c206d61782d6167653d3334353630300d0a5365727665723a206f6373705f726573706f6e6465720d0a436f6e74656e742d4c656e6774683a203436330d0a582d5853532d50726f74656374696f6e3a20313b206d6f64653d626c6f636b0d0a582d4672616d652d4f7074696f6e733a2053414d454f524947494e0d0a0d0a308201cb0a0100a08201c4308201c006092b0601050507300101048201b1308201ad308196a216041477c2b8509a677676b12dc286d083a07ea67eba4b180f32303138303330363037353332345a306b30693041300906052b0e03021a05000414f6edb0636232819a35f68d75a09d024a11aa6cad041477c2b8509a677676b12dc286d083a07ea67eba4b02083b5c00bbe2fb5cb68000180f32303138303330363037353332345aa011180f32303138303331333037353332345a300d06092a864886f70d01010b05000382010100614e02608b7f8f1b601fae2b8916e0caeb050922864728c76f6f81e2acbd2e2d50fbb65c687d61b40ca56df982c109a690ac8c2e0586b6c4423abf4f748a03ea6808155e9a95fa6f2a6f2071f477578cd9079fc13f129d0ae25c7d4373374f518d12df36d14d04e805ff814a4b68b71cbd22cb1de8f6606306eb00500e47ee66dd41d60fbec6e32f48cc9c5f8e36167aac31f32333fa72f2ca700e77d2a072aaa4c96a3cc773235acd48de951e5868c21c3b7602d6ab23960b87efe0faab706675340894462e723d1e025023914dd9d9572762b86533397e3764edd6956c216fbdc257f8d2336a63ba657246de1cdb69d00582558b808a6a4ae3c030eb595a28"
+}

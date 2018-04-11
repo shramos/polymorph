@@ -1,0 +1,493 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>polymorph.tlayer &#8212; Polymorph 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.tlayer</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">randint</span>
+<span class="kn">from</span> <span class="nn">polymorph.tfield</span> <span class="k">import</span> <span class="n">TField</span>
+<span class="kn">from</span> <span class="nn">termcolor</span> <span class="k">import</span> <span class="n">colored</span>
+<span class="kn">from</span> <span class="nn">construct</span> <span class="k">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="TLayer"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer">[docs]</a><span class="k">class</span> <span class="nc">TLayer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class that represents a layer within a `Template`.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">lslice</span><span class="p">,</span> <span class="n">raw</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">custom</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method of the class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the layer.</span>
+<span class="sd">        lslice : :obj:`str`</span>
+<span class="sd">            :obj:`slice` encoded in hexadecimal representing the position</span>
+<span class="sd">            of the `TLayer` in the raw packet data.</span>
+<span class="sd">        raw : :obj:`str`</span>
+<span class="sd">            Package content bytes encoded in hexadecimal.</span>
+<span class="sd">        fields : :obj:`OrderedDict`, optional</span>
+<span class="sd">            Dictionary with the fields of the layer of the form</span>
+<span class="sd">            {fieldname : `TField`}.</span>
+<span class="sd">        custom : bool, optional</span>
+<span class="sd">            False if the layer has not been modified by the user or the tool</span>
+<span class="sd">            True if the layer has been modified/built by the user or the tool.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="n">fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custom</span> <span class="o">=</span> <span class="n">custom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="n">raw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lslice</span> <span class="o">=</span> <span class="n">lslice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_structs</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="c1"># This constants will help constructing the structs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nums</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;big&#39;</span><span class="p">:</span> <span class="n">Int8ub</span><span class="p">,</span>
+                            <span class="s1">&#39;little&#39;</span><span class="p">:</span> <span class="n">Int8ul</span><span class="p">},</span>
+                      <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;big&#39;</span><span class="p">:</span> <span class="n">Int16ub</span><span class="p">,</span>
+                            <span class="s1">&#39;little&#39;</span><span class="p">:</span> <span class="n">Int16ul</span><span class="p">},</span>
+                      <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;big&#39;</span><span class="p">:</span> <span class="n">Int24ub</span><span class="p">,</span>
+                            <span class="s1">&#39;little&#39;</span><span class="p">:</span> <span class="n">Int24ul</span><span class="p">},</span>
+                      <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;big&#39;</span><span class="p">:</span> <span class="n">Int32ub</span><span class="p">,</span>
+                            <span class="s1">&#39;little&#39;</span><span class="p">:</span> <span class="n">Int32ul</span><span class="p">}}</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;tlayer.TLayer(</span><span class="si">%s</span><span class="s2">): </span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">values</span><span class="p">()]))</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfield</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TLayer.is_custom"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.is_custom">[docs]</a>    <span class="k">def</span> <span class="nf">is_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if the `TLayer` has been set as custom,</span>
+<span class="sd">        False otherwise.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`bool`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom</span></div>
+
+<div class="viewcode-block" id="TLayer.set_custom"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.set_custom">[docs]</a>    <span class="k">def</span> <span class="nf">set_custom</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the :obj:`TLayer` as custom.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custom</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Name of the `TLayer`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:obj:`slice`: Slice that represents the position of the `TLayer`</span>
+<span class="sd">        in the raw payload.</span>
+
+<span class="sd">        The setter will encode de slice object into hexadecimal to be stored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lslice</span><span class="p">))</span>
+
+    <span class="nd">@slice</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">slice</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lslice</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">()</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:obj:`bytearray` : Package content in raw (bytes representation).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:obj:`list` of :obj:`TField`: Obtain all the fields of the</span>
+<span class="sd">        `TLayer`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfields</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TLayer.add_struct"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.add_struct">[docs]</a>    <span class="k">def</span> <span class="nf">add_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">fdeps</span><span class="p">,</span> <span class="n">start_byte</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function creates a structure that relates a field to other</span>
+<span class="sd">        fields of the layer, so that its value can be calculated dynamically</span>
+<span class="sd">        at run time. Perform additional processing before sending the data</span>
+<span class="sd">        to create_struct.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname: :obj:`str`</span>
+<span class="sd">            Name of the field which value will be recalculated.</span>
+<span class="sd">        fdeps: :obj:`list` of :obj:`str`</span>
+<span class="sd">            Dependen fields.</span>
+<span class="sd">        start_byte: :obj:`str`</span>
+<span class="sd">            Byte in which the value of the main field begins. Must be a `str`.</span>
+<span class="sd">            Fields must be preceded by &#39;this&#39;. It can be a complex expression:</span>
+<span class="sd">            &#39;70 - this.field_len&#39;</span>
+<span class="sd">        expression: :obj:`str`</span>
+<span class="sd">            Expression with which the new field value will be calculated</span>
+<span class="sd">            dynamically. Fields must be preceded by &#39;this&#39;. Can be complex:</span>
+<span class="sd">            &#39;this.field_len - this.field2_len - 2&#39;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This is used for saving the structs to the template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_structs</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fdeps&quot;</span><span class="p">:</span> <span class="n">fdeps</span><span class="p">,</span>
+                                     <span class="s2">&quot;sb&quot;</span><span class="p">:</span> <span class="n">start_byte</span><span class="p">,</span>
+                                     <span class="s2">&quot;exp&quot;</span><span class="p">:</span> <span class="n">expression</span><span class="p">}</span>
+        <span class="c1"># Extract fields</span>
+        <span class="n">dep_fields</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">getfield</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fdeps</span><span class="p">]</span>
+        <span class="n">main_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfield</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="c1"># Processing the start_byte expression</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_struct</span><span class="p">(</span><span class="n">main_field</span><span class="p">,</span> <span class="n">dep_fields</span><span class="p">,</span> <span class="n">start_byte</span><span class="p">,</span> <span class="n">expression</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">st</span></div>
+
+<div class="viewcode-block" id="TLayer.test_struct"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.test_struct">[docs]</a>    <span class="k">def</span> <span class="nf">test_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfieldname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests de result of the Struct for a particula `TField`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tfieldname: :obj:`str`</span>
+<span class="sd">            Name of the `TField` to be deleted.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tfieldname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">[</span><span class="n">tfieldname</span><span class="p">]</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">tfieldname</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TLayer.del_struct"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.del_struct">[docs]</a>    <span class="k">def</span> <span class="nf">del_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfieldname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deletes a `Struct` from a `TField`/</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tfieldname: :obj:`str`</span>
+<span class="sd">            Name of the `TField` to be deleted.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tfieldname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">[</span><span class="n">tfieldname</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TLayer.get_struct"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.get_struct">[docs]</a>    <span class="k">def</span> <span class="nf">get_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfieldname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the `Struct` for a particula `TField`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tfieldname: :obj:`str`</span>
+<span class="sd">            Name of the `TField`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`Struct`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tfieldname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">[</span><span class="n">tfieldname</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TLayer.show_structs"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.show_structs">[docs]</a>    <span class="k">def</span> <span class="nf">show_structs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pretty Print of the Structs of a `TField`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tfname: :obj:`str`</span>
+<span class="sd">            Name of the `TField`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tfname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">--- Structs for </span><span class="si">%s</span><span class="s1"> ---&#39;</span> <span class="o">%</span> <span class="n">tfname</span><span class="p">,</span>
+                      <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span><span class="p">[</span><span class="n">tfname</span><span class="p">]</span><span class="o">.</span><span class="n">subcons</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">!=</span> <span class="s2">&quot;pad&quot;</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TLayer.get_structs"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.get_structs">[docs]</a>    <span class="k">def</span> <span class="nf">get_structs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the `Struct` for all the `Tfields` in the `TLayer`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`OrderedDict`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span></div>
+
+<div class="viewcode-block" id="TLayer.is_struct"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.is_struct">[docs]</a>    <span class="k">def</span> <span class="nf">is_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfieldname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns True if the `TField` has a particular `Struct` associated.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tfieldname : :obj:`str`</span>
+<span class="sd">            Name of the `TField`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`bool`</span>
+<span class="sd">            True if the `TField` has a `Struct` object associated,</span>
+<span class="sd">            False otherwise.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">tfieldname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_structs</span></div>
+
+<div class="viewcode-block" id="TLayer.create_struct"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.create_struct">[docs]</a>    <span class="k">def</span> <span class="nf">create_struct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfield</span><span class="p">,</span> <span class="n">fdeps</span><span class="p">,</span> <span class="n">start_byte</span><span class="p">,</span> <span class="n">expression</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function creates a structure that relates a field to other</span>
+<span class="sd">         fields of the layer, so that its value can be calculated dynamically</span>
+<span class="sd">          at run time.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tfield : :obj:`TField`</span>
+<span class="sd">            Field for which the new value will be calculated.</span>
+<span class="sd">        fdeps: :obj:`list` of :obj:`TField`</span>
+<span class="sd">            List of fields on which the previous field depends.</span>
+<span class="sd">        start_byte: :obj:`str`</span>
+<span class="sd">            Byte in which the value of the main field begins. Must be a `str`.</span>
+<span class="sd">            Fields must be preceded by &#39;this&#39;. It can be a complex expression:</span>
+<span class="sd">            &#39;70 - this.field_len&#39;</span>
+<span class="sd">        expression: :obj:`str`</span>
+<span class="sd">            Expression with which the new field value will be calculated</span>
+<span class="sd">            dynamically. Fields must be preceded by &#39;this&#39;. Can be complex:</span>
+<span class="sd">            &#39;this.field_len - this.field2_len - 2&#39;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`Struct`</span>
+<span class="sd">            Structure that allows to parse the raw bytes of the packet and</span>
+<span class="sd">             return the exact value of the field.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Ordering the dependencies</span>
+        <span class="n">ordered_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fdeps</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">f</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
+        <span class="c1"># Building the Struct dependencies</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">Struct</span><span class="p">()</span>
+        <span class="n">stop_byte</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">ordered_list</span><span class="p">:</span>
+            <span class="n">st_byte</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="n">stop_byte</span>
+            <span class="n">stop_byte</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">stop</span>
+            <span class="c1"># Adding padding to the Struct</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;pad&quot;</span>
+            <span class="n">st</span> <span class="o">+=</span> <span class="n">fname</span> <span class="o">/</span> <span class="n">Bytes</span><span class="p">(</span><span class="n">st_byte</span><span class="p">)</span>
+            <span class="c1"># Adding the field</span>
+            <span class="n">st</span> <span class="o">+=</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nums</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">size</span><span class="p">)][</span><span class="n">field</span><span class="o">.</span><span class="n">order</span><span class="p">()]</span>
+        <span class="c1"># Building the struct main field</span>
+        <span class="c1"># Adding paddig to the struct</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;pad&quot;</span>
+        <span class="n">st</span> <span class="o">+=</span> <span class="n">fname</span> <span class="o">/</span> <span class="n">Bytes</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">start_byte</span><span class="p">)</span> <span class="o">-</span> <span class="n">stop_byte</span><span class="p">)</span>
+        <span class="c1"># Adding the field</span>
+        <span class="n">st</span> <span class="o">+=</span> <span class="n">tfield</span><span class="o">.</span><span class="n">name</span> <span class="o">/</span> <span class="n">Bytes</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">expression</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">st</span></div>
+
+<div class="viewcode-block" id="TLayer.customfields"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.customfields">[docs]</a>    <span class="k">def</span> <span class="nf">customfields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Obtain all the `Tfield` in the template that have been modified</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`list` of :obj:`Tfield`</span>
+<span class="sd">            List of fields that have the custom attribute set to True.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfields</span><span class="p">()</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_custom</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="TLayer.addfield"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.addfield">[docs]</a>    <span class="k">def</span> <span class="nf">addfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a `TField` to the actual `TLayer`.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If a `TField` with the same name is alreadry in the `TLayer`,</span>
+<span class="sd">        we append a random 3 digit number to the name.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        field : :obj:`TField`</span>
+<span class="sd">            Field that will be added to the `TLayer`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">fname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">fname</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># TODO: change this solution</span>
+            <span class="n">rand</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">999</span><span class="p">))</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">fname</span> <span class="o">+</span> <span class="n">rand</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">fname</span> <span class="o">+</span> <span class="n">rand</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span></div>
+
+<div class="viewcode-block" id="TLayer.delfield"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.delfield">[docs]</a>    <span class="k">def</span> <span class="nf">delfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deletes a `TField` from the `TLayer`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        field : :obj:`TField`, str</span>
+<span class="sd">            Field that will be deleted from the `TLayer`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="n">TField</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">field</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TLayer.getfield"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.getfield">[docs]</a>    <span class="k">def</span> <span class="nf">getfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Obtain a `TField` from the `TLayer`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fieldname : str</span>
+<span class="sd">            String with the name of a `TField`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`TField`</span>
+<span class="sd">            The object that has the name specified.</span>
+<span class="sd">        :obj:`None`</span>
+<span class="sd">            if there is no field with the specified name</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isfield</span><span class="p">(</span><span class="n">fieldname</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">fieldname</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="TLayer.getfields"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.getfields">[docs]</a>    <span class="k">def</span> <span class="nf">getfields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all the `TFields` in the `TLayer`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`list` of :obj:`TFields`</span>
+<span class="sd">            List of all `TField` in the `TLayer`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TLayer.isfield"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.isfield">[docs]</a>    <span class="k">def</span> <span class="nf">isfield</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if there is a `TField` with that name in the `TLayer`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fieldname : str</span>
+<span class="sd">            Name of the field.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if exists, False if not.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">fieldname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span></div>
+
+<div class="viewcode-block" id="TLayer.fieldnames"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.fieldnames">[docs]</a>    <span class="k">def</span> <span class="nf">fieldnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the names of the `TField` of which the `TLayer` is formed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`list` of :obj:`str`</span>
+<span class="sd">            List with the names of the `TField` in `str`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">getfields</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="TLayer.show"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pretty print of the `TLayer` object with types.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">colored</span><span class="p">(</span><span class="s2">&quot;---[ </span><span class="si">%s</span><span class="s2"> ]---&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">]),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+            <span class="n">ftype</span> <span class="o">=</span> <span class="s1">&#39;uknown&#39;</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="n">ftype</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span>
+            <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;hex&#39;</span><span class="p">:</span>
+                    <span class="n">ftype</span> <span class="o">=</span> <span class="s1">&#39;hex&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ftype</span> <span class="o">=</span> <span class="s1">&#39;str&#39;</span>
+            <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">bytes</span><span class="p">:</span>
+                <span class="n">ftype</span> <span class="o">=</span> <span class="s1">&#39;bytes&#39;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;35}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="n">ftype</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span>
+                  <span class="s2">&quot;= &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="n">colored</span><span class="p">(</span><span class="s2">&quot; (</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="n">field</span><span class="o">.</span><span class="n">frepr</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TLayer.dict"><a class="viewcode-back" href="../../polymorph.html#polymorph.tlayer.TLayer.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build a dictionary with all the elements of the `TLayer`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`dict`</span>
+<span class="sd">            Dictionary with all the fields and attributes of the `TLayer`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;lslice&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lslice</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;fields&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
+            <span class="p">(</span><span class="s2">&quot;structs&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_structs</span><span class="p">)</span>
+        <span class="p">])</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Santiago Hernández.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

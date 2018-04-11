@@ -1,0 +1,241 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>polymorph.spoofs package &#8212; Polymorph 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="run_tests module" href="run_tests.html" />
+    <link rel="prev" title="polymorph.conditions.preconditions package" href="polymorph.conditions.preconditions.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="polymorph-spoofs-package">
+<h1>polymorph.spoofs package<a class="headerlink" href="#polymorph-spoofs-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-polymorph.spoofs.arpspoof">
+<span id="polymorph-spoofs-arpspoof-module"></span><h2>polymorph.spoofs.arpspoof module<a class="headerlink" href="#module-polymorph.spoofs.arpspoof" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner">
+<em class="property">class </em><code class="descclassname">polymorph.spoofs.arpspoof.</code><code class="descname">ARPpoisoner</code><span class="sig-paren">(</span><em>options</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.arp_watch_callback">
+<code class="descname">arp_watch_callback</code><span class="sig-paren">(</span><em>pkt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner.arp_watch_callback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.arp_watch_callback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.desc">
+<code class="descname">desc</code><em class="property"> = 'Redirect traffic using ARP requests or replies'</em><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.desc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.get_range">
+<code class="descname">get_range</code><span class="sig-paren">(</span><em>targets</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner.get_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.get_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.name">
+<code class="descname">name</code><em class="property"> = 'ARP'</em><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.optname">
+<code class="descname">optname</code><em class="property"> = 'arp'</em><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.optname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.poison">
+<code class="descname">poison</code><span class="sig-paren">(</span><em>arpmode</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner.poison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.poison" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.resolve_target_mac">
+<code class="descname">resolve_target_mac</code><span class="sig-paren">(</span><em>targetip</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner.resolve_target_mac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.resolve_target_mac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.start_arp_watch">
+<code class="descname">start_arp_watch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner.start_arp_watch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.start_arp_watch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/arpspoof.html#ARPpoisoner.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.arpspoof.ARPpoisoner.version">
+<code class="descname">version</code><em class="property"> = '0.1'</em><a class="headerlink" href="#polymorph.spoofs.arpspoof.ARPpoisoner.version" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.spoofs.poison">
+<span id="polymorph-spoofs-poison-module"></span><h2>polymorph.spoofs.poison module<a class="headerlink" href="#module-polymorph.spoofs.poison" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="polymorph.spoofs.poison.Poison">
+<em class="property">class </em><code class="descclassname">polymorph.spoofs.poison.</code><code class="descname">Poison</code><span class="sig-paren">(</span><em>targets</em>, <em>gateway</em>, <em>gatewaymac=None</em>, <em>ignore=None</em>, <em>arpmode='rep'</em>, <em>iface=None</em>, <em>mac=None</em>, <em>ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/poison.html#Poison"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.poison.Poison" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.arpmode">
+<code class="descname">arpmode</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.arpmode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.gateway">
+<code class="descname">gateway</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.gateway" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.gatewaymac">
+<code class="descname">gatewaymac</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.gatewaymac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.poison.Poison.get_iface">
+<code class="descname">get_iface</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/poison.html#Poison.get_iface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.poison.Poison.get_iface" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.poison.Poison.get_ip">
+<code class="descname">get_ip</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/poison.html#Poison.get_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.poison.Poison.get_ip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="polymorph.spoofs.poison.Poison.get_mac">
+<code class="descname">get_mac</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/spoofs/poison.html#Poison.get_mac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.spoofs.poison.Poison.get_mac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.ignore">
+<code class="descname">ignore</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.ignore" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.interface">
+<code class="descname">interface</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.interface" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.ip">
+<code class="descname">ip</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.ip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.mac">
+<code class="descname">mac</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.mac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="polymorph.spoofs.poison.Poison.targets">
+<code class="descname">targets</code><a class="headerlink" href="#polymorph.spoofs.poison.Poison.targets" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.spoofs">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-polymorph.spoofs" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">polymorph.spoofs package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-polymorph.spoofs.arpspoof">polymorph.spoofs.arpspoof module</a></li>
+<li><a class="reference internal" href="#module-polymorph.spoofs.poison">polymorph.spoofs.poison module</a></li>
+<li><a class="reference internal" href="#module-polymorph.spoofs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">polymorph</a><ul>
+  <li><a href="polymorph.html">polymorph package</a><ul>
+      <li>Previous: <a href="polymorph.conditions.preconditions.html" title="previous chapter">polymorph.conditions.preconditions package</a></li>
+      <li>Next: <a href="run_tests.html" title="next chapter">run_tests module</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/polymorph.spoofs.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Santiago Hernández.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/polymorph.spoofs.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

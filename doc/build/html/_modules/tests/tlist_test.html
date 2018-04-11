@@ -1,0 +1,110 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>tests.tlist_test &#8212; Polymorph 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for tests.tlist_test</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">polymorph.utils</span> <span class="k">import</span> <span class="n">readpcap</span>
+
+
+<div class="viewcode-block" id="TListTestCase"><a class="viewcode-back" href="../../tests.html#tests.tlist_test.TListTestCase">[docs]</a><span class="k">class</span> <span class="nc">TListTestCase</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TListTestCase.setUp"><a class="viewcode-back" href="../../tests.html#tests.tlist_test.TListTestCase.setUp">[docs]</a>    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span> <span class="o">=</span> <span class="n">readpcap</span><span class="p">(</span><span class="s1">&#39;tests/test.pcap&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TListTestCase.test_size"><a class="viewcode-back" href="../../tests.html#tests.tlist_test.TListTestCase.test_size">[docs]</a>    <span class="k">def</span> <span class="nf">test_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">),</span> <span class="mi">732</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TListTestCase.test_getitem_fromlist"><a class="viewcode-back" href="../../tests.html#tests.tlist_test.TListTestCase.test_getitem_fromlist">[docs]</a>    <span class="k">def</span> <span class="nf">test_getitem_fromlist</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">400</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">900</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TListTestCase.test_getitem_after_write"><a class="viewcode-back" href="../../tests.html#tests.tlist_test.TListTestCase.test_getitem_after_write">[docs]</a>    <span class="k">def</span> <span class="nf">test_getitem_after_write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">20</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;/dev/null&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">20</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TListTestCase.test_generate_templates"><a class="viewcode-back" href="../../tests.html#tests.tlist_test.TListTestCase.test_generate_templates">[docs]</a>    <span class="k">def</span> <span class="nf">test_generate_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="o">.</span><span class="n">_generate_templates</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="TListTestCase.test_repr"><a class="viewcode-back" href="../../tests.html#tests.tlist_test.TListTestCase.test_repr">[docs]</a>    <span class="k">def</span> <span class="nf">test_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tlist</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span>
+                         <span class="s2">&quot;&lt;tlist.TemplatesList: 732 templates&gt;&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Santiago Hernández.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

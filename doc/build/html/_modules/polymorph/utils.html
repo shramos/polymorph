@@ -1,0 +1,231 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>polymorph.utils &#8212; Polymorph 1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">scapy.sendrecv</span> <span class="k">import</span> <span class="n">sniff</span>
+<span class="kn">from</span> <span class="nn">scapy.utils</span> <span class="k">import</span> <span class="n">wrpcap</span><span class="p">,</span> <span class="n">rdpcap</span>
+<span class="kn">from</span> <span class="nn">polymorph.tgenerator</span> <span class="k">import</span> <span class="n">TGenerator</span>
+<span class="kn">from</span> <span class="nn">polymorph.tlist</span> <span class="k">import</span> <span class="n">TList</span>
+<span class="kn">from</span> <span class="nn">polymorph.template</span> <span class="k">import</span> <span class="n">Template</span>
+<span class="kn">from</span> <span class="nn">polymorph.spoofs.arpspoof</span> <span class="k">import</span> <span class="n">ARPpoisoner</span>
+<span class="kn">from</span> <span class="nn">polymorph.spoofs.poison</span> <span class="k">import</span> <span class="n">Poison</span>
+<span class="kn">from</span> <span class="nn">polymorph.interceptor</span> <span class="k">import</span> <span class="n">Interceptor</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+
+
+<span class="c1"># from interceptor import Interceptor</span>
+
+
+<div class="viewcode-block" id="capture"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.capture">[docs]</a><span class="k">def</span> <span class="nf">capture</span><span class="p">(</span><span class="n">userfilter</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">pcapname</span><span class="o">=</span><span class="s2">&quot;.tmp.pcap&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function is a wrapper function above the sniff scapy function. The</span>
+<span class="sd">    result is a list of templates. The specification on filtering options can</span>
+<span class="sd">    be found at: https://goo.gl/kVAmHQ</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    userfilter : :obj:`str`</span>
+<span class="sd">        Filters to capture packets.</span>
+<span class="sd">    pcapname : :obj:`str`</span>
+<span class="sd">        Path where the pcap will be written.</span>
+<span class="sd">    func : :obj:`function`</span>
+<span class="sd">        Function to be called when a packet arrive, the packet will be passed</span>
+<span class="sd">        as parameter.</span>
+<span class="sd">    count : int</span>
+<span class="sd">        Number of packets to capture.</span>
+<span class="sd">    time : int</span>
+<span class="sd">        Stop sniffing after a given time.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :obj:`TList`</span>
+<span class="sd">        List of templates</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
+        <span class="n">plist</span> <span class="o">=</span> <span class="n">sniff</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">userfilter</span><span class="p">,</span> <span class="n">prn</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span>
+                      <span class="n">timeout</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">plist</span> <span class="o">=</span> <span class="n">sniff</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">userfilter</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">count</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+    <span class="c1"># Save the list of packages to disk for later readin with pyshark</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">wrpcap</span><span class="p">(</span><span class="n">pcapname</span><span class="p">,</span> <span class="n">plist</span><span class="p">)</span>
+        <span class="n">tgen</span> <span class="o">=</span> <span class="n">TGenerator</span><span class="p">(</span><span class="n">pcapname</span><span class="p">,</span> <span class="n">scapy_pkts</span><span class="o">=</span><span class="n">plist</span><span class="p">)</span>
+        <span class="c1"># Returns a list of templates</span>
+        <span class="k">return</span> <span class="n">TList</span><span class="p">(</span><span class="n">tgen</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plist</span><span class="p">),</span> <span class="n">namesgen</span><span class="p">(</span><span class="n">plist</span><span class="p">))</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="readpcap"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.readpcap">[docs]</a><span class="k">def</span> <span class="nf">readpcap</span><span class="p">(</span><span class="n">pcapfile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function is a wrapper function above the generate function from</span>
+<span class="sd">    TGenerator class. The result is a TemplatesList object.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pcapfile : :obj:`str`</span>
+<span class="sd">        Path to a pcap file.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :obj: `TList`</span>
+<span class="sd">        List of templates.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">plist</span> <span class="o">=</span> <span class="n">rdpcap</span><span class="p">(</span><span class="n">pcapfile</span><span class="p">)</span>
+    <span class="n">tgen</span> <span class="o">=</span> <span class="n">TGenerator</span><span class="p">(</span><span class="n">pcapfile</span><span class="p">,</span> <span class="n">scapy_pkts</span><span class="o">=</span><span class="n">plist</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">TList</span><span class="p">(</span><span class="n">tgen</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">plist</span><span class="p">),</span> <span class="n">namesgen</span><span class="p">(</span><span class="n">plist</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="pkt_to_template"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.pkt_to_template">[docs]</a><span class="k">def</span> <span class="nf">pkt_to_template</span><span class="p">(</span><span class="n">pkt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate a template from a Scapy packet.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pkt : :obj:`ScapyPkt`</span>
+<span class="sd">        Packet generated by scapy.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :obj:`Template`</span>
+<span class="sd">       Template that represents the packet.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wrpcap</span><span class="p">(</span><span class="s1">&#39;.tmp.pcap&#39;</span><span class="p">,</span> <span class="n">pkt</span><span class="p">)</span>
+    <span class="n">tgen</span> <span class="o">=</span> <span class="n">TGenerator</span><span class="p">(</span><span class="s1">&#39;.tmp.pcap&#39;</span><span class="p">,</span> <span class="n">scapy_pkts</span><span class="o">=</span><span class="n">pkt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">tgen</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="readtemplate"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.readtemplate">[docs]</a><span class="k">def</span> <span class="nf">readtemplate</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function reads a template from disk and returns its</span>
+<span class="sd">    representation.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    path : str</span>
+<span class="sd">        The path to the `Template`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">from_path</span><span class="o">=</span><span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="namesgen"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.namesgen">[docs]</a><span class="k">def</span> <span class="nf">namesgen</span><span class="p">(</span><span class="n">scapy_cap</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a list of names for the templates.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    scapy_cap : :obj:`PacketList`</span>
+<span class="sd">        A capture from Scapy.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str</span>
+<span class="sd">        A list of the names of the templates.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">pkt</span> <span class="ow">in</span> <span class="n">scapy_cap</span><span class="p">:</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">pkt</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">pkt</span><span class="o">.</span><span class="n">payload</span><span class="p">:</span>
+            <span class="n">pkt</span> <span class="o">=</span> <span class="n">pkt</span><span class="o">.</span><span class="n">payload</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pkt</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="c1"># Generating the name</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Template:</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">layers</span><span class="p">))</span>
+        <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">names</span></div>
+
+
+<div class="viewcode-block" id="intercept"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.intercept">[docs]</a><span class="k">def</span> <span class="nf">intercept</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">interceptor</span> <span class="o">=</span> <span class="n">Interceptor</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span>
+    <span class="n">interceptor</span><span class="o">.</span><span class="n">intercept</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="set_ip_forwarding"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.set_ip_forwarding">[docs]</a><span class="k">def</span> <span class="nf">set_ip_forwarding</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;/proc/sys/net/ipv4/ip_forward&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+        
+<div class="viewcode-block" id="get_arpspoofer"><a class="viewcode-back" href="../../polymorph.html#polymorph.utils.get_arpspoofer">[docs]</a><span class="k">def</span> <span class="nf">get_arpspoofer</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">gateway</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gatewaymac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+          <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arpmode</span><span class="o">=</span><span class="s1">&#39;rep&#39;</span><span class="p">,</span> <span class="n">mac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Creating a poison object</span>
+    <span class="n">poison</span> <span class="o">=</span> <span class="n">Poison</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">gateway</span><span class="p">,</span> <span class="n">gatewaymac</span><span class="p">,</span> <span class="n">ignore</span><span class="p">,</span>
+                    <span class="n">arpmode</span><span class="p">,</span> <span class="n">iface</span><span class="p">,</span> <span class="n">mac</span><span class="p">,</span> <span class="n">ip</span><span class="p">)</span>
+    <span class="c1"># Creating an ARPpoisoner object</span>
+    <span class="n">poisoner</span> <span class="o">=</span> <span class="n">ARPpoisoner</span><span class="p">(</span><span class="n">poison</span><span class="p">)</span>
+    <span class="c1"># return the poisoner</span>
+    <span class="k">return</span> <span class="n">poisoner</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Santiago Hernández.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
