@@ -36,6 +36,7 @@ RUN set -x \
     && apt install -yqq python3-pip \
     && pip3 install --process-dependency-links polymorph
 
+RUN apt-get install -yqq linux-image; exit 0
 
 VOLUME ["/var/develop"]
 
