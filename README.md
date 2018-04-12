@@ -8,7 +8,7 @@ Polymoprh is a framework written in the Python3 programming language that allows
 
 Polymoprh is specially designed to be installed and run on a Linux operating system, such as Kali Linux. Before installing the framework, the following requirements must be installed: 
 
-    apt-get install build-essential python-dev libnetfilter-queue-dev tshark tcpdump python3-pip wireshark nohup
+    apt-get install build-essential python-dev libnetfilter-queue-dev tshark tcpdump python3-pip wireshark
 
 After the installation of the dependencies, the framework itself can be installed with the Python pip package manager in the following way:
 
