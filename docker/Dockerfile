@@ -31,11 +31,9 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV PYTHONIOENCODING=utf8
 RUN set -x \
     && apt-get -yqq update \
-    && apt-get -yqq dist-upgrade \
     && apt-get clean \
-    && apt-get install -yqq tcpdump graphviz imagemagick python-gnuplot python-crypto python-pyx tshark kali-linux-top10 build-essential python-dev libnetfilter-queue-dev wireshark \
+    && apt-get install -yqq build-essential python-dev libnetfilter-queue-dev tshark tcpdump python3-pip wireshark \
     && apt install -yqq python3-pip \
-    && pip3 install -r requirements.txt \
     && pip3 install --process-dependency-links polymorph
 
 

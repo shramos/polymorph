@@ -29,7 +29,6 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN set -x \
     && apt-get -yqq update \
-    && apt-get -yqq dist-upgrade \
     && apt-get clean
 RUN apt-get -yqq install gnupg gnupg2 
 RUN wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
