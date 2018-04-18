@@ -38,10 +38,11 @@ The implementation of this environment consists of three steps:
  - To access any of the machines the user must execute: `docker exec -ti [polymorph | alice | bob] bash`
 
 # EXAMPLES AND DOCUMENTATION
-For examples and documentation about the framework, please refer to the:
+For examples and documentation about the framework, please refer to:
 
  - [English whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_english.pdf)
  - [Spanish whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_spanish.pdf)
+ - [Building a Proxy Fuzzer for the MQTT protocol with Polymorph](http://www.shramos.com/2018/04/building-proxy-fuzzer-for-mqtt-protocol.html)
 
 # CONTACT
 shramos@protonmail.com
