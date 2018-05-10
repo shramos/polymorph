@@ -13,6 +13,7 @@ REQUIRES = [
     'termcolor',
     'construct',
     'netaddr',
+    'prompt-toolkit',
 ]
 
 if platform.system() == "Linux":
