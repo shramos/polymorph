@@ -25,7 +25,7 @@ elif platform.system() == "Windows":
 
 setup(
     name="polymorph",
-    version="1.0.2",
+    version="1.0.3",
     packages=find_packages('.'),
     scripts=SCRIPTS,
     license="MIT",
