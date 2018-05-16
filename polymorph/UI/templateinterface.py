@@ -240,8 +240,9 @@ class TemplateInterface(Interface):
                     return
             # Adds a condition
             elif args['-a']:
-                # Create the new file
-                self._create_cond(cond, args["-a"])
+                # Create the new file if not exists
+                if not os.path.isfile(join(self._conds_path, cond, args["-a"] + ".py")):
+                    self._create_cond(cond, args["-a"])
                 ret = os.system("%s %s.py" % (args["-e"], join(self._conds_path, cond, args["-a"])))
                 if ret != 0:
                     Interface._print_error("The editor is not installed or is not in the PATH")
