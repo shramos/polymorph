@@ -71,7 +71,7 @@ class Interceptor(object):
                 # packet must be forwarded
                 if not pkt:
                     if self.packet:
-                        packet.set_payload(self.packet.raw[14:])
+                        packet.set_payload(self.packet.raw)
                     packet.accept()
                     return
                 # If the precondition returns the packet, we assign it to the
@@ -79,7 +79,7 @@ class Interceptor(object):
                 self.packet = pkt
         # If all the conditions are met, we assign the payload of the modified
         # packet to the nfqueue packet and forward it
-        packet.set_payload(self.packet.raw[14:])
+        packet.set_payload(self.packet.raw)
         packet.accept()
 
     def windows_modify(self, packet, w, pydivert):
@@ -111,7 +111,7 @@ class Interceptor(object):
                 self.packet = pkt
         # If all the conditions are met, we assign the payload of the modified
         # packet to the nfqueue packet and forward it
-        packet = pydivert.Packet(self.packet.raw[14:], packet.interface, packet.direction)
+        packet = pydivert.Packet(self.packet.raw, packet.interface, packet.direction)
         w.send(packet)
 
     def intercept(self):

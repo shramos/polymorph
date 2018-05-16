@@ -34,12 +34,13 @@ class Packet(object):
     def raw(self):
         """:obj:`bytes`: Packet bytes."""
         global raw
-        return raw
+        # The payload is returned without the Ethernet layer
+        return raw[14:]
 
     @raw.setter
     def raw(self, value):
         global raw
-        # FIXIT: Padding for Ether layer that nfqueue.get_payload() ignores
+        # Padding for Ether layer that nfqueue.get_payload() ignores
         raw = b'\x00' * 14 + value
 
 
