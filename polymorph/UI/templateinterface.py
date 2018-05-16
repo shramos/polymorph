@@ -20,6 +20,8 @@ from os.path import dirname, join
 import importlib
 import polymorph.conditions
 import platform
+from shutil import copyfile
+import re
 
 
 class TemplateInterface(Interface):
@@ -262,6 +264,11 @@ class TemplateInterface(Interface):
             # Imports a condition from disk
             elif args['-i']:
                 name = args['-i']
+                if "/" in name or "\\" in name:
+                    if os.path.isfile(name):
+                        file = os.path.split(name)[-1]
+                        copyfile(name, join(self._conds_path, cond, file))
+                        name = file
                 if name[-3:] == ".py":
                     name = name[:-3]
                 try:
@@ -269,7 +276,7 @@ class TemplateInterface(Interface):
                     Interface._print_info("Condition %s imported" % args['-i'])
                 except ModuleNotFoundError:
                     Interface._print_error("The condition %s is not in disk" % args['-i'])
-                    print("(Please place your .py file in %s folder)\n" % join(self._conds_path, cond))
+                    print("(Please place your .py file in correct path)")
                     return
 
     def _create_cond(self, cond, name):
