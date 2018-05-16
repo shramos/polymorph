@@ -74,6 +74,26 @@ class Packet(object):
         except AttributeError:
             setattr(self, name, default)
 
+    def insert(self, index1, index2, value):
+        """Inserts a value between two index in the payload.
+
+        Parameters
+        ----------
+        index1: int
+            First index in the payload.
+        index2: int
+            Second index in the payload.
+        value: :obj:`bytes`
+            Value to insert in the payload.
+
+        """
+        if index1 >= index2 and type(value) is not bytes:
+            raise ValueError
+        else:
+            payload = b'\x00' * 14 + self.raw
+            payload = payload[:index1] + value + payload[index2:]
+            self.raw = payload[14:]
+
 
 class PacketLayer(object):
     """This class encapsulates de Template layers, so the user can access the
