@@ -43,6 +43,37 @@ class Packet(object):
         # Padding for Ether layer that nfqueue.get_payload() ignores
         raw = b'\x00' * 14 + value
 
+    def get_payload(self):
+        """Returns the payload of the packet in bytes."""
+        return self.raw
+
+    def set_payload(self, payload):
+        """Sets the payload of the packet.
+
+        Parameters
+        ----------
+        payload : :obj:`bytes`
+            The packet in bytes without the ethernet layer.
+
+        """
+        self.raw = payload
+
+    def global_var(self, name, default):
+        """Creates a global variable.
+
+        Parameters
+        ----------
+        name: :obj:`str`
+            The name of the global variable.
+        default: :obj
+            The default value of the global variable.
+
+        """
+        try:
+            eval("self." + str(name))
+        except AttributeError:
+            setattr(self, name, default)
+
 
 class PacketLayer(object):
     """This class encapsulates de Template layers, so the user can access the
