@@ -6,13 +6,15 @@ from polymorph.UI.interface import Interface
 from prompt_toolkit import prompt
 from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit import HTML
-from polymorph.utils import capture, get_arpspoofer, set_ip_forwarding
+from polymorph.utils import capture, get_arpspoofer, set_ip_forwarding, readtemplate, readpcap
 from polymorph.UI.tlistinterface import TListInterface
+from polymorph.UI.templateinterface import TemplateInterface
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+import os
 
 
 class MainInterface(Interface):
@@ -27,7 +29,7 @@ class MainInterface(Interface):
 
     def run(self):
         """Runs the interface and waits for user input commands."""
-        completer = WordCompleter(['capture', 'spoof', 'clear'])
+        completer = WordCompleter(['capture', 'spoof', 'clear', 'import'])
         history = FileHistory(self._polym_path + '/.minterface_history')
         while True:
             try:
@@ -47,6 +49,8 @@ class MainInterface(Interface):
                 self._capture(command)
             elif command[0] in ["spoof", "s"]:
                 self._spoof(command)
+            elif command[0] in ["import", "i"]:
+                self._import(command)
             elif command[0] == "clear":
                 Interface._clear()
             elif command[0] == "":
@@ -157,3 +161,63 @@ class MainInterface(Interface):
             ("description", "Capture packets from a specific interface and transform them into a template list."),
             ("options", options)
         ])
+
+    def _import(self, command):
+        if len(command) == 1:
+            Interface.print_help(MainInterface._import_help())
+            return
+        # Parsing additional options
+        cp = CommandParser(MainInterface._import_opts())
+        args = cp.parse(command)
+        # Wrong arguments will return None
+        if not args:
+            Interface._argument_error()
+            return
+        # Importing a template
+        if args["-t"]:
+            if os.path.isfile(args["-t"]):
+                try:
+                    template = readtemplate(args["-t"])
+                    t = TemplateInterface(template, 0, self._poisoner)
+                    t.run()
+                except:
+                    Interface._print_error("Wrong Template file")
+            else:
+                Interface._print_error("The file does not exist")
+        elif args["-pcap"]:
+            if os.path.isfile(args["-pcap"]):
+                try:
+                    tlist = readpcap(args["-pcap"])
+                    tl = TListInterface(tlist, self._poisoner)
+                    tl.run()
+                except:
+                    Interface._print_error("Wrong pcap file")
+            else:
+                Interface._print_error("The file does not exist")
+
+    @staticmethod
+    def _import_opts():
+        """Returns command options in a form that can be handled by the
+        command parser."""
+        opts = {"-t": {"type": str,
+                       "default": None},
+                "-pcap": {"type": str,
+                          "default": None}}
+        return opts
+
+    @staticmethod
+    def _import_help():
+        """Builds the help for the capture command."""
+        options = OrderedDict([
+            ("-h", "prints the help."),
+            ("-t", "path to a template to be imported."),
+            ("-pcap", "path to a pcap file to be imported")
+            
+        ])
+        return OrderedDict([
+            ("name", "import"),
+            ("usage", "import [-option]"),
+            ("description", "Import different objects in the framework, such as templates or captures."),
+            ("options", options)
+        ])
+    

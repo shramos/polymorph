@@ -4,31 +4,12 @@
 # Copyright (C) 2018 Santiago Hernandez Ramos <shramos@protonmail.com>
 # For more information about the project: https://github.com/shramos/polymorph
 
-import argparse
 from polymorph.UI.maininterface import MainInterface
-from polymorph.UI.templateinterface import TemplateInterface
-from polymorph.UI.tlistinterface import TListInterface
-from polymorph.utils import readtemplate, readpcap
 from polymorph.UI.banners import get_banner
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("-t", "--template", type=str,
-                        help="path to a previously saved Template.json")
-    parser.add_argument("-cap", "--capture", type=str,
-                       help="path to a saved capture (for example a .pcap file)")
-    args = parser.parse_args()
-
     # Printting the banner
     print(get_banner())
-    # Parsing the options
-    if args.template:
-        ti = TemplateInterface(readtemplate(args.template), 1)
-        ti.run()
-    elif args.capture:
-        tl = TListInterface(readpcap(args.capture))
-        tl.run()
-    else:
-        m = MainInterface()
-        m.run()
+    # Starting the main interface
+    m = MainInterface()
+    m.run()
