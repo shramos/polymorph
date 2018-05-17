@@ -393,6 +393,28 @@ class Template:
         """
         self.add_function('executions', name, func)
 
+    def change_cond_pos(self, cond, element, index):
+        """Changes the position of a precondition, postcondition or execution.
+
+        Parameters
+        ----------
+        cond: :obj:`str`
+            Name of the conditional function (precondition, postcondition, execution).
+        element: :obj:`str`
+            Name of the conditional function to change.
+        index: int
+            New index of the conditional function.
+
+        """
+
+        def move_element(lista, name, index):
+            e = lista.pop(lista.index(name))
+            lista.insert(index, e)
+
+        ordered_keys = list(self._functions[cond].keys())
+        move_element(ordered_keys, element, index)
+        self._functions[cond] = OrderedDict((k, self._functions[cond][k]) for k in ordered_keys)
+
     def layernames(self):
         """Returns the names of the `TLayer` of which the `Template` is formed.
 
@@ -539,25 +561,33 @@ class Template:
                       "= " + str(field.value) + colored(" (%s)" % field.frepr, 'cyan'))
             print()
 
-    def show_conditions(self, cond, verbose=False):
+    def show_conditions(self, cond, name=None, verbose=False):
         """Pretty print of the Preconditions, Postconditions and Executions
         of the `Template`.
 
         Parameters
         ----------
-        cond: :obj: `str`
+        cond: :obj:`str`
             Indicate if the user want to print Precondtions, Postconditions,
              or Executions.
+        name: :obj:`str`
+            Name of a particular condition.
         verbose: bool
             Indicate if the user want to print the source code of the
             conditions.
 
         """
+
+        def print_source(cond, n):
+            print(colored(n, 'cyan'))
+            print(self.get_function_source(cond, n))
+            
         cond_names = list(self._functions[cond])
-        if verbose:
+        if name and name in cond_names and verbose:
+            print_source(cond, name)
+        elif verbose:
             for n in cond_names:
-                print(colored(n, 'cyan'))
-                print(self.get_function_source(cond, n))
+                print_source(cond, n)
         else:
             print("\n".join(cond_names))
         print("")

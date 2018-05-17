@@ -21,7 +21,6 @@ import importlib
 import polymorph.conditions
 import platform
 from shutil import copyfile
-import re
 
 
 class TemplateInterface(Interface):
@@ -223,14 +222,27 @@ class TemplateInterface(Interface):
                     TemplateInterface._conditions_help(cond))
             # Show the source code
             elif args['-s']:
-                self._t.show_conditions(cond, True)
+                self._t.show_conditions(cond, verbose=True)
             # Show all conditions on disk
             elif args['-sa']:
                 self._t.show_all_conds(cond)
             # Show all conditions source on disk
             elif args['-sas']:
-                self._t.show_all_conds(cond, True)
+                self._t.show_all_conds(cond, verbose=True)
         else:
+            # Select a specific condition
+            if args['-c']:
+                if args['-s']:
+                    self._t.show_conditions(cond, args['-c'], True)
+                elif args['-p']:
+                    try:
+                        index = int(args['-p'])
+                        if index >= 0 and index < len(self._t._functions[cond]):
+                            self._t.change_cond_pos(cond, args['-c'], index)
+                        else:
+                            Interface._print_error("Wrong index")
+                    except ValueError:
+                        Interface._print_error("Please enter a positive integer")
             # Deletes a condition
             if args['-d']:
                 try:
@@ -303,6 +315,10 @@ class TemplateInterface(Interface):
                        "default": None},
                 "-e": {"type": str,
                        "default": "pico"},
+                "-c": {"type": str,
+                       "default": None},
+                "-p": {"type": str,
+                       "default": None},
                 "-s": {"type": bool,
                        "default": False},
                 "-i": {"type": str,
@@ -325,6 +341,8 @@ class TemplateInterface(Interface):
             ("-a", "adds a new condition to the set."),
             ("-d", "deletes a condition from the set."),
             ("-e", "open a text editor that is in the path with the existing conditions, by default pico."),
+            ("-c", "select a condition to apply a specific action to it."),
+            ("-p", "change the position of a condition."),
             ("-s", "prints the conditions with the source code."),
             ("-i", "import a function from a file."),
             ("-sa", "prints all the conditions on disk."),
