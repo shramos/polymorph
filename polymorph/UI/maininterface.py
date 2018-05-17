@@ -174,7 +174,9 @@ class MainInterface(Interface):
             Interface._argument_error()
             return
         # Importing a template
-        if args["-t"]:
+        if args["-h"]:
+            Interface.print_help(MainInterface._import_help())
+        elif args["-t"]:
             if os.path.isfile(args["-t"]):
                 try:
                     template = readtemplate(args["-t"])
@@ -202,7 +204,9 @@ class MainInterface(Interface):
         opts = {"-t": {"type": str,
                        "default": None},
                 "-pcap": {"type": str,
-                          "default": None}}
+                          "default": None},
+                "-h": {"type": bool,
+                       "default": False}}
         return opts
 
     @staticmethod
