@@ -165,10 +165,10 @@ class Cli(object):
 
         """
 
-        def pattern_match(t):
+        def pattern_match(raw):
             """Check if the patterns inserted by the user are in the network
             packet. The comparison process is done in hexadecimal."""
-            raw = t.raw.hex()
+            raw = raw.hex()
             for pattern in self._in_pkt:
                 if type(pattern) is int:
                     pattern = format(pattern, 'x')
@@ -196,7 +196,7 @@ class Cli(object):
                 Protocol of the layer that the user wants to print.
 
             """
-            if not pattern_match(t) or not fields_match(t, proto):
+            if not fields_match(t, proto):
                 return
             Cli.print_ok("Packet captured. Printing the fields...")
             if self._show_pkts:
@@ -208,6 +208,9 @@ class Cli(object):
         # There is a lot of tcp traffic that slows down the process,
         # so the packets are filtered before generating the template
         if packet.lastlayer().name == "TCP" and self._proto != "TCP":
+            return
+        # Return if the packet not match the patterns
+        if not pattern_match(bytes(packet)):
             return
         # Generation of the template
         template = pkt_to_template(packet)
@@ -327,10 +330,10 @@ class Cli(object):
 
         """
 
-        def pattern_match(t):
+        def pattern_match(raw):
             """Check if the patterns inserted by the user are in the network
             packet. The comparison process is done in hexadecimal."""
-            raw = t.raw.hex()
+            raw = raw.hex()
             for pattern in self._in_pkt:
                 if type(pattern) is int:
                     pattern = format(pattern, 'x')
@@ -351,19 +354,22 @@ class Cli(object):
         # so the packets are filtered before generating the template
         if packet.lastlayer().name == "TCP" and self._proto != "TCP":
             return
+        # Return if the packet not match the patterns
+        if not pattern_match(bytes(packet)):
+            return
         # Generation of the template
         template = pkt_to_template(packet)
         # The names of the layers may contain the word RAW if Polymorph had
         # to use advanced dissectors on the raw field that Scapy could not dissect
         if template.islayer(self._proto):
-            if pattern_match(template) and fields_match(template, self._proto):
+            if fields_match(template, self._proto):
                 self._template = template
                 self._layer = self._proto
                 if self._recalculate:
                     self.add_recalculate()
                 raise KeyboardInterrupt
         elif template.islayer("RAW." + self._proto):
-            if pattern_match(template) and fields_match(template, "RAW." + self._proto):
+            if fields_match(template, "RAW." + self._proto):
                 self._template = template
                 self._layer = "RAW." + self._proto
                 if self._recalculate:
