@@ -1,11 +1,11 @@
-## Polymorph
+# Polymorph
 
 Polymorph is a framework written in Python 3 that allows the modification of network packets in real time, providing maximum control to the user over the contents of the packet. This framework is intended to provide an effective solution for real-time modification of network packets that implement practically any existing protocol, including private protocols that do not have a public specification. In addition to this, one of its main objectives is to provide the user with the maximum possible control over the contents of the packet and with the ability to perform complex processing on this information.
 
 
-## Installation
+# Installation
 
-### Download and installation on Linux (Recommended)
+## Download and installation on Linux (Recommended)
 
 Polymorph is specially designed to be installed and run on a Linux operating system, such as Kali Linux. Before installing the framework, the following requirements must be installed:
 
@@ -17,7 +17,7 @@ After the installation of the dependencies, the framework itself can be installe
 pip3 install --process-dependency-links polymorph
 ```
 
-### Docker environment
+## Docker environment
 
 From the project root:
 ```
@@ -28,23 +28,23 @@ To access any of the machines of the environment:
 docker exec -ti [polymorph | alice | bob] bash
 ```
 
-## Using Polymorph
+# Using Polymorph
 
 The Polymorph framework is composed of two main interfaces:
 
  - **Polymorph:** It consists of a command console interface. It is the main interface and it is recommended to use it for complex tasks such as modifying complex protocols in the air, making modifications of types in fields of the template or modifying protocols without public specification.
  - **Phcli:** It is the command line interface of the Polymorph framework. It is recommended to use for tasks such as modification of simple protocols or execution of previously generated templates.
 
-### Using the Polymorph main interface
+## Using the Polymorph main interface
 For examples and documentation please refer to:
 
 -   [English whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_english.pdf)
 -   [Spanish whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_spanish.pdf)
 -   [Building a Proxy Fuzzer for the MQTT protocol with Polymorph](http://www.shramos.com/2018/04/building-proxy-fuzzer-for-mqtt-protocol.html)
 
-### Using the Phcli
+## Using the Phcli
 
-#### Modifying the MQTT protocol
+### Modifying the MQTT protocol
 
 Let's see how to use the Polymorph command line interface to spoof the communication between two machines and modify MQTT protocol.
 
@@ -114,7 +114,7 @@ str msg               = test_message (test_message)
         load      = '0\x16\x00\ntest_topicnew_value'
 ```
 
-#### Modifying the HTTP protocol
+### Modifying the HTTP protocol
 
 Let's see a last example modifying HTTP packages to inject a simple XSS in localhost. After executing the command simply navigate with your browser through an HTTP page.
 ```
@@ -159,6 +159,9 @@ Let's see a last example modifying HTTP packages to inject a simple XSS in local
         load      = 'm Mongo\n10.  Elite World News by Dr. Dude\n11.  Elite World News by Dr. Dude\n\n\nComing soon...\n\n                                 Phrack Jolt!\n\n                       All the VMBs and TWICE the c0deZ!\n_______________________________________________________________________________\n</pre>\n\n</div>\n</div>\n\n</center>\n\n<div align="center" class="texto-2-bold">\n[ <a href="../../index.html" title="News">News</a> ]\n[ <a href="../../papers/dotnet_instrumentation.html" title="Paper Feed">Paper Feed</a> ]\n[ <a href="../../issues/69/1.html" title="Issues">Issues</a> ]\n[ <a href="../../authors.html" title="Authors">Authors</a> ]\n[ <a href="../../archives/" title="Archives">Archives</a> ]\n[ <a href="../../contact.html" title="Contact">Contact</a> ]\n</div>\n\n<div align="right" class="texto-1">\xc2\xa9 Copyl"><script>alert("hacked")</script>iv>\n</body>\n</html>\n'
 ```
 
-## CONTACT
+# Release Notes
+[release-notes-1.0.0](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.0.md)
+
+# Contact
 
 [shramos@protonmail.com](mailto:shramos@protonmail.com)
