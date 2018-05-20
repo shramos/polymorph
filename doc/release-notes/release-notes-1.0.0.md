@@ -1,49 +1,54 @@
-## Polymorph
-
-Polymorph is a framework written in Python 3 that allows the modification of network packets in real time, providing maximum control to the user over the contents of the packet. This framework is intended to provide an effective solution for real-time modification of network packets that implement practically any existing protocol, including private protocols that do not have a public specification. In addition to this, one of its main objectives is to provide the user with the maximum possible control over the contents of the packet and with the ability to perform complex processing on this information.
-
-
-## Installation
-
-### Download and installation on Linux (Recommended)
-
-Polymorph is specially designed to be installed and run on a Linux operating system, such as Kali Linux. Before installing the framework, the following requirements must be installed:
+## Polymorph Upgrade
 
 ```
-apt-get install build-essential python-dev libnetfilter-queue-dev tshark tcpdump python3-pip wireshark
-```
-After the installation of the dependencies, the framework itself can be installed with the Python pip package manager in the following way:
-```
-pip3 install --process-dependency-links polymorph
+pip3 install polymorph --upgrade
 ```
 
-### Docker environment
+## Major changes
 
-From the project root:
+### 1. New methods added to the packet class
+New methods have been added that can be accessed in the preconditions, postconditions and executions through the packet object.
 ```
-docker-compose up -d
+packet.global_var(name, default_value): Create a global variable
+packet.set_payload(raw_payload): Sets the bytes of the packet
+packet.get_payload(): Return the bytes of the packet
+packet.insert(start_byte, end_byte, value): inserts a value between bytes of the packet
 ```
-To access any of the machines of the environment:
+
+### 2. Modification of preconditions postconditions and executions on disk
+Now if from the main interface of Polymorph you use the command `precs -a prec1` where `prec1` is an existing precondition, the framework opens the existing precondition to be modified.
+
+### 3. Insert preconditions, postconditions and executions from any system path
+Now you can use the `precs/posts/execs -i path` command from the main Polymorph interface to insert `.py` files with the structure of the conditional functions from any system path.
+
+### 4. Change the position of preconditions, postconditions and executions in a template
+Now you can change the position of the conditional functions that have been added to a template, by executing the following command from the Polymorph main interface:
 ```
-docker exec -ti [polymorph | alice | bob] bash
+PH:cap/t0 > precs                                                               
+new2
+new3
+
+PH:cap/t0 > precs -c new3 -p 0                                                  
+PH:cap/t0 > precs                                                               
+new3
+new2
 ```
 
-## Using Polymorph
+### 5. The Polymorph main interface no longer accepts command line parameters
+Actions such as `# polymorph -t template.json` **are no longer supported**, now you can perform the import actions from the main interface of the framework:
+```
+PH > import -h                                                                  
+Usage: import [-option]
+      Import different objects in the framework, such as templates or captures.
 
-The Polymorph framework is composed of two main interfaces:
+      Options:
+	-h		prints the help.
+	-t		path to a template to be imported.
+	-pcap		path to a pcap file to be imported
+```
 
- - **Polymorph:** It consists of a command console interface. It is the main interface and it is recommended to use it for complex tasks such as modifying complex protocols in the air, making modifications of types in fields of the template or modifying protocols without public specification.
- - **Phcli:** It is the command line interface of the Polymorph framework. It is recommended to use for tasks such as modification of simple protocols or execution of previously generated templates.
-
-### Using the Polymorph main interface
-For examples and documentation please refer to:
-
--   [English whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_english.pdf)
--   [Spanish whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_spanish.pdf)
--   [Building a Proxy Fuzzer for the MQTT protocol with Polymorph](http://www.shramos.com/2018/04/building-proxy-fuzzer-for-mqtt-protocol.html)
-
-### Using the Phcli
-
+### 6. Added a command line interface. Phcli
+A new component has been added to the Polymorph framework, a command line interface. Below are examples of use.
 #### Modifying the MQTT protocol
 
 Let's see how to use the Polymorph command line interface to spoof the communication between two machines and modify MQTT protocol.
@@ -158,7 +163,3 @@ Let's see a last example modifying HTTP packages to inject a simple XSS in local
 ###[ Raw ]### 
         load      = 'm Mongo\n10.  Elite World News by Dr. Dude\n11.  Elite World News by Dr. Dude\n\n\nComing soon...\n\n                                 Phrack Jolt!\n\n                       All the VMBs and TWICE the c0deZ!\n_______________________________________________________________________________\n</pre>\n\n</div>\n</div>\n\n</center>\n\n<div align="center" class="texto-2-bold">\n[ <a href="../../index.html" title="News">News</a> ]\n[ <a href="../../papers/dotnet_instrumentation.html" title="Paper Feed">Paper Feed</a> ]\n[ <a href="../../issues/69/1.html" title="Issues">Issues</a> ]\n[ <a href="../../authors.html" title="Authors">Authors</a> ]\n[ <a href="../../archives/" title="Archives">Archives</a> ]\n[ <a href="../../contact.html" title="Contact">Contact</a> ]\n</div>\n\n<div align="right" class="texto-1">\xc2\xa9 Copyl"><script>alert("hacked")</script>iv>\n</body>\n</html>\n'
 ```
-
-## CONTACT
-
-[shramos@protonmail.com](mailto:shramos@protonmail.com)
