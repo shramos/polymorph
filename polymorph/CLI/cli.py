@@ -299,7 +299,10 @@ class Cli(object):
         if posts:
             self._get_conds("postconditions", posts)
         else:
-            self._template.add_postcondition('post', Cli.postcondition)
+            if self._template.islayer("IPV6"):
+                self._template.add_postcondition('post', Cli.postcondition2)
+            else:
+                self._template.add_postcondition('post', Cli.postcondition)
         if precs:
             self._get_conds("preconditions", precs)
         else:
@@ -311,7 +314,7 @@ class Cli(object):
         else:
             insert_values = {self._fields[i]: self._values[i]
                              for i in range(len(self._fields))}
-        # Initialization of the interceptor
+        # Initialization of the interceptor and global variables
         interceptor = Interceptor(self._template, ipt, ip6t)
         setattr(interceptor.packet, 'insert_values', insert_values)
         setattr(interceptor.packet, 'insert_layer', self._layer)
@@ -475,6 +478,20 @@ class Cli(object):
         if pkt.haslayer('IP'):
             del pkt['IP'].chksum
             del pkt['IP'].len
+        if pkt.haslayer('TCP'):
+            del pkt['TCP'].chksum
+        if pkt.haslayer('ICMP'):
+            del pkt['ICMP'].chksum
+        pkt.show2()
+        packet.raw = bytes(pkt)
+        return packet
+
+    @staticmethod
+    def postcondition2(packet):
+        from scapy.all import IPv6
+        pkt = IPv6(packet.get_payload())
+        if pkt.haslayer('IPv6'):
+            del pkt['IPv6'].plen
         if pkt.haslayer('TCP'):
             del pkt['TCP'].chksum
         if pkt.haslayer('ICMP'):
