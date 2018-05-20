@@ -44,7 +44,7 @@ For examples and documentation please refer to:
 
 ## Using the Phcli
 
-### Modifying the MQTT protocol
+### Modifying packets that implement the MQTT protocol
 
 Let's see how to use the Polymorph command line interface to spoof the communication between two machines and modify MQTT protocol.
 
@@ -114,9 +114,9 @@ str msg               = test_message (test_message)
         load      = '0\x16\x00\ntest_topicnew_value'
 ```
 
-### Modifying the HTTP protocol
+### Modifying packets that implement the HTTP protocol
 
-Let's see a last example modifying HTTP packages to inject a simple XSS in localhost. After executing the command simply navigate with your browser through an HTTP page.
+Let's see a last example modifying HTTP packets in localhost to inject a simple XSS. After executing the command simply navigate with your browser through an HTTP page.
 ```
 # phcli -p tcp --in-pkt "</html>" -b "\-54:\-20" -v '"><script>alert("hacked")</script>' -ipt "iptables -A INPUT -j NFQUEUE --queue-num 1"
 
