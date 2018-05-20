@@ -1,0 +1,109 @@
+#! /usr/bin/env python3
+
+# File from polymorph project
+# Copyright (C) 2018 Santiago Hernandez Ramos <shramos@protonmail.com>
+# For more information about the project: https://github.com/shramos/polymorph
+from polymorph.CLI.cli import Cli
+from polymorph.UI.banners import get_banner
+from polymorph.utils import set_ip_forwarding, readtemplate
+import argparse
+
+
+def stop_poisoner(cli_obj):
+    if cli_obj.poisoner:
+        set_ip_forwarding(0)
+        cli_obj.print_ok("Stopping the arp spoofer.")
+        cli_obj.poisoner.stop()
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-p", "--protocol", type=str, required=False,
+                        help="Protocol that implements the packet that you "
+                             "want to modify in real time.")
+    parser.add_argument("-t", "--template", type=str,
+                        help="Path to a template.json.")
+    parser.add_argument("-f", "--field", type=str,
+                        help="Select a field in the package to insert a value "
+                             "in real time.")
+    parser.add_argument("-val", "--value", type=str,
+                        help="Value to be inserted in the previously selected fields.")
+    parser.add_argument("-sf", "--show-fields", action='store_true',
+                        help="Waits for a packet of a certain protocol and "
+                             "dissects it in real time to show its fields.")
+    parser.add_argument("-sp", "--show-packets", action='store_true',
+                        help="Waits for a packet of a certain protocol and "
+                             "dissects it in real time to show all the packet.")
+    parser.add_argument("--in-pkt", type=str,
+                        help="Filter by searching for a pattern in the packet. "
+                             "By default the pattern is interpreted as string.")
+    parser.add_argument("-tp", "--type", type=str,
+                        help="Interprets the data entered by the user in "
+                             "different formats (str, int)")
+    parser.add_argument("-ipt", "--iptables", type=str, default="iptables -A FORWARD -j NFQUEUE --queue-num 1",
+                        help="Custom iptables rule to intercept in real time.")
+    parser.add_argument("-ip6t", "--ip6tables", type=str, default="ip6tables -A FORWARD -j NFQUEUE --queue-num 1",
+                        help="Custom ip6tables rule to intercept in real time.")
+    parser.add_argument("-c", "--count", type=int,
+                        help="Number of packets in which you want to insert the values.")
+    parser.add_argument("-b", "--bytes", type=str,
+                        help="Insert the value between the selected bytes of the packet.")
+    parser.add_argument("-precs", "--preconditions", type=str,
+                        help="Execute the indicated preconditions on the indicated protocol packets.")
+    parser.add_argument("-execs", "--executions", type=str,
+                        help="Execute the indicated executions on the indicated protocol packets.")
+    parser.add_argument("-posts", "--postconditions", type=str,
+                        help="Execute the indicated postconditions on the indicated protocol packets.")
+    parser.add_argument("-rec", "--recalculate", action='store_true',
+                        help="Flag that if activated shows a dialog for the user to enter necessary "
+                             "data to recalculate fields in real time.")
+    parser.add_argument("-s", "--spoof", type=str,
+                        help="Execute a spoofing of the indicated type, currently only arp is available.")
+    parser.add_argument("-tg", "--targets", type=str,
+                        help="Targets of the spoofing.")
+    parser.add_argument("-g", "--gateway", type=str,
+                        help="Gateway of the spoofing.")
+    parser.add_argument("-iface", "--interface", type=str,
+                        help="Interface of the spoofing (optional).")
+
+    args = parser.parse_args()
+    print(get_banner())
+    print("\n")
+    cli = Cli()
+    try:
+        # Handles the show fields options
+        if args.spoof:
+            if args.targets and args.gateway:
+                cli.set_spoofer(args.spoof, args.targets, args.gateway, args.interface)
+            else:
+                cli.print_error("Missing arguments to perform the spoofing (targets or gateway)")
+        if args.template:
+            cli.run_template(readtemplate(args.template), args.iptables, args.ip6tables)
+        elif args.show_fields:
+            if args.protocol:
+                cli.show_fields(args.protocol, args.in_pkt, args.type, args.field)
+            else:
+                cli.print_error("Enter a protocol with '-p/--protocol' option.")
+        elif args.show_packets:
+            if args.protocol:
+                cli.show_fields(args.protocol, args.in_pkt, args.type, args.field, True)
+            else:
+                cli.print_error("Enter a protocol with '-p/--protocol' option.")
+        # Handles the insert value options
+        elif args.value:
+            if args.protocol:
+                cli.insert_values(args.protocol, args.field, args.value, args.type,
+                                  args.in_pkt, args.iptables, args.ip6tables, args.count,
+                                  args.bytes, args.preconditions, args.executions,
+                                  args.postconditions, args.recalculate)
+            else:
+                cli.print_error("Enter a protocol with '-p/--protocol' option.")
+        else:
+            parser.print_help()
+        # Stop the poisoner if exist
+        stop_poisoner(cli)
+    # Handles the exceptions
+    except Exception as e:
+        stop_poisoner(cli)
+        cli.print_error(e)
