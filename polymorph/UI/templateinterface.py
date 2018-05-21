@@ -3,11 +3,11 @@
 # For more information about the project: https://github.com/shramos/polymorph
 
 from polymorph.UI.interface import Interface
-from prompt_toolkit import PromptSession, HTML
-from prompt_toolkit.shortcuts import confirm, CompleteStyle
-from prompt_toolkit.history import FileHistory
-from prompt_toolkit.completion import WordCompleter
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from polymorph.deps.prompt_toolkit import PromptSession, HTML
+from polymorph.deps.prompt_toolkit.shortcuts import confirm, CompleteStyle
+from polymorph.deps.prompt_toolkit.history import FileHistory
+from polymorph.deps.prompt_toolkit.completion import WordCompleter
+from polymorph.deps.prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
 from polymorph.UI.layerinterface import LayerInterface

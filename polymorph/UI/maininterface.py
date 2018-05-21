@@ -3,17 +3,17 @@
 # For more information about the project: https://github.com/shramos/polymorph
 
 from polymorph.UI.interface import Interface
-from prompt_toolkit import PromptSession
-from prompt_toolkit.shortcuts import CompleteStyle
-from prompt_toolkit import HTML
+from polymorph.deps.prompt_toolkit import PromptSession
+from polymorph.deps.prompt_toolkit.shortcuts import CompleteStyle
+from polymorph.deps.prompt_toolkit import HTML
 from polymorph.utils import capture, get_arpspoofer, set_ip_forwarding, readtemplate, readpcap
 from polymorph.UI.tlistinterface import TListInterface
 from polymorph.UI.templateinterface import TemplateInterface
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
-from prompt_toolkit.history import FileHistory
-from prompt_toolkit.completion import WordCompleter
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from polymorph.deps.prompt_toolkit.history import FileHistory
+from polymorph.deps.prompt_toolkit.completion import WordCompleter
+from polymorph.deps.prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import os
 
 

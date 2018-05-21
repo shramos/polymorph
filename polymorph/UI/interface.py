@@ -5,7 +5,7 @@
 import hexdump
 from termcolor import colored
 import sys
-from prompt_toolkit.shortcuts import confirm
+from polymorph.deps.prompt_toolkit.shortcuts import confirm
 from polymorph.utils import set_ip_forwarding
 from polymorph.utils import get_arpspoofer
 from polymorph.UI.command_parser import CommandParser
@@ -77,7 +77,8 @@ class Interface(object):
                 set_ip_forwarding(1)
                 try:
                     # Getting the poisoner
-                    self._poisoner = get_arpspoofer(args["-t"], args["-g"], args["-i"])
+                    self._poisoner = get_arpspoofer(
+                        args["-t"], args["-g"], args["-i"])
                     self._poisoner.start()
                     Interface._print_info(
                         "ARP spoofing started between %s and %s" % (args["-g"], args["-t"]))
