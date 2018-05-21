@@ -13,7 +13,6 @@ REQUIRES = [
     'termcolor',
     'construct',
     'netaddr',
-    'prompt-toolkit==2.0.0',
 ]
 
 if platform.system() == "Linux":
@@ -44,8 +43,6 @@ setup(
     author="Santiago Hernandez Ramos",
     author_email="shramos@protonmail.com",
     install_requires=REQUIRES,
-    dependency_links=[
-        'https://github.com/jonathanslenders/python-prompt-toolkit/tarball/2.0/#egg=prompt-toolkit-2.0.0'],
     keywords=[
         'network',
         'packet',
