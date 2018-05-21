@@ -22,11 +22,11 @@ if platform.system() == "Linux":
 elif platform.system() == "Windows":
     SCRIPTS = ['bin/polymorph.bat', 'bin/polymorph']
     REQUIRES += ['pydivert']
-    
+
 setup(
-    name = "polymorph",
-    version = "1.0.0",
-    packages = [
+    name="polymorph",
+    version="1.0.1",
+    packages=[
         "polymorph",
         "polymorph/UI",
         "polymorph/conditions",
@@ -36,17 +36,17 @@ setup(
         "polymorph/spoofs",
         "polymorph/CLI",
     ],
-    scripts= SCRIPTS,
-    license = "MIT",
-    description = "A real time network packet manipulation framework",
-    platforms = ["Linux", "Windows"],
-    url = "https://github.com/shramos/polymorph",
-    author = "Santiago Hernandez Ramos",
-    author_email = "shramos@protonmail.com",
-    install_requires = REQUIRES,
-    dependency_links = [
+    scripts=SCRIPTS,
+    license="MIT",
+    description="A real time network packet manipulation framework",
+    platforms=["Linux", "Windows"],
+    url="https://github.com/shramos/polymorph",
+    author="Santiago Hernandez Ramos",
+    author_email="shramos@protonmail.com",
+    install_requires=REQUIRES,
+    dependency_links=[
         'https://github.com/jonathanslenders/python-prompt-toolkit/tarball/2.0/#egg=prompt-toolkit-2.0.0'],
-    keywords = [
+    keywords=[
         'network',
         'packet',
         'modification',
@@ -58,7 +58,7 @@ setup(
         'on-the-fly',
         'crafter'
     ],
-    classifiers = [
+    classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
