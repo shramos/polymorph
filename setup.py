@@ -2,7 +2,7 @@
 # Copyright (C) 2018 Santiago Hernandez Ramos <shramos@protonmail.com>
 # For more information about the project: https://github.com/shramos/polymorph
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 import platform
 
 REQUIRES = [
@@ -25,16 +25,7 @@ elif platform.system() == "Windows":
 setup(
     name="polymorph",
     version="1.0.1",
-    packages=[
-        "polymorph",
-        "polymorph/UI",
-        "polymorph/conditions",
-        "polymorph/conditions/preconditions",
-        "polymorph/conditions/executions",
-        "polymorph/conditions/postconditions",
-        "polymorph/spoofs",
-        "polymorph/CLI",
-    ],
+    packages=find_packages('.'),
     scripts=SCRIPTS,
     license="MIT",
     description="A real time network packet manipulation framework",
