@@ -3,12 +3,12 @@
 # For more information about the project: https://github.com/shramos/polymorph
 
 from polymorph.UI.interface import Interface
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit import HTML
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.shortcuts import CompleteStyle
 
@@ -45,15 +45,15 @@ class FieldInterface(Interface):
         completer = WordCompleter(['value', 'type', 'show', 'name', 'slice',
                                    'custom', 'size', 'dump', 'clear', 'back'])
         history = FileHistory(self._polym_path + '/.finterface_history')
+        session = PromptSession(history=history)
         while True:
             try:
-                command = prompt(HTML("<bold>PH:cap/t%d/%s/<red>%s</red> > </bold>" %
-                                      (self._tindex, self._lname, self._f.name)),
-                                 history=history,
-                                 completer=completer,
-                                 complete_style=CompleteStyle.READLINE_LIKE,
-                                 auto_suggest=AutoSuggestFromHistory(),
-                                 enable_history_search=True)
+                command = session.prompt(HTML("<bold>PH:cap/t%d/%s/<red>%s</red> > </bold>" %
+                                              (self._tindex, self._lname, self._f.name)),
+                                         completer=completer,
+                                         complete_style=CompleteStyle.READLINE_LIKE,
+                                         auto_suggest=AutoSuggestFromHistory(),
+                                         enable_history_search=True)
             except KeyboardInterrupt:
                 self.exit_program()
                 continue
@@ -117,7 +117,8 @@ class FieldInterface(Interface):
                     self._f.to_int(args["-o"])
                     Interface._print_info("New type added")
                 else:
-                    Interface._print_error("Wrong order. Please select big or little")
+                    Interface._print_error(
+                        "Wrong order. Please select big or little")
             else:
                 Interface._print_error(
                     "Wrong type. Please choose between ('hex', 'bytes', 'str', 'int')")

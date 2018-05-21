@@ -3,14 +3,14 @@
 # For more information about the project: https://github.com/shramos/polymorph
 
 from polymorph.UI.interface import Interface
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit import HTML
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
 from polymorph.UI.templateinterface import TemplateInterface
 import os
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.shortcuts import CompleteStyle
 import polymorph
@@ -44,14 +44,14 @@ class TListInterface(Interface):
         completer = WordCompleter(['show', 'dissect', 'template', 'wireshark',
                                    'clear', 'back'])
         history = FileHistory(self._polym_path + '/.tlinterface_history')
+        session = PromptSession(history=history)
         while True:
             try:
-                command = prompt(HTML("<bold>PH:<red>cap</red> > </bold>"),
-                                 history=history,
-                                 completer=completer,
-                                 complete_style=CompleteStyle.READLINE_LIKE,
-                                 auto_suggest=AutoSuggestFromHistory(),
-                                 enable_history_search=True)
+                command = session.prompt(HTML("<bold>PH:<red>cap</red> > </bold>"),
+                                         completer=completer,
+                                         complete_style=CompleteStyle.READLINE_LIKE,
+                                         auto_suggest=AutoSuggestFromHistory(),
+                                         enable_history_search=True)
             except KeyboardInterrupt:
                 self.exit_program()
                 continue
@@ -198,7 +198,8 @@ class TListInterface(Interface):
         """Opens Wireshark with the actual `Template` List in pcap format."""
         if len(command) == 1:
             Interface._print_info("Opening Wireshark...")
-            os.system("nohup wireshark %s &" % join(self._polym_path, ".tmp.pcap"))
+            os.system("nohup wireshark %s &" %
+                      join(self._polym_path, ".tmp.pcap"))
             return
         # Parsing arguments
         cp = CommandParser(TListInterface._wireshark_opts())

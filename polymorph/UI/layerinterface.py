@@ -3,7 +3,7 @@
 # For more information about the project: https://github.com/shramos/polymorph
 
 from polymorph.UI.interface import Interface
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit import HTML
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
@@ -12,7 +12,7 @@ from polymorph.tfield import TField
 from polymorph.UI.fieldinterface import FieldInterface
 import hexdump
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.shortcuts import CompleteStyle
 import construct
@@ -47,15 +47,15 @@ class LayerInterface(Interface):
         completer = WordCompleter(['show', 'name', 'field', 'fields',
                                    'dump', 'recalculate', 'clear', 'back'])
         history = FileHistory(self._polym_path + '/.linterface_history')
+        session = PromptSession(history=history)
         while True:
             try:
-                command = prompt(HTML("<bold>PH:cap/t%d/<red>%s</red> > </bold>" %
-                                      (self._tindex, self._l.name)),
-                                 history=history,
-                                 completer=completer,
-                                 complete_style=CompleteStyle.READLINE_LIKE,
-                                 auto_suggest=AutoSuggestFromHistory(),
-                                 enable_history_search=True)
+                command = session.prompt(HTML("<bold>PH:cap/t%d/<red>%s</red> > </bold>" %
+                                              (self._tindex, self._l.name)),
+                                         completer=completer,
+                                         complete_style=CompleteStyle.READLINE_LIKE,
+                                         auto_suggest=AutoSuggestFromHistory(),
+                                         enable_history_search=True)
             except KeyboardInterrupt:
                 self.exit_program()
                 continue
@@ -217,7 +217,8 @@ class LayerInterface(Interface):
         if len(command) == 1:
             Interface.print_help(LayerInterface._field_help())
         elif len(command) == 2 and command[1].lower() in self._l.fieldnames():
-            fi = FieldInterface(self._l.getfield(command[1].lower()), self._tindex, self._l.name, self._poisoner)
+            fi = FieldInterface(self._l.getfield(
+                command[1].lower()), self._tindex, self._l.name, self._poisoner)
             fi.run()
         else:
             cp = CommandParser(LayerInterface._field_opts())
@@ -234,7 +235,8 @@ class LayerInterface(Interface):
                 start = input("Start byte of the custom field: ")
                 end = input("End byte of the custom field: ")
                 if not start.isdecimal() or not end.isdecimal():
-                    Interface._print_error("The start or end byte is not a number")
+                    Interface._print_error(
+                        "The start or end byte is not a number")
                     return
                 else:
                     fslice = slice(int(start), int(end))
@@ -259,15 +261,18 @@ class LayerInterface(Interface):
                         new_field.to_bytes()
                     # Add the field to the layer
                     self._l.addfield(new_field)
-                    Interface._print_info("Field %s added to the layer" % args['-a'])
+                    Interface._print_info(
+                        "Field %s added to the layer" % args['-a'])
             # Deletes a field from the layer
             elif args["-d"]:
                 del_field = self._l.getfield(args["-d"])
                 if del_field:
                     self._l.delfield(del_field)
-                    Interface._print_info("Field %s deleted from the layer" % args["-d"])
+                    Interface._print_info(
+                        "Field %s deleted from the layer" % args["-d"])
                 else:
-                    Interface._print_error("The field %s is not in the layer" % args["-d"])
+                    Interface._print_error(
+                        "The field %s is not in the layer" % args["-d"])
 
     @staticmethod
     def _field_help():
@@ -366,8 +371,10 @@ class LayerInterface(Interface):
             fields = LayerInterface._extrac_deps(args["-sb"], args["-e"])
             if fields:
                 try:
-                    self._l.add_struct(args["-f"], fields, args["-sb"], args["-e"])
-                    Interface._print_info("Struct added to field %s" % args["-f"])
+                    self._l.add_struct(
+                        args["-f"], fields, args["-sb"], args["-e"])
+                    Interface._print_info(
+                        "Struct added to field %s" % args["-f"])
                 except:
                     Interface._print_error(
                         "Wrong fields or wrong syntax referring to the fields")

@@ -3,7 +3,7 @@
 # For more information about the project: https://github.com/shramos/polymorph
 
 from polymorph.UI.interface import Interface
-from prompt_toolkit import prompt
+from prompt_toolkit import PromptSession
 from prompt_toolkit.shortcuts import CompleteStyle
 from prompt_toolkit import HTML
 from polymorph.utils import capture, get_arpspoofer, set_ip_forwarding, readtemplate, readpcap
@@ -12,7 +12,7 @@ from polymorph.UI.templateinterface import TemplateInterface
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 import os
 
@@ -31,14 +31,14 @@ class MainInterface(Interface):
         """Runs the interface and waits for user input commands."""
         completer = WordCompleter(['capture', 'spoof', 'clear', 'import'])
         history = FileHistory(self._polym_path + '/.minterface_history')
+        session = PromptSession(history=history)
         while True:
             try:
-                command = prompt(HTML("<bold><red>PH</red> > </bold>"),
-                                 history=history,
-                                 completer=completer,
-                                 complete_style=CompleteStyle.READLINE_LIKE,
-                                 auto_suggest=AutoSuggestFromHistory(),
-                                 enable_history_search=True)
+                command = session.prompt(HTML("<bold><red>PH</red> > </bold>"),
+                                         completer=completer,
+                                         complete_style=CompleteStyle.READLINE_LIKE,
+                                         auto_suggest=AutoSuggestFromHistory(),
+                                         enable_history_search=True)
             except KeyboardInterrupt:
                 self.exit_program()
                 continue
@@ -216,7 +216,7 @@ class MainInterface(Interface):
             ("-h", "prints the help."),
             ("-t", "path to a template to be imported."),
             ("-pcap", "path to a pcap file to be imported")
-            
+
         ])
         return OrderedDict([
             ("name", "import"),
@@ -224,4 +224,3 @@ class MainInterface(Interface):
             ("description", "Import different objects in the framework, such as templates or captures."),
             ("options", options)
         ])
-    

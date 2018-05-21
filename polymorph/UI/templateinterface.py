@@ -3,10 +3,10 @@
 # For more information about the project: https://github.com/shramos/polymorph
 
 from polymorph.UI.interface import Interface
-from prompt_toolkit import prompt, HTML
+from prompt_toolkit import PromptSession, HTML
 from prompt_toolkit.shortcuts import confirm, CompleteStyle
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from collections import OrderedDict
 from polymorph.UI.command_parser import CommandParser
@@ -56,15 +56,15 @@ class TemplateInterface(Interface):
                                    'description', 'spoof', 'clear', 'back'])
         # Initialization of the command history
         history = FileHistory(join(self._polym_path, '.tinterface_history'))
+        session = PromptSession(history=history)
         while True:
             try:
-                command = prompt(HTML("<bold>PH:cap/<red>t%d</red> > </bold>" %
-                                      self._index),
-                                 history=history,
-                                 completer=completer,
-                                 complete_style=CompleteStyle.READLINE_LIKE,
-                                 auto_suggest=AutoSuggestFromHistory(),
-                                 enable_history_search=True)
+                command = session.prompt(HTML("<bold>PH:cap/<red>t%d</red> > </bold>" %
+                                              self._index),
+                                         completer=completer,
+                                         complete_style=CompleteStyle.READLINE_LIKE,
+                                         auto_suggest=AutoSuggestFromHistory(),
+                                         enable_history_search=True)
             except KeyboardInterrupt:
                 self.exit_program()
                 continue
@@ -242,7 +242,8 @@ class TemplateInterface(Interface):
                         else:
                             Interface._print_error("Wrong index")
                     except ValueError:
-                        Interface._print_error("Please enter a positive integer")
+                        Interface._print_error(
+                            "Please enter a positive integer")
             # Deletes a condition
             if args['-d']:
                 try:
@@ -257,9 +258,11 @@ class TemplateInterface(Interface):
                 # Create the new file if not exists
                 if not os.path.isfile(join(self._conds_path, cond, args["-a"] + ".py")):
                     self._create_cond(cond, args["-a"])
-                ret = os.system("%s %s.py" % (args["-e"], join(self._conds_path, cond, args["-a"])))
+                ret = os.system("%s %s.py" % (
+                    args["-e"], join(self._conds_path, cond, args["-a"])))
                 if ret != 0:
-                    Interface._print_error("The editor is not installed or is not in the PATH")
+                    Interface._print_error(
+                        "The editor is not installed or is not in the PATH")
                     return
                 # Save the condition to the Template
                 try:
@@ -269,9 +272,11 @@ class TemplateInterface(Interface):
                         "Bad syntax, please check the code syntax")
                     return
                 # If user wants, delete condition from disk
-                keepindisk = confirm('Keep file on disk (%s)? [y/N] ' % join(self._conds_path, cond))
+                keepindisk = confirm(
+                    'Keep file on disk (%s)? [y/N] ' % join(self._conds_path, cond))
                 if not keepindisk:
-                    os.remove("%s.py" % join(self._conds_path, cond, args["-a"]))
+                    os.remove("%s.py" %
+                              join(self._conds_path, cond, args["-a"]))
                 Interface._print_info("Condition %s added" % args["-a"])
             # Imports a condition from disk
             elif args['-i']:
@@ -287,7 +292,8 @@ class TemplateInterface(Interface):
                     self._add_cond(cond, name)
                     Interface._print_info("Condition %s imported" % args['-i'])
                 except ModuleNotFoundError:
-                    Interface._print_error("The condition %s is not in disk" % args['-i'])
+                    Interface._print_error(
+                        "The condition %s is not in disk" % args['-i'])
                     print("(Please place your .py file in correct path)")
                     return
 
@@ -299,7 +305,8 @@ class TemplateInterface(Interface):
 
     def _add_cond(self, cond, name):
         """Adds a new condition to the `Template`."""
-        m = importlib.import_module("polymorph.conditions.%s.%s" % (cond, name))
+        m = importlib.import_module(
+            "polymorph.conditions.%s.%s" % (cond, name))
         importlib.reload(m)
         self._t.add_function(cond, name, getattr(m, dir(m)[-1]))
 
@@ -518,7 +525,8 @@ class TemplateInterface(Interface):
                 self._t.write(args['-p'])
                 Interface._print_info("Template saved to disk")
             except:
-                Interface._print_error("The path %s does not exist" % args['-p'])
+                Interface._print_error(
+                    "The path %s does not exist" % args['-p'])
 
     @staticmethod
     def _save_help():
@@ -549,7 +557,8 @@ class TemplateInterface(Interface):
         if len(command) == 1:
             Interface.print_help(TemplateInterface._layer_help())
         elif len(command) == 2 and command[1].upper() in self._t.layernames():
-            li = LayerInterface(self._t.getlayer(command[1].upper()), self._index, self._poisoner)
+            li = LayerInterface(self._t.getlayer(
+                command[1].upper()), self._index, self._poisoner)
             li.run()
         else:
             cp = CommandParser(TemplateInterface._layer_opts())
@@ -571,9 +580,11 @@ class TemplateInterface(Interface):
                     new_layer = TLayer(args["-a"], raw=self._t.raw.hex(),
                                        lslice=lslice, custom=True)
                     self._t.addlayer(new_layer)
-                    Interface._print_info("New layer %s added to the Template" % args["-a"])
+                    Interface._print_info(
+                        "New layer %s added to the Template" % args["-a"])
                 else:
-                    Interface._print_error("The start or end byte is not a number")
+                    Interface._print_error(
+                        "The start or end byte is not a number")
             # Deletes an existing layer
             elif args["-d"]:
                 del_layer = self._t.getlayer(args["-d"])
@@ -581,7 +592,8 @@ class TemplateInterface(Interface):
                     self._t.dellayer(del_layer)
                     Interface._print_info("Layer %s deleted" % args["-d"])
                 else:
-                    Interface._print_error("The layer %s does not exist" % args["-d"])
+                    Interface._print_error(
+                        "The layer %s does not exist" % args["-d"])
 
     @staticmethod
     def _layer_help():
