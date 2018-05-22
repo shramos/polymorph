@@ -161,7 +161,7 @@ Let's see a last example modifying HTTP packets in localhost to inject a simple 
 
 # Release Notes
 [release-notes-1.0.0](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.0.md)\
-[release-notes-1.0.2](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.2.md)
+[release-notes-1.0.3](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.3.md)
 
 # Contact
 
