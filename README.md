@@ -92,7 +92,7 @@ Let's start with some examples. **All the filters explained during the previous 
 ```
 - Or maybe the user wants to try it on localhost, for that he only has to modify the iptables rule that Polymorph establishes by default.
 ```
-# phcli -p http -f "request_uri" -v "/issues/61/1.html" --in-pkt "/issues/40/1.html;POST" -ipt "iptables -A OUTPUT -j NFQUEUE --queue-num 1"
+# phcli -p http -f "request_uri" -v "/issues/61/1.html" --in-pkt "/issues/40/1.html;GET" -ipt "iptables -A OUTPUT -j NFQUEUE --queue-num 1"
 ```
 It may be the case that the user wants to modify a set of bytes of a network packet that have not been interpreted as a field by Polymorph. For this you can directly access the packet bytes using a slice. (*Remember to add the *iptables* rule if you try it in localhost*)
 ```
