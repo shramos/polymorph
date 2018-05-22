@@ -82,13 +82,13 @@ You can also apply filters on network packets, for example, you can indicate tha
 Now that we know the Polymorph representation of the network packet that we want to modify, we will see how to modify it in real time.
 
 Let's start with some examples. **All the filters explained during the previous section can also be applied here**. 
-- This will just modify a packet that contains the strings `/issues/40/1.html` and `POST` by inserting in the `request_uri` field the value `/issues/61/1.html`. So when the user visit http://phrack.org/issues/40/1.html the browser will visit http://phrack.org/issues/61/1.html
+- This will just modify a packet that contains the strings `/issues/40/1.html` and `GET` by inserting in the `request_uri` field the value `/issues/61/1.html`. So when the user visit http://phrack.org/issues/40/1.html the browser will visit http://phrack.org/issues/61/1.html
 ```
-# phcli -p http --field "request_uri" --value "/issues/61/1.html" --in-pkt "/issues/40/1.html;POST"
+# phcli -p http --field "request_uri" --value "/issues/61/1.html" --in-pkt "/issues/40/1.html;GET"
 ```
 - The previous command will work if we are in the middle of the communication between a machine and the gateway. Probably the user wants to establish himself in the middle, for this he can use arp spoofing.
 ```
-# phcli --spoof arp --target 192.168.1.20 --gateway 192.168.1.1 -p http -f "request_uri" -v "/issues/61/1.html" --in-pkt "/issues/40/1.html;POST"
+# phcli --spoof arp --target 192.168.1.20 --gateway 192.168.1.1 -p http -f "request_uri" -v "/issues/61/1.html" --in-pkt "/issues/40/1.html;GET"
 ```
 - Or maybe the user wants to try it on localhost, for that he only has to modify the iptables rule that Polymorph establishes by default.
 ```
