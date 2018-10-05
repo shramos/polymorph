@@ -67,7 +67,10 @@ class Template:
         """
         if not path:
             path = "../templates/" + self._name.replace("/", "_") + ".json"
-        with open(path, 'w') as outfile:
+
+        template_file = "{}/{}".format(settings.paths['templates'], path)
+
+        with open(template_file, 'w') as outfile:
             json.dump(self.dict(), outfile, indent=4)
 
     @property
