@@ -14,7 +14,7 @@ from polymorph.deps.prompt_toolkit.completion import WordCompleter
 from polymorph.deps.prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from polymorph.deps.prompt_toolkit.shortcuts import CompleteStyle
 import polymorph
-from os.path import dirname, join
+from os.path import join
 
 
 class TListInterface(Interface):
@@ -37,7 +37,7 @@ class TListInterface(Interface):
         # Class Attributes
         self._t = tlist
         self._poisoner = poisoner
-        self._polym_path = dirname(polymorph.__file__)
+        self._polym_path = polymorph.settings.path
 
     def run(self):
         """Runs the interface and waits for user input commands."""
