@@ -219,7 +219,7 @@ class Template:
         """
         self.del_function('executions', name)
 
-    def get_function_source(self, func, name):
+    def get_function_source(self, cond, name):
         """Returns a precondition/postcondition/execution source code.
 
         Parameters
@@ -235,7 +235,7 @@ class Template:
             Source code of the function.
 
         """
-        path = "%s/%s/%s.py" % (self._conds_path, func, name)
+        path = join(settings.paths[cond], "{}.py".format(name))
         if os.path.isfile(path):
             return open(path).read()
         return "[!] File is not in disk"
@@ -588,6 +588,7 @@ class Template:
             print(colored(n, 'cyan'))
             print(self.get_function_source(cond, n))
 
+        _cond_path = settings.paths[cond]
         cond_names = list(self._functions[cond])
         if name and name in cond_names and verbose:
             print_source(cond, name)
