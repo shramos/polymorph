@@ -16,7 +16,7 @@ from os.path import dirname
 import polymorph.conditions
 from os import listdir
 from os.path import isfile, join
-
+from polymorph import settings
 
 class Template:
     """Main class that represents a template"""
@@ -47,7 +47,7 @@ class Template:
         if from_path:
             self.read(from_path)
         # Path to conditions (precs, execs, posts)
-        self._conds_path = dirname(polymorph.conditions.__file__)
+        self._conds_path = dirname(settings.paths['conditions'])
 
     def __repr__(self):
         return "<template.Template: %s>" % "/".join(self.layernames())
@@ -67,7 +67,13 @@ class Template:
         """
         if not path:
             path = "../templates/" + self._name.replace("/", "_") + ".json"
-        with open(path, 'w') as outfile:
+
+        if not path.endswith(".json"):
+            path += ".json"
+
+        template_file = "{}/{}".format(settings.paths['templates'], path)
+
+        with open(template_file, 'w') as outfile:
             json.dump(self.dict(), outfile, indent=4)
 
     @property
@@ -213,7 +219,7 @@ class Template:
         """
         self.del_function('executions', name)
 
-    def get_function_source(self, func, name):
+    def get_function_source(self, cond, name):
         """Returns a precondition/postcondition/execution source code.
 
         Parameters
@@ -229,7 +235,7 @@ class Template:
             Source code of the function.
 
         """
-        path = "%s/%s/%s.py" % (self._conds_path, func, name)
+        path = join(settings.paths[cond], "{}.py".format(name))
         if os.path.isfile(path):
             return open(path).read()
         return "[!] File is not in disk"
@@ -581,7 +587,8 @@ class Template:
         def print_source(cond, n):
             print(colored(n, 'cyan'))
             print(self.get_function_source(cond, n))
-            
+
+        _cond_path = settings.paths[cond]
         cond_names = list(self._functions[cond])
         if name and name in cond_names and verbose:
             print_source(cond, name)
@@ -606,9 +613,10 @@ class Template:
             conditions.
 
         """
+        _cond_path = settings.paths[cond]
         cond_names = [f[:-3]
-                      for f in listdir(join(self._conds_path, cond))
-                      if isfile(join(join(self._conds_path, cond), f))
+                      for f in listdir(_cond_path)
+                      if isfile(join(_cond_path, f))
                       and f != "__init__.py"
                       and f[-3:] == ".py"]
         if verbose:

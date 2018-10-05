@@ -21,7 +21,7 @@ import importlib
 import polymorph.conditions
 import platform
 from shutil import copyfile
-
+from polymorph import settings, utils
 
 class TemplateInterface(Interface):
     """This class is responsible for parsing and respond to user commands in
@@ -46,7 +46,7 @@ class TemplateInterface(Interface):
         self._t = template
         self._index = index
         self._poisoner = poisoner
-        self._conds_path = dirname(polymorph.conditions.__file__)
+        self._conds_path = settings.paths['conditions']
 
     def run(self):
         """Runs the interface and waits for user input commands."""
@@ -256,10 +256,10 @@ class TemplateInterface(Interface):
             # Adds a condition
             elif args['-a']:
                 # Create the new file if not exists
-                if not os.path.isfile(join(self._conds_path, cond, args["-a"] + ".py")):
+                if not os.path.isfile(join(self._conds_path, settings.paths[cond], args["-a"] + ".py")):
                     self._create_cond(cond, args["-a"])
                 ret = os.system("%s %s.py" % (
-                    args["-e"], join(self._conds_path, cond, args["-a"])))
+                    args["-e"], join(self._conds_path, settings.paths[cond], args["-a"])))
                 if ret != 0:
                     Interface._print_error(
                         "The editor is not installed or is not in the PATH")
@@ -288,6 +288,7 @@ class TemplateInterface(Interface):
                         name = file
                 if name[-3:] == ".py":
                     name = name[:-3]
+                self._add_cond(cond, name)
                 try:
                     self._add_cond(cond, name)
                     Interface._print_info("Condition %s imported" % args['-i'])
@@ -300,14 +301,12 @@ class TemplateInterface(Interface):
     def _create_cond(self, cond, name):
         """Creates a new condition with the initial source code."""
         code = "def %s(packet):\n\n    # your code here\n\n    # If the condition is meet\n    return packet" % name
-        with open("%s.py" % join(self._conds_path, cond, name), 'w') as f:
+        with open("%s.py" % join(settings.paths[cond], name), 'w') as f:
             f.write(code)
 
     def _add_cond(self, cond, name):
         """Adds a new condition to the `Template`."""
-        m = importlib.import_module(
-            "polymorph.conditions.%s.%s" % (cond, name))
-        importlib.reload(m)
+        m = utils.import_file(join(settings.paths[cond], "{}.py".format(name)), "polymorph.conditions.%s.%s" % (cond, name))
         self._t.add_function(cond, name, getattr(m, dir(m)[-1]))
 
     @staticmethod
