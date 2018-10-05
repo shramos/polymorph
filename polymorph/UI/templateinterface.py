@@ -300,7 +300,7 @@ class TemplateInterface(Interface):
     def _create_cond(self, cond, name):
         """Creates a new condition with the initial source code."""
         code = "def %s(packet):\n\n    # your code here\n\n    # If the condition is meet\n    return packet" % name
-        with open("%s.py" % join(self._conds_path, cond, name), 'w') as f:
+        with open("%s.py" % join(settings.paths[cond], name), 'w') as f:
             f.write(code)
 
     def _add_cond(self, cond, name):
