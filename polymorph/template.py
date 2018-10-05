@@ -16,7 +16,7 @@ from os.path import dirname
 import polymorph.conditions
 from os import listdir
 from os.path import isfile, join
-
+from polymorph import settings
 
 class Template:
     """Main class that represents a template"""
@@ -47,7 +47,7 @@ class Template:
         if from_path:
             self.read(from_path)
         # Path to conditions (precs, execs, posts)
-        self._conds_path = dirname(polymorph.conditions.__file__)
+        self._conds_path = dirname(settings.paths['conditions'])
 
     def __repr__(self):
         return "<template.Template: %s>" % "/".join(self.layernames())
@@ -581,7 +581,7 @@ class Template:
         def print_source(cond, n):
             print(colored(n, 'cyan'))
             print(self.get_function_source(cond, n))
-            
+
         cond_names = list(self._functions[cond])
         if name and name in cond_names and verbose:
             print_source(cond, name)

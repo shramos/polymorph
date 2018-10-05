@@ -46,8 +46,7 @@ class TemplateInterface(Interface):
         self._t = template
         self._index = index
         self._poisoner = poisoner
-        # TODO use any kind of condtions path defintion instead of hardcode it
-        self._conds_path = "{}/conditions".format(settings.path)
+        self._conds_path = settings.paths['conditions']
 
     def run(self):
         """Runs the interface and waits for user input commands."""
