@@ -80,11 +80,11 @@ class TemplateInterface(Interface):
             elif command[0] in ["layer", "l"]:
                 self._layer(command)
             elif command[0] in ['precs', 'preconditions']:
-                self._conditions(command, 'preconditions')
+                self._conditions(command, settings.paths['preconditions'])
             elif command[0] in ['posts', 'postconditions']:
-                self._conditions(command, 'postconditions')
+                self._conditions(command, settings.paths['postconditions'])
             elif command[0] in ['execs', 'executions']:
-                self._conditions(command, 'executions')
+                self._conditions(command, settings.paths['executions'])
             elif command[0] in ["show", "s"]:
                 self._show(command)
             elif command[0] in ["intercept", "i"]:
