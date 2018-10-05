@@ -11,7 +11,7 @@ from polymorph.utils import get_arpspoofer
 from polymorph.UI.command_parser import CommandParser
 from collections import OrderedDict
 import os
-from os.path import dirname
+# from os.path import dirname
 import polymorph
 
 
@@ -21,7 +21,7 @@ class Interface(object):
 
     def __init__(self):
         self._poisoner = None
-        self._polym_path = dirname(polymorph.__file__)
+        self._polym_path = polymorph.settings.path
 
     @staticmethod
     def print_help(hdict):
