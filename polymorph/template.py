@@ -612,9 +612,10 @@ class Template:
             conditions.
 
         """
+        _cond_path = settings.paths[cond]
         cond_names = [f[:-3]
-                      for f in listdir(join(self._conds_path, cond))
-                      if isfile(join(join(self._conds_path, cond), f))
+                      for f in listdir(_cond_path)
+                      if isfile(join(_cond_path, f))
                       and f != "__init__.py"
                       and f[-3:] == ".py"]
         if verbose:
