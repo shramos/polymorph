@@ -68,6 +68,9 @@ class Template:
         if not path:
             path = "../templates/" + self._name.replace("/", "_") + ".json"
 
+        if not path.endswith(".json"):
+            path += ".json"
+
         template_file = "{}/{}".format(settings.paths['templates'], path)
 
         with open(template_file, 'w') as outfile:
