@@ -6,11 +6,16 @@ class Settings (object):
         self._poisoner = None
         self.path = os.path.expanduser("~/.polymorph")
 
-        # TODO; Just a PoC with hardcoded dirs, integrate some kind of settings
+        self.paths = {
+            "": self.path,
+            "conditions": "{}/conditions".format(self.path),
+            "preconditions": "{}/conditions/preconditions".format(self.path),
+            "postconditions": "{}/conditions/postconditions".format(self.path),
+            "executions": "{}/conditions/executions".format(self.path),
+        }
+
         # TODO; Ensure that all App reuse this iface._polym_path instead of redefine it
-        # Iterate all paths down the "~/.polymorph" to initialize it if needed
-        _conditions_path = ["", "conditions", "conditions/executions", "conditions/postconditions", "conditions/preconditions"]
-        for _path in _conditions_path:
+        for _path in self.paths.values():
             _full_path = "{}/{}".format(self.path, _path)
             if not os.path.exists(_full_path):
                 os.makedirs(_full_path)
