@@ -11,7 +11,7 @@ from polymorph.utils import get_arpspoofer
 from polymorph.UI.command_parser import CommandParser
 from collections import OrderedDict
 import os
-from os.path import dirname
+# from os.path import dirname
 import polymorph
 
 
@@ -21,7 +21,16 @@ class Interface(object):
 
     def __init__(self):
         self._poisoner = None
-        self._polym_path = dirname(polymorph.__file__)
+        self._polym_path = os.path.expanduser("~/.polymorph")
+
+        # TODO; Just a PoC with hardcoded dirs, integrate some kind of settings
+        # TODO; Ensure that all App reuse this iface._polym_path instead of redefine it
+        # Iterate all paths down the "~/.polymorph" to initialize it if needed
+        _conditions_path = ["", "conditions", "conditions/executions", "conditions/postconditions", "conditions/preconditions"]
+        for _path in _conditions_path:
+            _full_path = "{}/{}".format(self._polym_path, _path)
+            if not os.path.exists(_full_path):
+                os.makedirs(_full_path)
 
     @staticmethod
     def print_help(hdict):
