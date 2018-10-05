@@ -21,7 +21,7 @@ import importlib
 import polymorph.conditions
 import platform
 from shutil import copyfile
-
+from polymorph import settings
 
 class TemplateInterface(Interface):
     """This class is responsible for parsing and respond to user commands in
@@ -46,7 +46,8 @@ class TemplateInterface(Interface):
         self._t = template
         self._index = index
         self._poisoner = poisoner
-        self._conds_path = dirname(polymorph.conditions.__file__)
+        # TODO use any kind of condtions path defintion instead of hardcode it
+        self._conds_path = "{}/conditions".format(settings.path)
 
     def run(self):
         """Runs the interface and waits for user input commands."""
