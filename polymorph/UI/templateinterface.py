@@ -21,7 +21,7 @@ import importlib
 import polymorph.conditions
 import platform
 from shutil import copyfile
-from polymorph import settings
+from polymorph import settings, utils
 
 class TemplateInterface(Interface):
     """This class is responsible for parsing and respond to user commands in
@@ -256,10 +256,10 @@ class TemplateInterface(Interface):
             # Adds a condition
             elif args['-a']:
                 # Create the new file if not exists
-                if not os.path.isfile(join(self._conds_path, cond, args["-a"] + ".py")):
+                if not os.path.isfile(join(self._conds_path, settings.paths[cond], args["-a"] + ".py")):
                     self._create_cond(cond, args["-a"])
                 ret = os.system("%s %s.py" % (
-                    args["-e"], join(self._conds_path, cond, args["-a"])))
+                    args["-e"], join(self._conds_path, settings.paths[cond], args["-a"])))
                 if ret != 0:
                     Interface._print_error(
                         "The editor is not installed or is not in the PATH")
@@ -288,6 +288,7 @@ class TemplateInterface(Interface):
                         name = file
                 if name[-3:] == ".py":
                     name = name[:-3]
+                self._add_cond(cond, name)
                 try:
                     self._add_cond(cond, name)
                     Interface._print_info("Condition %s imported" % args['-i'])
