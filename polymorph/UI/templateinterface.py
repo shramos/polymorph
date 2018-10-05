@@ -305,9 +305,7 @@ class TemplateInterface(Interface):
 
     def _add_cond(self, cond, name):
         """Adds a new condition to the `Template`."""
-        m = importlib.import_module(
-            "polymorph.conditions.%s.%s" % (cond, name))
-        importlib.reload(m)
+        m = utils.import_file(join(settings.paths[cond], "{}.py".format(name)), "polymorph.conditions.%s.%s" % (cond, name))
         self._t.add_function(cond, name, getattr(m, dir(m)[-1]))
 
     @staticmethod
