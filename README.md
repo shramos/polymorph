@@ -38,7 +38,7 @@ The Polymorph framework is composed of two main interfaces:
 ## Using the Polymorph main interface
 Let's see a video of how we can modify network packets belonging to the MQTT protocol. In this case the modification is carried out on the same machine (localhost), be aware that the modification of network packets in real time between two machines whose communication has been intercepted with techniques such as ARP poisoning is carried out of the same way. The only difference is the iptables rule that is set following the intercept command. In the case of intercepting communication between two machines, no iptables rule would be necessary.
 
-[Modyfing MQTT network packets in real time](https://img.youtube.com/vi/o9EWMBzURos/0.jpg)](https://www.youtube.com/watch?v=o9EWMBzURos&feature=youtu.be)
+[![Modyfing MQTT network packets in real time](https://img.youtube.com/vi/o9EWMBzURos/0.jpg)](https://www.youtube.com/watch?v=o9EWMBzURos&feature=youtu.be)
 
 For more examples and documentation please refer to:
 
