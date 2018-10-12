@@ -36,7 +36,11 @@ The Polymorph framework is composed of two main interfaces:
  - **Phcli:** It is the command line interface of the Polymorph framework. It is recommended to use for tasks such as modification of simple protocols or execution of previously generated templates.
 
 ## Using the Polymorph main interface
-For examples and documentation please refer to:
+Let's see a video of how we can modify network packets belonging to the MQTT protocol. In this case the modification is carried out on the same machine (localhost), be aware that the modification of network packets in real time between two machines whose communication has been intercepted with techniques such as ARP poisoning is carried out of the same way. The only difference is the iptables rule that is set following the intercept command. In the case of intercepting communication between two machines, no iptables rule would be necessary.
+
+[Modyfing MQTT network packets in real time](https://img.youtube.com/vi/o9EWMBzURos/0.jpg)](https://www.youtube.com/watch?v=o9EWMBzURos&feature=youtu.be)
+
+For more examples and documentation please refer to:
 
 -   [English whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_english.pdf)
 -   [Spanish whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_spanish.pdf)
