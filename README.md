@@ -1,3 +1,5 @@
+:boom: [Wiki released!](https://github.com/shramos/polymorph/wiki)
+
 # Polymorph
 
 Polymorph is a framework written in Python 3 that allows the modification of network packets in real time, providing maximum control to the user over the contents of the packet. This framework is intended to provide an effective solution for real-time modification of network packets that implement practically any existing protocol, including private protocols that do not have a public specification. In addition to this, one of its main objectives is to provide the user with the maximum possible control over the contents of the packet and with the ability to perform complex processing on this information.
@@ -42,6 +44,7 @@ Let's see a video of how we can modify network packets belonging to the MQTT pro
 
 For more examples and documentation please refer to:
 
+-   [Polymorph Wiki](https://github.com/shramos/polymorph/wiki)
 -   [English whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_english.pdf)
 -   [Spanish whitepaper](https://github.com/shramos/polymorph/blob/master/doc/whitepaper/whitepaper_spanish.pdf)
 -   [Building a Proxy Fuzzer for the MQTT protocol with Polymorph](http://www.shramos.com/2018/04/building-proxy-fuzzer-for-mqtt-protocol.html)
