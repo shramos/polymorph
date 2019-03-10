@@ -1,7 +1,7 @@
 scapy
 pyshark
 dill
-https://github.com/jonathanslenders/python-prompt-toolkit/archive/2.0.zip
+prompt-toolkit
 hexdump
 termcolor
 construct

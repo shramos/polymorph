@@ -5,7 +5,7 @@
 import hexdump
 from termcolor import colored
 import sys
-from polymorph.deps.prompt_toolkit.shortcuts import confirm
+from prompt_toolkit.shortcuts import confirm
 from polymorph.utils import set_ip_forwarding
 from polymorph.utils import get_arpspoofer
 from polymorph.UI.command_parser import CommandParser
