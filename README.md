@@ -16,6 +16,7 @@ After the installation of the dependencies, the framework itself can be installe
 ```
 pip3 install polymorph
 ```
+_\* Problems with Python3.7? Check: [Issue 8](https://github.com/shramos/polymorph/issues/8)_
 
 ## Docker environment
 
