@@ -13,8 +13,41 @@ from polymorph.interceptor import Interceptor
 import platform
 import polymorph
 from os.path import dirname, join
+import imp, os, importlib
 
 POLYM_PATH = dirname(polymorph.__file__)
+
+
+def import_file(filename, module=""):
+    """
+    old stuff just for debug purposes
+    # m = importlib.import_module(
+    #     "polymorph.conditions.%s.%s" % (settings.paths[cond], name))
+    # importlib.reload(m)
+
+    """
+    module = None
+
+    try:
+        # Get module name and path from full path
+        module_dir, module_file = os.path.split(filename)
+        module_name, module_ext = os.path.splitext(module_file)
+
+        # Get module "spec" from filename
+        spec = importlib.util.spec_from_file_location(module_name,filename)
+
+        module = spec.loader.load_module()
+
+    except Exception as ec:
+        # TODO validate py2 importing if needed @shramos
+        print(ec)
+
+    finally:
+        return module
+
+    with open(filename, "r") as f:
+        return imp.load_module(module, f, filename, "")
+
 
 def capture(userfilter="", pcapname=".tmp.pcap", func=None, count=0, time=None):
     """This function is a wrapper function above the sniff scapy function. The
@@ -144,7 +177,7 @@ def set_ip_forwarding(value):
             file.write(str(value))
             file.close()
 
-        
+
 def get_arpspoofer(targets, gateway, iface=None, gatewaymac=None,
           ignore=None, arpmode='rep', mac=None, ip=None):
     # Creating a poison object
@@ -154,4 +187,3 @@ def get_arpspoofer(targets, gateway, iface=None, gatewaymac=None,
     poisoner = ARPpoisoner(poison)
     # return the poisoner
     return poisoner
-
