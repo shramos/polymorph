@@ -1,4 +1,4 @@
-FROM kalilinux/kali-linux-docker
+FROM kalilinux/kali
 # Metadata params
 ARG BUILD_DATE
 ARG VERSION
@@ -17,8 +17,8 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url='https://www.kali.org/' \
       org.label-schema.vendor='Offensive Security' \
       org.label-schema.schema-version='1.0' \
-      org.label-schema.docker.cmd='docker run --rm kalilinux/kali-linux-docker' \
-      org.label-schema.docker.cmd.devel='docker run --rm -ti kalilinux/kali-linux-docker' \
+      org.label-schema.docker.cmd='docker run --rm kalilinux/kali' \
+      org.label-schema.docker.cmd.devel='docker run --rm -ti kalilinux/kali' \
       org.label-schema.docker.debug='docker logs $CONTAINER' \
       io.github.offensive-security.docker.dockerfile="Dockerfile" \
       io.github.offensive-security.license="GPLv3" \
@@ -30,7 +30,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN set -x \
     && apt-get -yqq update \
     && apt-get clean
-RUN apt-get -yqq install gnupg gnupg2 
+RUN apt-get -yqq install gnupg gnupg2 wget
 RUN wget http://repo.mosquitto.org/debian/mosquitto-repo.gpg.key
 RUN apt-key add mosquitto-repo.gpg.key
 RUN echo "deb http://repo.mosquitto.org/debian jessie main" > /etc/apt/sources.list.d/mosquitto.list
