@@ -14,9 +14,10 @@ apt-get install build-essential python-dev libnetfilter-queue-dev tshark tcpdump
 ```
 After the installation of the dependencies, the framework itself can be installed with the Python pip package manager in the following way:
 ```
+pip3 install git+https://github.com/kti/python-netfilterqueue
 pip3 install polymorph
 ```
-_\* Problems with Python3.7? Check: [Issue 8](https://github.com/shramos/polymorph/issues/8)_
+_\* More info: [Issue 8](https://github.com/shramos/polymorph/issues/8)_
 
 ## Docker environment
 
