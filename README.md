@@ -18,7 +18,14 @@ pip3 install polymorph
 _\* More info: [Issue 8](https://github.com/shramos/polymorph/issues/8)_
 
 # Using Polymorph
-For more information on how to use Polymorph, please consult the wiki.
+
+Below you can find some resources and practical examples with which you can learn how Polymorph works. I recommend that you read the articles in the following order:  
+
+0. [Setting up the enviroment](https://github.com/shramos/polymorph/wiki/Setting-up-the-enviroment)
+1. [Case Study. Part 1: How does Polymorph work?](https://github.com/shramos/polymorph/wiki/Case-Study.-Part-1:-How-does-Polymorph-work%3F) (Modifying ICMP on the fly)
+2. [Case Study. Part 2: Global variables](https://github.com/shramos/polymorph/wiki/Case-Study.-Part-2:-Global-variables) (Modifying ICMP on the fly)
+3. [Case Study. Part 3: Structs](https://github.com/shramos/polymorph/wiki/Case-Study.-Part-3:-Structs) (Modifying MQTT on the fly)
+4. [Case study. Part 4: Creating custom layers and fields](https://github.com/shramos/polymorph/wiki/Case-study.-Part-4:-Creating-custom-layers-and-fields) (Modifying MQTT on the fly)
 
 # Release Notes
 [release-notes-1.0.3](https://github.com/shramos/polymorph/blob/master/docs/release-notes/release-notes-1.0.3.md)  
