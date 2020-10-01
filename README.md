@@ -21,8 +21,8 @@ _\* More info: [Issue 8](https://github.com/shramos/polymorph/issues/8)_
 For more information on how to use Polymorph, please consult the wiki.
 
 # Release Notes
-[release-notes-1.0.3](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.3.md)  
-[release-notes-1.0.0](https://github.com/shramos/polymorph/blob/master/doc/release-notes/release-notes-1.0.0.md)
+[release-notes-1.0.3](https://github.com/shramos/polymorph/blob/master/docs/release-notes/release-notes-1.0.3.md)  
+[release-notes-1.0.0](https://github.com/shramos/polymorph/blob/master/docs/release-notes/release-notes-1.0.0.md)
 
 # Disclaimer
 This program is published with the aim of being used for educational purposes and to help improve the security of the systems. I am not responsible for the misuse of this project.
