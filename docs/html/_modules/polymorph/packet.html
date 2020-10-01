@@ -1,0 +1,272 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.packet &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.packet</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2020 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">polymorph.converter</span> <span class="k">import</span> <span class="n">Converter</span>
+
+<span class="n">raw</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="Packet"><a class="viewcode-back" href="../../polymorph.html#polymorph.packet.Packet">[docs]</a><span class="k">class</span> <span class="nc">Packet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class encapsulates the packets intercepted by nfqueue in such</span>
+<span class="sd">    a way that they are easily accessible by the users.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method of the `Packet` class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        template : :obj:`Template`</span>
+<span class="sd">            A `Template` object that will be parsed to obtain the fields and</span>
+<span class="sd">            layers.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span> <span class="o">=</span> <span class="p">{</span><span class="n">l</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">PacketLayer</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">layers</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rec_chksums</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:obj:`bytes`: Packet bytes.&quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">raw</span>
+        <span class="c1"># The payload is returned without the Ethernet layer</span>
+        <span class="k">return</span> <span class="n">raw</span><span class="p">[</span><span class="mi">14</span><span class="p">:]</span>
+
+    <span class="nd">@raw</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">raw</span>
+        <span class="c1"># Padding for Ether layer that nfqueue.get_payload() ignores</span>
+        <span class="c1"># TODO: Do this in a better way</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">14</span> <span class="o">+</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="Packet.get_payload"><a class="viewcode-back" href="../../polymorph.html#polymorph.packet.Packet.get_payload">[docs]</a>    <span class="k">def</span> <span class="nf">get_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the payload of the packet in bytes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span></div>
+
+<div class="viewcode-block" id="Packet.set_payload"><a class="viewcode-back" href="../../polymorph.html#polymorph.packet.Packet.set_payload">[docs]</a>    <span class="k">def</span> <span class="nf">set_payload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the payload of the packet.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        payload : :obj:`bytes`</span>
+<span class="sd">            The packet in bytes without the ethernet layer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">payload</span></div>
+
+<div class="viewcode-block" id="Packet.global_var"><a class="viewcode-back" href="../../polymorph.html#polymorph.packet.Packet.global_var">[docs]</a>    <span class="k">def</span> <span class="nf">global_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a global variable.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: :obj:`str`</span>
+<span class="sd">            The name of the global variable.</span>
+<span class="sd">        default: :obj</span>
+<span class="sd">            The default value of the global variable.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;self.&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Packet.insert"><a class="viewcode-back" href="../../polymorph.html#polymorph.packet.Packet.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index1</span><span class="p">,</span> <span class="n">index2</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Inserts a value between two index in the payload.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        index1: int</span>
+<span class="sd">            First index in the payload.</span>
+<span class="sd">        index2: int</span>
+<span class="sd">            Second index in the payload.</span>
+<span class="sd">        value: :obj:`bytes`</span>
+<span class="sd">            Value to insert in the payload.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">index1</span> <span class="o">&gt;=</span> <span class="n">index2</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">bytes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span> <span class="o">*</span> <span class="mi">14</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[:</span><span class="n">index1</span><span class="p">]</span> <span class="o">+</span> <span class="n">value</span> <span class="o">+</span> <span class="n">payload</span><span class="p">[</span><span class="n">index2</span><span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">payload</span><span class="p">[</span><span class="mi">14</span><span class="p">:]</span></div></div>
+
+
+<div class="viewcode-block" id="PacketLayer"><a class="viewcode-back" href="../../polymorph.html#polymorph.packet.PacketLayer">[docs]</a><span class="k">class</span> <span class="nc">PacketLayer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class encapsulates de Template layers, so the user can access the</span>
+<span class="sd">    content of the intercepted packet in an easy an intuitive way.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tlayer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method of the class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tlayer : :obj:`TLayer`</span>
+<span class="sd">ampl            A template layer for accessing the raw intercepted packet.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tlayer</span> <span class="o">=</span> <span class="n">tlayer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span> <span class="o">=</span> <span class="n">tlayer</span><span class="o">.</span><span class="n">get_structs</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">slice</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">tlayer</span><span class="o">.</span><span class="n">fields</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span> <span class="o">=</span> <span class="n">Converter</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">raw</span>
+        <span class="n">fslice</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">:</span>
+            <span class="n">fstruct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+            <span class="n">fraw</span> <span class="o">=</span> <span class="n">fstruct</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">raw</span><span class="p">)[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fraw</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="n">fslice</span><span class="p">]</span>
+        <span class="c1"># Return the field with the appropriate interpretation</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">get_frepr</span><span class="p">(</span><span class="n">ftype</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">raw</span>
+        <span class="n">fslice</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fsize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">:</span>
+            <span class="n">fstruct</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_struct</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">fraw</span> <span class="o">=</span> <span class="n">fstruct</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span>
+            <span class="n">start_byte</span> <span class="o">=</span> <span class="n">PacketLayer</span><span class="o">.</span><span class="n">_get_start_byte</span><span class="p">(</span><span class="n">fstruct</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">fsize</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fraw</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="n">stop_byte</span> <span class="o">=</span> <span class="n">start_byte</span> <span class="o">+</span> <span class="n">fsize</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">start_byte</span> <span class="o">=</span> <span class="n">fslice</span><span class="o">.</span><span class="n">start</span>
+            <span class="n">stop_byte</span> <span class="o">=</span> <span class="n">fslice</span><span class="o">.</span><span class="n">stop</span>
+            <span class="n">fraw</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[</span><span class="n">fslice</span><span class="p">]</span>
+        <span class="c1"># obtain the bytes from the representation of the field</span>
+        <span class="n">fraw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv</span><span class="o">.</span><span class="n">get_fraw</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="c1"># add the new value to the packet content</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">raw</span><span class="p">[:</span><span class="n">start_byte</span><span class="p">]</span> <span class="o">+</span> <span class="n">fraw</span> <span class="o">+</span> <span class="n">raw</span><span class="p">[</span><span class="n">stop_byte</span><span class="p">:]</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">raw</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">raw</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tlayer</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_getflens</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">praw</span><span class="p">):</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">subcons</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">sizeof</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">praw</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">[</span><span class="n">f</span><span class="p">]:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">praw</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">d</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_start_byte</span><span class="p">(</span><span class="n">fstruct</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="n">flens</span> <span class="o">=</span> <span class="n">PacketLayer</span><span class="o">.</span><span class="n">_getflens</span><span class="p">(</span><span class="n">fstruct</span><span class="p">,</span> <span class="n">fraw</span><span class="p">)</span>
+        <span class="n">st_byte</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">flens</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="n">field</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">st_byte</span> <span class="o">+=</span> <span class="n">flens</span><span class="p">[</span><span class="n">f</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">st_byte</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tlayer</span><span class="o">.</span><span class="n">slice</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

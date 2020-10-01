@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.UI package &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="polymorph-ui-package">
+<h1>polymorph.UI package<a class="headerlink" href="#polymorph-ui-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-polymorph.UI.banners">
+<span id="polymorph-ui-banners-module"></span><h2>polymorph.UI.banners module<a class="headerlink" href="#module-polymorph.UI.banners" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="polymorph.UI.banners.get_banner">
+<code class="sig-prename descclassname">polymorph.UI.banners.</code><code class="sig-name descname">get_banner</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/banners.html#get_banner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.banners.get_banner" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI.command_parser">
+<span id="polymorph-ui-command-parser-module"></span><h2>polymorph.UI.command_parser module<a class="headerlink" href="#module-polymorph.UI.command_parser" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.UI.command_parser.CommandParser">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.UI.command_parser.</code><code class="sig-name descname">CommandParser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/command_parser.html#CommandParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.command_parser.CommandParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="polymorph.UI.command_parser.CommandParser.parse">
+<code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/command_parser.html#CommandParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.command_parser.CommandParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI.fieldinterface">
+<span id="polymorph-ui-fieldinterface-module"></span><h2>polymorph.UI.fieldinterface module<a class="headerlink" href="#module-polymorph.UI.fieldinterface" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.UI.fieldinterface.FieldInterface">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.UI.fieldinterface.</code><code class="sig-name descname">FieldInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">layername</span></em>, <em class="sig-param"><span class="n">poisoner</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/fieldinterface.html#FieldInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.fieldinterface.FieldInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#polymorph.UI.interface.Interface" title="polymorph.UI.interface.Interface"><code class="xref py py-class docutils literal notranslate"><span class="pre">polymorph.UI.interface.Interface</span></code></a></p>
+<p>This class is responsible for parsing and respond to user commands in
+the field interface, when the user already has a packet capture.</p>
+<dl class="py method">
+<dt id="polymorph.UI.fieldinterface.FieldInterface.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/fieldinterface.html#FieldInterface.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.fieldinterface.FieldInterface.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the interface and waits for user input commands.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI.interface">
+<span id="polymorph-ui-interface-module"></span><h2>polymorph.UI.interface module<a class="headerlink" href="#module-polymorph.UI.interface" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.UI.interface.Interface">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.UI.interface.</code><code class="sig-name descname">Interface</code><a class="reference internal" href="_modules/polymorph/UI/interface.html#Interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.interface.Interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py attribute">
+<dt id="polymorph.UI.interface.Interface.EXIT">
+<code class="sig-name descname">EXIT</code><em class="property"> = ['quit', 'exit', 'q']</em><a class="headerlink" href="#polymorph.UI.interface.Interface.EXIT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.UI.interface.Interface.RET">
+<code class="sig-name descname">RET</code><em class="property"> = ['return', 'back', 'b']</em><a class="headerlink" href="#polymorph.UI.interface.Interface.RET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.UI.interface.Interface.color_dump">
+<em class="property">static </em><code class="sig-name descname">color_dump</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">raw</span></em>, <em class="sig-param"><span class="n">start</span></em>, <em class="sig-param"><span class="n">end</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/interface.html#Interface.color_dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.interface.Interface.color_dump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.UI.interface.Interface.exit_program">
+<code class="sig-name descname">exit_program</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/interface.html#Interface.exit_program"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.interface.Interface.exit_program" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.UI.interface.Interface.print_help">
+<em class="property">static </em><code class="sig-name descname">print_help</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">hdict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/interface.html#Interface.print_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.interface.Interface.print_help" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI.layerinterface">
+<span id="polymorph-ui-layerinterface-module"></span><h2>polymorph.UI.layerinterface module<a class="headerlink" href="#module-polymorph.UI.layerinterface" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.UI.layerinterface.LayerInterface">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.UI.layerinterface.</code><code class="sig-name descname">LayerInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layer</span></em>, <em class="sig-param"><span class="n">tindex</span></em>, <em class="sig-param"><span class="n">poisoner</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/layerinterface.html#LayerInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.layerinterface.LayerInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#polymorph.UI.interface.Interface" title="polymorph.UI.interface.Interface"><code class="xref py py-class docutils literal notranslate"><span class="pre">polymorph.UI.interface.Interface</span></code></a></p>
+<p>This class is responsible for parsing and respond to user commands in
+the tlist interface, when the user already has a packet capture.</p>
+<dl class="py method">
+<dt id="polymorph.UI.layerinterface.LayerInterface.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/layerinterface.html#LayerInterface.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.layerinterface.LayerInterface.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the interface and waits for user input commands.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI.maininterface">
+<span id="polymorph-ui-maininterface-module"></span><h2>polymorph.UI.maininterface module<a class="headerlink" href="#module-polymorph.UI.maininterface" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.UI.maininterface.MainInterface">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.UI.maininterface.</code><code class="sig-name descname">MainInterface</code><a class="reference internal" href="_modules/polymorph/UI/maininterface.html#MainInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.maininterface.MainInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#polymorph.UI.interface.Interface" title="polymorph.UI.interface.Interface"><code class="xref py py-class docutils literal notranslate"><span class="pre">polymorph.UI.interface.Interface</span></code></a></p>
+<p>This class is responsible for parsing and respond to user commands in
+the starting interface, when no action has been carried out.</p>
+<dl class="py method">
+<dt id="polymorph.UI.maininterface.MainInterface.capture_help">
+<em class="property">static </em><code class="sig-name descname">capture_help</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/maininterface.html#MainInterface.capture_help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.maininterface.MainInterface.capture_help" title="Permalink to this definition">¶</a></dt>
+<dd><p>Builds the help for the capture command.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.UI.maininterface.MainInterface.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/maininterface.html#MainInterface.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.maininterface.MainInterface.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the interface and waits for user input commands.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI.templateinterface">
+<span id="polymorph-ui-templateinterface-module"></span><h2>polymorph.UI.templateinterface module<a class="headerlink" href="#module-polymorph.UI.templateinterface" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.UI.templateinterface.TemplateInterface">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.UI.templateinterface.</code><code class="sig-name descname">TemplateInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">template</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">poisoner</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/templateinterface.html#TemplateInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.templateinterface.TemplateInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#polymorph.UI.interface.Interface" title="polymorph.UI.interface.Interface"><code class="xref py py-class docutils literal notranslate"><span class="pre">polymorph.UI.interface.Interface</span></code></a></p>
+<p>This class is responsible for parsing and respond to user commands in
+the Template interface, when the user already select a particular Template.</p>
+<dl class="py method">
+<dt id="polymorph.UI.templateinterface.TemplateInterface.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/templateinterface.html#TemplateInterface.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.templateinterface.TemplateInterface.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the interface and waits for user input commands.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI.tlistinterface">
+<span id="polymorph-ui-tlistinterface-module"></span><h2>polymorph.UI.tlistinterface module<a class="headerlink" href="#module-polymorph.UI.tlistinterface" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.UI.tlistinterface.TListInterface">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.UI.tlistinterface.</code><code class="sig-name descname">TListInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tlist</span></em>, <em class="sig-param"><span class="n">poisoner</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">userfilter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/tlistinterface.html#TListInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.tlistinterface.TListInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#polymorph.UI.interface.Interface" title="polymorph.UI.interface.Interface"><code class="xref py py-class docutils literal notranslate"><span class="pre">polymorph.UI.interface.Interface</span></code></a></p>
+<p>This class is responsible for parsing and respond to user commands in
+the tlist interface, when the user already has a packet capture.</p>
+<dl class="py method">
+<dt id="polymorph.UI.tlistinterface.TListInterface.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/UI/tlistinterface.html#TListInterface.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.UI.tlistinterface.TListInterface.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the interface and waits for user input commands.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.UI">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-polymorph.UI" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/polymorph.UI.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

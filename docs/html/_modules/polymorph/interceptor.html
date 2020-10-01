@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.interceptor &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.interceptor</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2020 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">from</span> <span class="nn">polymorph.packet</span> <span class="k">import</span> <span class="n">Packet</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">scapy.all</span> <span class="k">import</span> <span class="n">IP</span><span class="p">,</span> <span class="n">IPv6</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">ipaddress</span>
+
+
+<div class="viewcode-block" id="Interceptor"><a class="viewcode-back" href="../../polymorph.html#polymorph.interceptor.Interceptor">[docs]</a><span class="k">class</span> <span class="nc">Interceptor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the class responsible for intercepting packets in real time,</span>
+<span class="sd">    interpreting these packets, interpreting the custom functions of the</span>
+<span class="sd">    template and forwarding the modified packet to the target machine.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span>
+                 <span class="n">iptables_rule</span><span class="o">=</span><span class="s2">&quot;iptables -A FORWARD -j NFQUEUE --queue-num 1&quot;</span><span class="p">,</span>
+                 <span class="n">ip6tables_rule</span><span class="o">=</span><span class="s2">&quot;ip6tables -A FORWARD -j NFQUEUE --queue-num 1&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method of the `Interceptor` class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        template : :obj:`Template`</span>
+<span class="sd">            A `Template` objet that will be parsed to obtain the custom functions</span>
+<span class="sd">            and other values.</span>
+<span class="sd">        iptables_rule : :obj:`str`</span>
+<span class="sd">            Iptables rule for intercepting packets.</span>
+<span class="sd">        ip6tables_rule : :obj:`str`</span>
+<span class="sd">            Iptables rule for intercepting packets for ipv6.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iptables_rule</span> <span class="o">=</span> <span class="n">iptables_rule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip6tables_rule</span> <span class="o">=</span> <span class="n">ip6tables_rule</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">packet</span> <span class="o">=</span> <span class="n">Packet</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">template</span><span class="o">.</span><span class="n">get_function</span><span class="p">(</span><span class="n">func_name</span><span class="p">)</span>
+                           <span class="k">for</span> <span class="n">func_name</span> <span class="ow">in</span> <span class="n">template</span><span class="o">.</span><span class="n">function_names</span><span class="p">()]</span>
+
+<div class="viewcode-block" id="Interceptor.set_iptables_rules"><a class="viewcode-back" href="../../polymorph.html#polymorph.interceptor.Interceptor.set_iptables_rules">[docs]</a>    <span class="k">def</span> <span class="nf">set_iptables_rules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">iptables_rule</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ip6tables_rule</span><span class="p">,</span>
+                                <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Interceptor.clean_iptables"><a class="viewcode-back" href="../../polymorph.html#polymorph.interceptor.Interceptor.clean_iptables">[docs]</a>    <span class="k">def</span> <span class="nf">clean_iptables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+            <span class="s2">&quot;iptables -F&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span>
+            <span class="s2">&quot;ip6tables -F&quot;</span><span class="p">,</span> <span class="n">shell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Interceptor.linux_modify"><a class="viewcode-back" href="../../polymorph.html#polymorph.interceptor.Interceptor.linux_modify">[docs]</a>    <span class="k">def</span> <span class="nf">linux_modify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is the callback method that will be called when a packet</span>
+<span class="sd">        is intercepted. It is responsible of executing the custom functions</span>
+<span class="sd">        of the `Template`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        packet : :obj:`Packet`</span>
+<span class="sd">            Netfilterqueue packet object. The packet that is intercepted.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialization of the Packet with the new raw bytes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">get_payload</span><span class="p">()</span>
+        <span class="c1"># Executing the cutom functions</span>
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
+            <span class="n">pkt</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="p">)</span>
+            <span class="c1"># If the function returns None, it is not held and the</span>
+            <span class="c1"># packet must be forwarded</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pkt</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="p">:</span>
+                    <span class="n">packet</span><span class="o">.</span><span class="n">set_payload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span>
+                <span class="n">packet</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="c1"># if the drop flag is activated, the network packet is dropped</span>
+            <span class="k">if</span> <span class="n">pkt</span><span class="o">.</span><span class="n">drop</span><span class="p">:</span>
+                <span class="n">packet</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="c1"># If the function returns the packet, we assign it to the</span>
+            <span class="c1"># actual packet</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packet</span> <span class="o">=</span> <span class="n">pkt</span>
+        <span class="c1"># If all the functions are met, we assign the payload of the modified</span>
+        <span class="c1"># packet to the nfqueue packet and forward it</span>
+        <span class="c1"># Before sending the packet, we recalculate the chksums fields</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="o">.</span><span class="n">rec_chksums</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rec_chksums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="p">)</span>
+        <span class="n">packet</span><span class="o">.</span><span class="n">set_payload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span>
+        <span class="n">packet</span><span class="o">.</span><span class="n">accept</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Interceptor.windows_modify"><a class="viewcode-back" href="../../polymorph.html#polymorph.interceptor.Interceptor.windows_modify">[docs]</a>    <span class="k">def</span> <span class="nf">windows_modify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">pydivert</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is the callback method that will be called when a packet</span>
+<span class="sd">        is intercepted. It is responsible of executing the custom functions</span>
+<span class="sd">        of the `Template`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        packet : :obj:`Packet`</span>
+<span class="sd">            Netfilterqueue packet object. The packet that is intercepted.</span>
+<span class="sd">        w : pointer</span>
+<span class="sd">            windiver pointer.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialization of the Packet with the new raw bytes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">tobytes</span><span class="p">()</span>
+        <span class="c1"># Executing the custom functions</span>
+        <span class="k">for</span> <span class="n">function</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
+            <span class="n">pkt</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="p">)</span>
+            <span class="c1"># If the function returns None, it is not held and the</span>
+            <span class="c1"># packet must be forwarded</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">pkt</span><span class="p">:</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span>
+                <span class="k">return</span>
+            <span class="c1"># if the drop flag is activated, the network packet is dropped</span>
+            <span class="k">if</span> <span class="n">pkt</span><span class="o">.</span><span class="n">drop</span><span class="p">:</span>
+                <span class="k">return</span>
+            <span class="c1"># If the function returns the packet, we assign it to the</span>
+            <span class="c1"># actual packet</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packet</span> <span class="o">=</span> <span class="n">pkt</span>
+        <span class="c1"># If all the functions are met, we assign the payload of the modified</span>
+        <span class="c1"># packet to the pydivert packet and forward it</span>
+        <span class="c1"># Before sending the packet, we recalculate the chksums fields</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="o">.</span><span class="n">rec_chksums</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packet</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rec_chksums</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="p">)</span>
+        <span class="n">packet</span> <span class="o">=</span> <span class="n">pydivert</span><span class="o">.</span><span class="n">Packet</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">interface</span><span class="p">,</span> <span class="n">packet</span><span class="o">.</span><span class="n">direction</span><span class="p">)</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Interceptor.intercept"><a class="viewcode-back" href="../../polymorph.html#polymorph.interceptor.Interceptor.intercept">[docs]</a>    <span class="k">def</span> <span class="nf">intercept</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This method intercepts the packets and send them to a callback</span>
+<span class="sd">        function.&quot;&quot;&quot;</span>
+        <span class="c1"># For Windows Platforms</span>
+        <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pydivert</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">pydivert</span><span class="o">.</span><span class="n">WinDivert</span><span class="p">()</span>
+            <span class="n">w</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[*] Waiting for packets...</span><span class="se">\n\n</span><span class="s2">(Press Ctrl-C to exit)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">windows_modify</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">recv</span><span class="p">(),</span> <span class="n">w</span><span class="p">,</span> <span class="n">pydivert</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="c1"># For Linux platforms</span>
+        <span class="k">elif</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">netfilterqueue</span> <span class="k">import</span> <span class="n">NetfilterQueue</span>
+            <span class="n">nfqueue</span> <span class="o">=</span> <span class="n">NetfilterQueue</span><span class="p">()</span>
+            <span class="c1"># The iptables rule queue number by default is 1</span>
+            <span class="n">nfqueue</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">linux_modify</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_iptables_rules</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[*] Waiting for packets...</span><span class="se">\n\n</span><span class="s2">(Press Ctrl-C to exit)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">nfqueue</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clean_iptables</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sorry. Platform not supported!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_rec_chksums</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">packet</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Auxiliary function that makes it easy to recalculate the control fields</span>
+<span class="sd">        of some common layers.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">chksum</span><span class="p">(</span><span class="n">packet</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">packet</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">packet</span> <span class="o">+=</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">packet</span><span class="p">))</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">res</span> <span class="o">&amp;</span> <span class="mh">0xffff</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="n">res</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
+            <span class="n">ck</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">res</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffff</span>
+            <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="n">ck</span><span class="p">)</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+
+        <span class="n">pkt_layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">_layers</span><span class="p">)</span>
+
+        <span class="c1"># Calculation of checksums for different layers on IPv4</span>
+        <span class="k">if</span> <span class="s2">&quot;IP&quot;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+
+            <span class="c1"># Handling the IPv4 checksum</span>
+            <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0x0000&#39;</span>
+            <span class="n">lstart</span> <span class="o">=</span> <span class="n">packet</span><span class="p">[</span><span class="s1">&#39;IP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">14</span>
+            <span class="n">lend</span> <span class="o">=</span> <span class="n">lstart</span> <span class="o">+</span> <span class="mi">20</span>
+            <span class="n">ck</span> <span class="o">=</span> <span class="n">chksum</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">lstart</span><span class="p">:</span><span class="n">lend</span><span class="p">])</span>
+            <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ck</span>
+
+            <span class="c1"># Handling TCP over IPv4</span>
+            <span class="k">if</span> <span class="s2">&quot;TCP&quot;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;proto&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="c1"># We build a false IP header</span>
+                <span class="n">fake_hdr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                    <span class="s1">&#39;!4s4sHH&#39;</span><span class="p">,</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;src&quot;</span><span class="p">]),</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;addr&quot;</span><span class="p">]),</span>
+                    <span class="mi">6</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;TCP&quot;</span><span class="p">]))</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;TCP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0x0000&#39;</span>
+                <span class="n">ck</span> <span class="o">=</span> <span class="n">chksum</span><span class="p">(</span>
+                    <span class="n">fake_hdr</span> <span class="o">+</span> <span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;TCP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">14</span><span class="p">:])</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;TCP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ck</span>
+                <span class="k">return</span> <span class="n">packet</span>
+
+            <span class="c1"># Handling ICMP over IPv4</span>
+            <span class="k">elif</span> <span class="s1">&#39;ICMP&#39;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;proto&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;ICMP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0x0000&#39;</span>
+                <span class="n">ck</span> <span class="o">=</span> <span class="n">chksum</span><span class="p">(</span><span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;ICMP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">14</span><span class="p">:])</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;ICMP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ck</span>
+                <span class="k">return</span> <span class="n">packet</span>
+
+            <span class="c1"># Handling UDP over IPv4</span>
+            <span class="k">elif</span> <span class="s1">&#39;UDP&#39;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;proto&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">17</span><span class="p">:</span>
+                <span class="c1"># We build a false IP header</span>
+                <span class="n">fake_hdr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                    <span class="s1">&#39;!4s4sHH&#39;</span><span class="p">,</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;src&quot;</span><span class="p">]),</span>
+                    <span class="n">socket</span><span class="o">.</span><span class="n">inet_aton</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IP&quot;</span><span class="p">][</span><span class="s2">&quot;addr&quot;</span><span class="p">]),</span>
+                    <span class="mi">17</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;UDP&quot;</span><span class="p">]))</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;UDP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0x0000&#39;</span>
+                <span class="n">ck</span> <span class="o">=</span> <span class="n">chksum</span><span class="p">(</span>
+                    <span class="n">fake_hdr</span> <span class="o">+</span> <span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;UDP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">14</span><span class="p">:])</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;UDP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ck</span>
+                <span class="k">return</span> <span class="n">packet</span>
+
+        <span class="c1"># Calculation of checksums for different layers on IPv6</span>
+        <span class="k">elif</span> <span class="s1">&#39;IPV6&#39;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;version&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+
+            <span class="c1"># Handling TCP over IPv6</span>
+            <span class="k">if</span> <span class="s2">&quot;TCP&quot;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;nxt&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="c1"># We build a false IPV6 fake header</span>
+                <span class="n">fake_hdr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                    <span class="s1">&#39;!16s16sHH&#39;</span><span class="p">,</span>
+                    <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;src&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">packed</span><span class="p">,</span>
+                    <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;addr&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">packed</span><span class="p">,</span>
+                    <span class="mi">6</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;TCP&quot;</span><span class="p">]))</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;TCP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0x0000&#39;</span>
+                <span class="n">ck</span> <span class="o">=</span> <span class="n">chksum</span><span class="p">(</span>
+                    <span class="n">fake_hdr</span> <span class="o">+</span> <span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;TCP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">14</span><span class="p">:])</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;TCP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ck</span>
+                <span class="k">return</span> <span class="n">packet</span>
+
+            <span class="c1"># Handling ICMPV6 over IPv6</span>
+            <span class="k">elif</span> <span class="s1">&#39;ICMPV6&#39;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;nxt&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">58</span><span class="p">:</span>
+                <span class="c1"># We build a false IPV6 header</span>
+                <span class="n">fake_hdr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                    <span class="s1">&#39;!16s16sHH&#39;</span><span class="p">,</span>
+                    <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;src&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">packed</span><span class="p">,</span>
+                    <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;addr&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">packed</span><span class="p">,</span>
+                    <span class="mi">58</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;ICMPV6&quot;</span><span class="p">]))</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;ICMPV6&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0x0000&#39;</span>
+                <span class="n">ck</span> <span class="o">=</span> <span class="n">chksum</span><span class="p">(</span>
+                    <span class="n">fake_hdr</span> <span class="o">+</span> <span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;ICMPV6&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">14</span><span class="p">:])</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;ICMPV6&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ck</span>
+                <span class="k">return</span> <span class="n">packet</span>
+
+            <span class="c1"># Handling UDP over IPv6</span>
+            <span class="k">elif</span> <span class="s1">&#39;UDP&#39;</span> <span class="ow">in</span> <span class="n">pkt_layers</span> <span class="ow">and</span> <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;nxt&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">17</span><span class="p">:</span>
+                <span class="c1"># We build a false IPV6 header</span>
+                <span class="n">fake_hdr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span>
+                    <span class="s1">&#39;!16s16sHH&#39;</span><span class="p">,</span>
+                    <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;src&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">packed</span><span class="p">,</span>
+                    <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;IPV6&quot;</span><span class="p">][</span><span class="s2">&quot;addr&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">packed</span><span class="p">,</span>
+                    <span class="mi">17</span><span class="p">,</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="n">packet</span><span class="p">[</span><span class="s2">&quot;UDP&quot;</span><span class="p">]))</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;UDP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;0x0000&#39;</span>
+                <span class="n">ck</span> <span class="o">=</span> <span class="n">chksum</span><span class="p">(</span>
+                    <span class="n">fake_hdr</span> <span class="o">+</span> <span class="n">packet</span><span class="o">.</span><span class="n">raw</span><span class="p">[</span><span class="n">packet</span><span class="p">[</span><span class="s1">&#39;UDP&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span><span class="o">.</span><span class="n">start</span> <span class="o">-</span> <span class="mi">14</span><span class="p">:])</span>
+                <span class="n">packet</span><span class="p">[</span><span class="s2">&quot;UDP&quot;</span><span class="p">][</span><span class="s2">&quot;checksum&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ck</span>
+                <span class="k">return</span> <span class="n">packet</span>
+
+        <span class="c1"># If no condition is met we return the original package</span>
+        <span class="k">return</span> <span class="n">packet</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

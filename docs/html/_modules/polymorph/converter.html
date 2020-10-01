@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.converter &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.converter</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2020 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">import</span> <span class="nn">ipaddress</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="k">import</span> <span class="n">wrap</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timezone</span>
+<span class="kn">from</span> <span class="nn">dateutil</span> <span class="k">import</span> <span class="n">parser</span>
+<span class="kn">from</span> <span class="nn">polymorph.ftype</span> <span class="k">import</span> <span class="n">Ftype</span>
+
+
+<div class="viewcode-block" id="Converter"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter">[docs]</a><span class="k">class</span> <span class="nc">Converter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class facilitates the conversion between different data types.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Converter.raw2intbe"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2intbe">[docs]</a>    <span class="k">def</span> <span class="nf">raw2intbe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a set of bytes to Ftype.FT_INT_BE format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.intbe2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.intbe2raw">[docs]</a>    <span class="k">def</span> <span class="nf">intbe2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert Ftype.FT_INT_BE to a set of bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">field</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">fsize</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.raw2intle"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2intle">[docs]</a>    <span class="k">def</span> <span class="nf">raw2intle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a set of bytes to Ftype.FT_INT_LE format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.intle2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.intle2raw">[docs]</a>    <span class="k">def</span> <span class="nf">intle2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert Ftype.FT_INT_LE to a set of bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">field</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">fsize</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.raw2bin"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2bin">[docs]</a>    <span class="k">def</span> <span class="nf">raw2bin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert a set of bytes to Ftype.FT_BIN format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_bin</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="n">order</span><span class="p">),</span>
+                         <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">fsize</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+        <span class="n">mask_bin</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">fsize</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+        <span class="n">trail_zeros</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_bin</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_bin</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">num_bin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">int</span><span class="p">(</span><span class="n">mask_bin</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">&gt;&gt;</span> <span class="n">trail_zeros</span></div>
+
+<div class="viewcode-block" id="Converter.raw2maskbin"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2maskbin">[docs]</a>    <span class="k">def</span> <span class="nf">raw2maskbin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">prev_mask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_BIN format for a field</span>
+<span class="sd">        whose mask is defined by the previous field.&quot;&quot;&quot;</span>
+        <span class="n">prev_mask_bin</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="n">prev_mask</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">fsize</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+        <span class="n">inv_mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="o">*</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">fsize</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">new_mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">prev_mask_bin</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">^</span> <span class="n">inv_mask</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">raw2bin</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">new_mask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="p">),</span> <span class="n">new_mask</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.bin2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.bin2raw">[docs]</a>    <span class="k">def</span> <span class="nf">bin2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert Ftype.FT_BIN to a set of bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask_bin</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">fsize</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+        <span class="n">trail_zeros</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_bin</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">mask_bin</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">))</span>
+        <span class="n">field_bin_inv</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="n">field</span> <span class="o">&lt;&lt;</span> <span class="n">trail_zeros</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">fsize</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+        <span class="n">ones</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mask_bin</span><span class="p">))</span> <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">]</span>
+        <span class="n">old_val</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="n">order</span><span class="p">),</span>
+                         <span class="s2">&quot;0&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">8</span><span class="o">*</span><span class="n">fsize</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+        <span class="n">new_val</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span>
+            <span class="n">old_val</span><span class="p">[:</span><span class="n">ones</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="n">field_bin_inv</span><span class="p">[</span><span class="n">ones</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">ones</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+</span> <span class="n">old_val</span><span class="p">[</span><span class="n">ones</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:],</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_val</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">fsize</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.raw2hex"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2hex">[docs]</a>    <span class="k">def</span> <span class="nf">raw2hex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_HEX format.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">),</span> <span class="s2">&quot;#0x&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.hex2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.hex2raw">[docs]</a>    <span class="k">def</span> <span class="nf">hex2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts Ftype.FT_HEX to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">field</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0x&quot;</span><span class="p">:</span>
+            <span class="n">zeros</span> <span class="o">=</span> <span class="n">fsize</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+            <span class="k">return</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s2">&quot;0&quot;</span> <span class="o">*</span> <span class="n">zeros</span> <span class="o">+</span> <span class="n">field</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="n">zeros</span> <span class="o">=</span> <span class="n">fsize</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s2">&quot;0&quot;</span> <span class="o">*</span> <span class="n">zeros</span> <span class="o">+</span> <span class="n">field</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.raw2string"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2string">[docs]</a>    <span class="k">def</span> <span class="nf">raw2string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_STRING format.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">fraw</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.string2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.string2raw">[docs]</a>    <span class="k">def</span> <span class="nf">string2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a Ftype.FT_STRING to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">field</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.raw2ether"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2ether">[docs]</a>    <span class="k">def</span> <span class="nf">raw2ether</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_BYTES format.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrap</span><span class="p">(</span><span class="n">fraw</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span> <span class="mi">2</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Converter.ether2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.ether2raw">[docs]</a>    <span class="k">def</span> <span class="nf">ether2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts Ftype.FT_BYTES to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Converter.raw2eui64"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2eui64">[docs]</a>    <span class="k">def</span> <span class="nf">raw2eui64</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_EUI64 format.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;:&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrap</span><span class="p">(</span><span class="n">fraw</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Converter.eui642raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.eui642raw">[docs]</a>    <span class="k">def</span> <span class="nf">eui642raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts Ftype.FT_EUI64 format to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="Converter.raw2ipv4"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2ipv4">[docs]</a>    <span class="k">def</span> <span class="nf">raw2ipv4</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_IPV4 format.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Address</span><span class="p">(</span><span class="n">fraw</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Converter.ipv42raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.ipv42raw">[docs]</a>    <span class="k">def</span> <span class="nf">ipv42raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts Ftype.FT_IPV4 to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Address</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">packed</span></div>
+
+<div class="viewcode-block" id="Converter.raw2ipv6"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2ipv6">[docs]</a>    <span class="k">def</span> <span class="nf">raw2ipv6</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_IPV4 format.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">fraw</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Converter.ipv62raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.ipv62raw">[docs]</a>    <span class="k">def</span> <span class="nf">ipv62raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts Ftype.FT_IPV4 to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">packed</span></div>
+
+<div class="viewcode-block" id="Converter.raw2absolute"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2absolute">[docs]</a>    <span class="k">def</span> <span class="nf">raw2absolute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_ABSOLUTE_TIME format.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fsize</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
+                <span class="nb">int</span><span class="p">(</span><span class="n">fraw</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span> <span class="mi">16</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b </span><span class="si">%e</span><span class="s2">, %Y %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fsize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;ntp.&quot;</span> <span class="ow">in</span> <span class="n">fname</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">fraw</span><span class="o">.</span><span class="n">hex</span><span class="p">()[:</span><span class="mi">8</span><span class="p">],</span> <span class="mi">16</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2208988800</span><span class="p">,</span>
+                    <span class="n">tz</span><span class="o">=</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b </span><span class="si">%e</span><span class="s2">, %Y %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%b </span><span class="si">%e</span><span class="s2">, %Y %H:%M:%S.</span><span class="si">%f</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.absolute2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.absolute2raw">[docs]</a>    <span class="k">def</span> <span class="nf">absolute2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert Ftype.FT_ABSOLUTE_TIME to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fsize</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">fsize</span><span class="p">,</span> <span class="s1">&#39;big&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fsize</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s2">&quot;ntp.&quot;</span> <span class="ow">in</span> <span class="n">fname</span><span class="p">:</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">field</span> <span class="o">+</span> <span class="s2">&quot; UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span> <span class="o">+</span> <span class="mi">2208988800</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">dt</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;big&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">fraw</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dt</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">field</span><span class="p">)</span><span class="o">.</span><span class="n">timestamp</span><span class="p">()</span>
+                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">fsize</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.raw2relative"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.raw2relative">[docs]</a>    <span class="k">def</span> <span class="nf">raw2relative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fraw</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts a set of bytes to Ftype.FT_RELATIVE_TIME format.&quot;&quot;&quot;</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="s1">&#39;big&#39;</span><span class="p">),</span> <span class="s2">&quot;&lt;016&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">time</span><span class="p">[:</span><span class="mi">7</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">time</span><span class="p">[</span><span class="mi">7</span><span class="p">:]</span></div>
+
+<div class="viewcode-block" id="Converter.relative2raw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.relative2raw">[docs]</a>    <span class="k">def</span> <span class="nf">relative2raw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Converts Ftype.FT_RELATIVE_TIME to a set of bytes.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">fsize</span><span class="p">,</span> <span class="s1">&#39;big&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.get_frepr"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.get_frepr">[docs]</a>    <span class="k">def</span> <span class="nf">get_frepr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the representation of a field from its value in bytes.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_BE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2intbe</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_LE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2intle</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_STRING</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2string</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BYTES</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">fraw</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BIN_BE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2bin</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BIN_LE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2bin</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_ETHER</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2ether</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_IPv4</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2ipv4</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_IPv6</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2ipv6</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_ABSOLUTE_TIME</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2absolute</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_RELATIVE_TIME</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2relative</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_EUI64</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw2eui64</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Converter.get_fraw"><a class="viewcode-back" href="../../polymorph.html#polymorph.converter.Converter.get_fraw">[docs]</a>    <span class="k">def</span> <span class="nf">get_fraw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">ftype</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the field value in bytes from its representation.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_BE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intbe2raw</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_LE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intle2raw</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_STRING</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string2raw</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BYTES</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">field</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BIN_BE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin2raw</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BIN_LE</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin2raw</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">hex2raw</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_ETHER</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ether2raw</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_IPv4</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ipv42raw</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_IPv6</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ipv62raw</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_ABSOLUTE_TIME</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">absolute2raw</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_RELATIVE_TIME</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative2raw</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">fsize</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_EUI64</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eui642raw</span><span class="p">(</span><span class="n">field</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,164 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.ftype &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.ftype</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2020 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+
+
+<div class="viewcode-block" id="Ttype"><a class="viewcode-back" href="../../polymorph.html#polymorph.ftype.Ttype">[docs]</a><span class="k">class</span> <span class="nc">Ttype</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Enum of types used by Tshark for network packet fields.&quot;&quot;&quot;</span>
+    <span class="n">FT_HEX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">FT_NONE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">FT_PROTOCOL</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">FT_BOOLEAN</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">FT_CHAR</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">FT_UINT8</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">FT_UINT16</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">FT_UINT24</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">FT_UINT32</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">FT_UINT40</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">FT_UINT48</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">FT_UINT56</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">FT_UINT64</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">FT_INT8</span> <span class="o">=</span> <span class="mi">12</span>
+    <span class="n">FT_INT16</span> <span class="o">=</span> <span class="mi">13</span>
+    <span class="n">FT_INT24</span> <span class="o">=</span> <span class="mi">14</span>
+    <span class="n">FT_INT32</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">FT_INT40</span> <span class="o">=</span> <span class="mi">16</span>
+    <span class="n">FT_INT48</span> <span class="o">=</span> <span class="mi">17</span>
+    <span class="n">FT_INT56</span> <span class="o">=</span> <span class="mi">18</span>
+    <span class="n">FT_INT64</span> <span class="o">=</span> <span class="mi">19</span>
+    <span class="n">FT_IEEE_11073_SFLOAT</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">FT_IEEE_11073_FLOAT</span> <span class="o">=</span> <span class="mi">21</span>
+    <span class="n">FT_FLOAT</span> <span class="o">=</span> <span class="mi">22</span>
+    <span class="n">FT_DOUBLE</span> <span class="o">=</span> <span class="mi">23</span>
+    <span class="n">FT_ABSOLUTE_TIME</span> <span class="o">=</span> <span class="mi">24</span>
+    <span class="n">FT_RELATIVE_TIME</span> <span class="o">=</span> <span class="mi">25</span>
+    <span class="n">FT_STRING</span> <span class="o">=</span> <span class="mi">26</span>
+    <span class="n">FT_STRINGZ</span> <span class="o">=</span> <span class="mi">27</span>
+    <span class="n">FT_UINT_STRING</span> <span class="o">=</span> <span class="mi">28</span>
+    <span class="n">FT_ETHER</span> <span class="o">=</span> <span class="mi">29</span>
+    <span class="n">FT_BYTES</span> <span class="o">=</span> <span class="mi">30</span>
+    <span class="n">FT_UINT_BYTES</span> <span class="o">=</span> <span class="mi">31</span>
+    <span class="n">FT_IPv4</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="n">FT_IPv6</span> <span class="o">=</span> <span class="mi">33</span>
+    <span class="n">FT_IPXNET</span> <span class="o">=</span> <span class="mi">34</span>
+    <span class="n">FT_FRAMENUM</span> <span class="o">=</span> <span class="mi">35</span>
+    <span class="n">FT_PCRE</span> <span class="o">=</span> <span class="mi">36</span>
+    <span class="n">FT_GUID</span> <span class="o">=</span> <span class="mi">37</span>
+    <span class="n">FT_OID</span> <span class="o">=</span> <span class="mi">38</span>
+    <span class="n">FT_EUI64</span> <span class="o">=</span> <span class="mi">39</span>
+    <span class="n">FT_AX25</span> <span class="o">=</span> <span class="mi">40</span>
+    <span class="n">FT_VINES</span> <span class="o">=</span> <span class="mi">41</span>
+    <span class="n">FT_REL_OID</span> <span class="o">=</span> <span class="mi">42</span>
+    <span class="n">FT_SYSTEM_ID</span> <span class="o">=</span> <span class="mi">43</span>
+    <span class="n">FT_STRINGZPAD</span> <span class="o">=</span> <span class="mi">44</span>
+    <span class="n">FT_FCWWN</span> <span class="o">=</span> <span class="mi">45</span>
+    <span class="n">FT_NUM_TYPES</span> <span class="o">=</span> <span class="mi">46</span></div>
+
+
+<div class="viewcode-block" id="Ftype"><a class="viewcode-back" href="../../polymorph.html#polymorph.ftype.Ftype">[docs]</a><span class="k">class</span> <span class="nc">Ftype</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Enum of types used by Polymorph for network packet fields.&quot;&quot;&quot;</span>
+    <span class="n">FT_INT_BE</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># Int big endian</span>
+    <span class="n">FT_INT_LE</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Int little endian</span>
+    <span class="n">FT_STRING</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">FT_BYTES</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">FT_BIN_BE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">FT_BIN_LE</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">FT_HEX</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">FT_ETHER</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">FT_IPv4</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">FT_IPv6</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">FT_ABSOLUTE_TIME</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">FT_RELATIVE_TIME</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">FT_EUI64</span> <span class="o">=</span> <span class="mi">12</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

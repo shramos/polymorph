@@ -1,0 +1,15 @@
+#!python
+
+# File from polymorph project
+# Copyright (C) 2018 Santiago Hernandez Ramos <shramos@protonmail.com>
+# For more information about the project: https://github.com/shramos/polymorph
+
+from polymorph.UI.maininterface import MainInterface
+from polymorph.UI.banners import get_banner
+
+if __name__ == "__main__":
+    # Printting the banner
+    print(get_banner())
+    # Starting the main interface
+    m = MainInterface()
+    m.run()

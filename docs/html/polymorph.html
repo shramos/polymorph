@@ -1,0 +1,1489 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph package &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="polymorph-package">
+<h1>polymorph package<a class="headerlink" href="#polymorph-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="polymorph.UI.html">polymorph.UI package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.banners">polymorph.UI.banners module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.command_parser">polymorph.UI.command_parser module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.fieldinterface">polymorph.UI.fieldinterface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.interface">polymorph.UI.interface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.layerinterface">polymorph.UI.layerinterface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.maininterface">polymorph.UI.maininterface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.templateinterface">polymorph.UI.templateinterface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI.tlistinterface">polymorph.UI.tlistinterface module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.UI.html#module-polymorph.UI">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="polymorph.functions.html">polymorph.functions package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.functions.html#module-polymorph.functions">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="polymorph.spoofs.html">polymorph.spoofs package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.spoofs.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.spoofs.html#module-polymorph.spoofs.arpspoof">polymorph.spoofs.arpspoof module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.spoofs.html#module-polymorph.spoofs.poison">polymorph.spoofs.poison module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="polymorph.spoofs.html#module-polymorph.spoofs">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-polymorph.converter">
+<span id="polymorph-converter-module"></span><h2>polymorph.converter module<a class="headerlink" href="#module-polymorph.converter" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.converter.Converter">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.converter.</code><code class="sig-name descname">Converter</code><a class="reference internal" href="_modules/polymorph/converter.html#Converter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class facilitates the conversion between different data types.</p>
+<dl class="py method">
+<dt id="polymorph.converter.Converter.absolute2raw">
+<code class="sig-name descname">absolute2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">fraw</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.absolute2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.absolute2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Ftype.FT_ABSOLUTE_TIME to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.bin2raw">
+<code class="sig-name descname">bin2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">fraw</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">'big'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.bin2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.bin2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Ftype.FT_BIN to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.ether2raw">
+<code class="sig-name descname">ether2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.ether2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.ether2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Ftype.FT_BYTES to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.eui642raw">
+<code class="sig-name descname">eui642raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.eui642raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.eui642raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Ftype.FT_EUI64 format to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.get_fraw">
+<code class="sig-name descname">get_fraw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">ftype</span></em>, <em class="sig-param"><span class="n">fraw</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">fmask</span></em>, <em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.get_fraw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.get_fraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the field value in bytes from its representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.get_frepr">
+<code class="sig-name descname">get_frepr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ftype</span></em>, <em class="sig-param"><span class="n">fraw</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">fmask</span></em>, <em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.get_frepr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.get_frepr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the representation of a field from its value in bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.hex2raw">
+<code class="sig-name descname">hex2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">fsize</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.hex2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.hex2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Ftype.FT_HEX to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.intbe2raw">
+<code class="sig-name descname">intbe2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">fsize</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.intbe2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.intbe2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Ftype.FT_INT_BE to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.intle2raw">
+<code class="sig-name descname">intle2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">fsize</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.intle2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.intle2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Ftype.FT_INT_LE to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.ipv42raw">
+<code class="sig-name descname">ipv42raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.ipv42raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.ipv42raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Ftype.FT_IPV4 to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.ipv62raw">
+<code class="sig-name descname">ipv62raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.ipv62raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.ipv62raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Ftype.FT_IPV4 to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2absolute">
+<code class="sig-name descname">raw2absolute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2absolute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2absolute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_ABSOLUTE_TIME format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2bin">
+<code class="sig-name descname">raw2bin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">'big'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a set of bytes to Ftype.FT_BIN format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2ether">
+<code class="sig-name descname">raw2ether</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2ether"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2ether" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_BYTES format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2eui64">
+<code class="sig-name descname">raw2eui64</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2eui64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2eui64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_EUI64 format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2hex">
+<code class="sig-name descname">raw2hex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_HEX format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2intbe">
+<code class="sig-name descname">raw2intbe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2intbe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2intbe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a set of bytes to Ftype.FT_INT_BE format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2intle">
+<code class="sig-name descname">raw2intle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2intle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2intle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a set of bytes to Ftype.FT_INT_LE format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2ipv4">
+<code class="sig-name descname">raw2ipv4</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2ipv4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2ipv4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_IPV4 format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2ipv6">
+<code class="sig-name descname">raw2ipv6</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2ipv6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2ipv6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_IPV4 format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2maskbin">
+<code class="sig-name descname">raw2maskbin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em>, <em class="sig-param"><span class="n">prev_mask</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">'big'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2maskbin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2maskbin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_BIN format for a field
+whose mask is defined by the previous field.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2relative">
+<code class="sig-name descname">raw2relative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2relative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2relative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_RELATIVE_TIME format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.raw2string">
+<code class="sig-name descname">raw2string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fraw</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.raw2string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.raw2string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a set of bytes to Ftype.FT_STRING format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.relative2raw">
+<code class="sig-name descname">relative2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em>, <em class="sig-param"><span class="n">fsize</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.relative2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.relative2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts Ftype.FT_RELATIVE_TIME to a set of bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.converter.Converter.string2raw">
+<code class="sig-name descname">string2raw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/converter.html#Converter.string2raw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.converter.Converter.string2raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a Ftype.FT_STRING to a set of bytes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.ftype">
+<span id="polymorph-ftype-module"></span><h2>polymorph.ftype module<a class="headerlink" href="#module-polymorph.ftype" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.ftype.Ftype">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.ftype.</code><code class="sig-name descname">Ftype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/ftype.html#Ftype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.ftype.Ftype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum of types used by Polymorph for network packet fields.</p>
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_ABSOLUTE_TIME">
+<code class="sig-name descname">FT_ABSOLUTE_TIME</code><em class="property"> = 10</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_ABSOLUTE_TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_BIN_BE">
+<code class="sig-name descname">FT_BIN_BE</code><em class="property"> = 4</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_BIN_BE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_BIN_LE">
+<code class="sig-name descname">FT_BIN_LE</code><em class="property"> = 5</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_BIN_LE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_BYTES">
+<code class="sig-name descname">FT_BYTES</code><em class="property"> = 3</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_BYTES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_ETHER">
+<code class="sig-name descname">FT_ETHER</code><em class="property"> = 7</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_ETHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_EUI64">
+<code class="sig-name descname">FT_EUI64</code><em class="property"> = 12</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_EUI64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_HEX">
+<code class="sig-name descname">FT_HEX</code><em class="property"> = 6</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_HEX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_INT_BE">
+<code class="sig-name descname">FT_INT_BE</code><em class="property"> = 0</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_INT_BE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_INT_LE">
+<code class="sig-name descname">FT_INT_LE</code><em class="property"> = 1</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_INT_LE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_IPv4">
+<code class="sig-name descname">FT_IPv4</code><em class="property"> = 8</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_IPv4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_IPv6">
+<code class="sig-name descname">FT_IPv6</code><em class="property"> = 9</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_IPv6" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_RELATIVE_TIME">
+<code class="sig-name descname">FT_RELATIVE_TIME</code><em class="property"> = 11</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_RELATIVE_TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ftype.FT_STRING">
+<code class="sig-name descname">FT_STRING</code><em class="property"> = 2</em><a class="headerlink" href="#polymorph.ftype.Ftype.FT_STRING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="polymorph.ftype.Ttype">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.ftype.</code><code class="sig-name descname">Ttype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/ftype.html#Ttype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.ftype.Ttype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>Enum of types used by Tshark for network packet fields.</p>
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_ABSOLUTE_TIME">
+<code class="sig-name descname">FT_ABSOLUTE_TIME</code><em class="property"> = 24</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_ABSOLUTE_TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_AX25">
+<code class="sig-name descname">FT_AX25</code><em class="property"> = 40</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_AX25" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_BOOLEAN">
+<code class="sig-name descname">FT_BOOLEAN</code><em class="property"> = 2</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_BOOLEAN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_BYTES">
+<code class="sig-name descname">FT_BYTES</code><em class="property"> = 30</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_BYTES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_CHAR">
+<code class="sig-name descname">FT_CHAR</code><em class="property"> = 3</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_CHAR" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_DOUBLE">
+<code class="sig-name descname">FT_DOUBLE</code><em class="property"> = 23</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_DOUBLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_ETHER">
+<code class="sig-name descname">FT_ETHER</code><em class="property"> = 29</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_ETHER" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_EUI64">
+<code class="sig-name descname">FT_EUI64</code><em class="property"> = 39</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_EUI64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_FCWWN">
+<code class="sig-name descname">FT_FCWWN</code><em class="property"> = 45</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_FCWWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_FLOAT">
+<code class="sig-name descname">FT_FLOAT</code><em class="property"> = 22</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_FLOAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_FRAMENUM">
+<code class="sig-name descname">FT_FRAMENUM</code><em class="property"> = 35</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_FRAMENUM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_GUID">
+<code class="sig-name descname">FT_GUID</code><em class="property"> = 37</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_GUID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_HEX">
+<code class="sig-name descname">FT_HEX</code><em class="property"> = -1</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_HEX" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_IEEE_11073_FLOAT">
+<code class="sig-name descname">FT_IEEE_11073_FLOAT</code><em class="property"> = 21</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_IEEE_11073_FLOAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_IEEE_11073_SFLOAT">
+<code class="sig-name descname">FT_IEEE_11073_SFLOAT</code><em class="property"> = 20</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_IEEE_11073_SFLOAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT16">
+<code class="sig-name descname">FT_INT16</code><em class="property"> = 13</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT24">
+<code class="sig-name descname">FT_INT24</code><em class="property"> = 14</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT24" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT32">
+<code class="sig-name descname">FT_INT32</code><em class="property"> = 15</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT40">
+<code class="sig-name descname">FT_INT40</code><em class="property"> = 16</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT40" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT48">
+<code class="sig-name descname">FT_INT48</code><em class="property"> = 17</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT48" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT56">
+<code class="sig-name descname">FT_INT56</code><em class="property"> = 18</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT56" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT64">
+<code class="sig-name descname">FT_INT64</code><em class="property"> = 19</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_INT8">
+<code class="sig-name descname">FT_INT8</code><em class="property"> = 12</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_INT8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_IPXNET">
+<code class="sig-name descname">FT_IPXNET</code><em class="property"> = 34</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_IPXNET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_IPv4">
+<code class="sig-name descname">FT_IPv4</code><em class="property"> = 32</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_IPv4" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_IPv6">
+<code class="sig-name descname">FT_IPv6</code><em class="property"> = 33</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_IPv6" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_NONE">
+<code class="sig-name descname">FT_NONE</code><em class="property"> = 0</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_NONE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_NUM_TYPES">
+<code class="sig-name descname">FT_NUM_TYPES</code><em class="property"> = 46</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_NUM_TYPES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_OID">
+<code class="sig-name descname">FT_OID</code><em class="property"> = 38</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_OID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_PCRE">
+<code class="sig-name descname">FT_PCRE</code><em class="property"> = 36</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_PCRE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_PROTOCOL">
+<code class="sig-name descname">FT_PROTOCOL</code><em class="property"> = 1</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_PROTOCOL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_RELATIVE_TIME">
+<code class="sig-name descname">FT_RELATIVE_TIME</code><em class="property"> = 25</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_RELATIVE_TIME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_REL_OID">
+<code class="sig-name descname">FT_REL_OID</code><em class="property"> = 42</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_REL_OID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_STRING">
+<code class="sig-name descname">FT_STRING</code><em class="property"> = 26</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_STRING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_STRINGZ">
+<code class="sig-name descname">FT_STRINGZ</code><em class="property"> = 27</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_STRINGZ" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_STRINGZPAD">
+<code class="sig-name descname">FT_STRINGZPAD</code><em class="property"> = 44</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_STRINGZPAD" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_SYSTEM_ID">
+<code class="sig-name descname">FT_SYSTEM_ID</code><em class="property"> = 43</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_SYSTEM_ID" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT16">
+<code class="sig-name descname">FT_UINT16</code><em class="property"> = 5</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT16" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT24">
+<code class="sig-name descname">FT_UINT24</code><em class="property"> = 6</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT24" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT32">
+<code class="sig-name descname">FT_UINT32</code><em class="property"> = 7</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT32" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT40">
+<code class="sig-name descname">FT_UINT40</code><em class="property"> = 8</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT40" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT48">
+<code class="sig-name descname">FT_UINT48</code><em class="property"> = 9</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT48" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT56">
+<code class="sig-name descname">FT_UINT56</code><em class="property"> = 10</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT56" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT64">
+<code class="sig-name descname">FT_UINT64</code><em class="property"> = 11</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT64" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT8">
+<code class="sig-name descname">FT_UINT8</code><em class="property"> = 4</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT8" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT_BYTES">
+<code class="sig-name descname">FT_UINT_BYTES</code><em class="property"> = 31</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT_BYTES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_UINT_STRING">
+<code class="sig-name descname">FT_UINT_STRING</code><em class="property"> = 28</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_UINT_STRING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="polymorph.ftype.Ttype.FT_VINES">
+<code class="sig-name descname">FT_VINES</code><em class="property"> = 41</em><a class="headerlink" href="#polymorph.ftype.Ttype.FT_VINES" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.interceptor">
+<span id="polymorph-interceptor-module"></span><h2>polymorph.interceptor module<a class="headerlink" href="#module-polymorph.interceptor" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.interceptor.Interceptor">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.interceptor.</code><code class="sig-name descname">Interceptor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">template</span></em>, <em class="sig-param"><span class="n">iptables_rule</span><span class="o">=</span><span class="default_value">'iptables -A FORWARD -j NFQUEUE --queue-num 1'</span></em>, <em class="sig-param"><span class="n">ip6tables_rule</span><span class="o">=</span><span class="default_value">'ip6tables -A FORWARD -j NFQUEUE --queue-num 1'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/interceptor.html#Interceptor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.interceptor.Interceptor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This is the class responsible for intercepting packets in real time,
+interpreting these packets, interpreting the custom functions of the
+template and forwarding the modified packet to the target machine.</p>
+<dl class="py method">
+<dt id="polymorph.interceptor.Interceptor.clean_iptables">
+<code class="sig-name descname">clean_iptables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/interceptor.html#Interceptor.clean_iptables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.interceptor.Interceptor.clean_iptables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.interceptor.Interceptor.intercept">
+<code class="sig-name descname">intercept</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/interceptor.html#Interceptor.intercept"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.interceptor.Interceptor.intercept" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method intercepts the packets and send them to a callback
+function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.interceptor.Interceptor.linux_modify">
+<code class="sig-name descname">linux_modify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/interceptor.html#Interceptor.linux_modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.interceptor.Interceptor.linux_modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the callback method that will be called when a packet
+is intercepted. It is responsible of executing the custom functions
+of the <cite>Template</cite>.</p>
+<dl>
+<dt>packet<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Packet</span></code></span></dt><dd><p>Netfilterqueue packet object. The packet that is intercepted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.interceptor.Interceptor.set_iptables_rules">
+<code class="sig-name descname">set_iptables_rules</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/interceptor.html#Interceptor.set_iptables_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.interceptor.Interceptor.set_iptables_rules" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.interceptor.Interceptor.windows_modify">
+<code class="sig-name descname">windows_modify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">packet</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">pydivert</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/interceptor.html#Interceptor.windows_modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.interceptor.Interceptor.windows_modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the callback method that will be called when a packet
+is intercepted. It is responsible of executing the custom functions
+of the <cite>Template</cite>.</p>
+<dl>
+<dt>packet<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Packet</span></code></span></dt><dd><p>Netfilterqueue packet object. The packet that is intercepted.</p>
+</dd>
+<dt>w<span class="classifier">pointer</span></dt><dd><p>windiver pointer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.packet">
+<span id="polymorph-packet-module"></span><h2>polymorph.packet module<a class="headerlink" href="#module-polymorph.packet" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.packet.Packet">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.packet.</code><code class="sig-name descname">Packet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">template</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/packet.html#Packet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.packet.Packet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class encapsulates the packets intercepted by nfqueue in such
+a way that they are easily accessible by the users.</p>
+<dl class="py method">
+<dt id="polymorph.packet.Packet.get_payload">
+<code class="sig-name descname">get_payload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/packet.html#Packet.get_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.packet.Packet.get_payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the payload of the packet in bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.packet.Packet.global_var">
+<code class="sig-name descname">global_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">default</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/packet.html#Packet.global_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.packet.Packet.global_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a global variable.</p>
+<dl class="simple">
+<dt>name: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>The name of the global variable.</p>
+</dd>
+<dt>default: :obj</dt><dd><p>The default value of the global variable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.packet.Packet.insert">
+<code class="sig-name descname">insert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index1</span></em>, <em class="sig-param"><span class="n">index2</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/packet.html#Packet.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.packet.Packet.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts a value between two index in the payload.</p>
+<dl class="simple">
+<dt>index1: int</dt><dd><p>First index in the payload.</p>
+</dd>
+<dt>index2: int</dt><dd><p>Second index in the payload.</p>
+</dd>
+<dt>value: <code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></dt><dd><p>Value to insert in the payload.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.packet.Packet.raw">
+<em class="property">property </em><code class="sig-name descname">raw</code><a class="headerlink" href="#polymorph.packet.Packet.raw" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code>: Packet bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.packet.Packet.set_payload">
+<code class="sig-name descname">set_payload</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/packet.html#Packet.set_payload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.packet.Packet.set_payload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the payload of the packet.</p>
+<dl>
+<dt>payload<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytes</span></code></span></dt><dd><p>The packet in bytes without the ethernet layer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="polymorph.packet.PacketLayer">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.packet.</code><code class="sig-name descname">PacketLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tlayer</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/packet.html#PacketLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.packet.PacketLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class encapsulates de Template layers, so the user can access the
+content of the intercepted packet in an easy an intuitive way.</p>
+<dl class="py method">
+<dt id="polymorph.packet.PacketLayer.slice">
+<em class="property">property </em><code class="sig-name descname">slice</code><a class="headerlink" href="#polymorph.packet.PacketLayer.slice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.template">
+<span id="polymorph-template-module"></span><h2>polymorph.template module<a class="headerlink" href="#module-polymorph.template" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.template.Template">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.template.</code><code class="sig-name descname">Template</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">raw</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">from_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">description</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">version</span><span class="o">=</span><span class="default_value">'0.1'</span></em>, <em class="sig-param"><span class="n">layers</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main class that represents a template</p>
+<dl class="py method">
+<dt id="polymorph.template.Template.add_function">
+<code class="sig-name descname">add_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.add_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.add_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new function that will be executed when intercepting packets.</p>
+<dl>
+<dt>name<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Name to identify the function in the <cite>Template</cite>.</p>
+</dd>
+<dt>func<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function</span></code></span></dt><dd><p>Pointer to a function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.addlayer">
+<code class="sig-name descname">addlayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layer</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.addlayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.addlayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a <cite>TLayer</cite> to the actual <cite>Template</cite>.</p>
+<p>If a <cite>TLayer</cite> with the same name is already in the <cite>Template</cite>,
+we append a random 3 digit number to the name.</p>
+<dl>
+<dt>layer<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tlayer</span></code></span></dt><dd><p>Layer that will be added to the <cite>Template</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.change_func_pos">
+<code class="sig-name descname">change_func_pos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">element</span></em>, <em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.change_func_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.change_func_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the position of a particular function.</p>
+<dl class="simple">
+<dt>element: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name of the function to change.</p>
+</dd>
+<dt>index: int</dt><dd><p>New index of the function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.del_function">
+<code class="sig-name descname">del_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.del_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.del_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a function.</p>
+<dl>
+<dt>name<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Name of the function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.dellayer">
+<code class="sig-name descname">dellayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layer</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.dellayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.dellayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a <cite>TLayer</cite> from the <cite>Template</cite>.</p>
+<dl>
+<dt>layer<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tlayer</span></code>, str</span></dt><dd><p>Layer that will be deleted from the <cite>Template</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.description">
+<em class="property">property </em><code class="sig-name descname">description</code><a class="headerlink" href="#polymorph.template.Template.description" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Description of the <a class="reference internal" href="#polymorph.template.Template" title="polymorph.template.Template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Template</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.dict">
+<code class="sig-name descname">dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a dictionary with all the elements of the <cite>Template</cite>.</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#polymorph.template.Template.dict" title="polymorph.template.Template.dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a></dt><dd><p>Dictionary with all the fields and layers of the template.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.function_names">
+<code class="sig-name descname">function_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.function_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.function_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list with all the existing functions names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Obj</dt>
+<dd class="field-odd"><p><cite>list</cite> of :obj: <cite>str</cite>
+List with the function names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.get_function">
+<code class="sig-name descname">get_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.get_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.get_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a function object.</p>
+<dl>
+<dt>name<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Name of the function.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Obj</dt>
+<dd class="field-odd"><p><cite>function</cite>
+Function obtained.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.get_function_source">
+<code class="sig-name descname">get_function_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.get_function_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.get_function_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a function source code.</p>
+<dl>
+<dt>name<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Name of the function.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Obj</dt>
+<dd class="field-odd"><p><cite>str</cite>
+Source code of the function.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.getfieldvalhex">
+<code class="sig-name descname">getfieldvalhex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fieldname</span></em>, <em class="sig-param"><span class="n">layername</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.getfieldvalhex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.getfieldvalhex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the value in hexadecimal of a <cite>TField</cite> in a <cite>TLayer</cite>.</p>
+<dl class="simple">
+<dt>fieldname<span class="classifier">str</span></dt><dd><p>The name of the field.</p>
+</dd>
+<dt>layername<span class="classifier">str</span></dt><dd><p>The name of the layer.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>str</dt><dd><p>The value of the field encoded in hexadecimal.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.getlayer">
+<code class="sig-name descname">getlayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layername</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.getlayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.getlayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain a <cite>TLayer</cite> from the <cite>Template</cite>.</p>
+<dl class="simple">
+<dt>layername<span class="classifier">str</span></dt><dd><p>String with the name of a <cite>TLayer</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">TLayer</span></code></dt><dd><p>The object that has the name spicified.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></dt><dd><p>if there is no layer with the specified name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.getlayers">
+<code class="sig-name descname">getlayers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.getlayers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.getlayers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the <cite>TLayer</cite> in the <cite>Template</cite>.</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">TLayer</span></code></dt><dd><p>List of all <cite>TLayer</cite> in the <cite>Template</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.islayer">
+<code class="sig-name descname">islayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">layername</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.islayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.islayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if there is a layer with that name in the Template.</p>
+<dl class="simple">
+<dt>layername<span class="classifier">str</span></dt><dd><p>Name of the layer.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>bool</dt><dd><p>True if exists, False if not.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.layernames">
+<code class="sig-name descname">layernames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.layernames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.layernames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the names of the <cite>TLayer</cite> of which the <cite>Template</cite> is formed.</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>List with the names of the <cite>TLayer</cite> in <cite>str</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.layers">
+<em class="property">property </em><code class="sig-name descname">layers</code><a class="headerlink" href="#polymorph.template.Template.layers" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">TLayer</span></code>: Layers of which the template
+is composed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#polymorph.template.Template.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Name with which the template will be identified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.raw">
+<em class="property">property </em><code class="sig-name descname">raw</code><a class="headerlink" href="#polymorph.template.Template.raw" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytearray</span></code> : Packet content in raw (bytes representation).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.read">
+<code class="sig-name descname">read</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.read" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a <cite>Template</cite> from disk.</p>
+<dl class="simple">
+<dt>path: str</dt><dd><p>Path from which the template will be read.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print of the <cite>Template</cite> with field types.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.show_all_funcs">
+<code class="sig-name descname">show_all_funcs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.show_all_funcs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.show_all_funcs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print of the functions that are on disk.</p>
+<dl class="simple">
+<dt>verbose: bool</dt><dd><p>Indicate if the user want to print the source code of the
+functions.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.show_functions">
+<code class="sig-name descname">show_functions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.show_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.show_functions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print of the custom functions of the <cite>Template</cite>.</p>
+<dl class="simple">
+<dt>name: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name of a particular function.</p>
+</dd>
+<dt>verbose: bool</dt><dd><p>Indicate if the user want to print the source code of the
+functions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.timestamp">
+<em class="property">property </em><code class="sig-name descname">timestamp</code><a class="headerlink" href="#polymorph.template.Template.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Creation timestamp of the <a class="reference internal" href="#polymorph.template.Template" title="polymorph.template.Template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Template</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.version">
+<em class="property">property </em><code class="sig-name descname">version</code><a class="headerlink" href="#polymorph.template.Template.version" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Version of the <a class="reference internal" href="#polymorph.template.Template" title="polymorph.template.Template"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Template</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.template.Template.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/template.html#Template.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.template.Template.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a <cite>Template</cite> to disk.</p>
+<dl class="simple">
+<dt>path<span class="classifier">str, optional</span></dt><dd><p>Path where the <cite>Template</cite> will be written, if None
+the <cite>Template</cite> will be written in templates folder.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.tfield">
+<span id="polymorph-tfield-module"></span><h2>polymorph.tfield module<a class="headerlink" href="#module-polymorph.tfield" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.tfield.TField">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.tfield.</code><code class="sig-name descname">TField</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">fslice</span></em>, <em class="sig-param"><span class="n">fsize</span></em>, <em class="sig-param"><span class="n">pkt_raw</span></em>, <em class="sig-param"><span class="n">trepr</span></em>, <em class="sig-param"><span class="n">ttype</span></em>, <em class="sig-param"><span class="n">tmask</span></em>, <em class="sig-param"><span class="n">layer</span></em>, <em class="sig-param"><span class="n">ftype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">frepr</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tfield.html#TField"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tfield.TField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class represents a field in a <cite>Template</cite>.</p>
+<dl class="py method">
+<dt id="polymorph.tfield.TField.dict">
+<code class="sig-name descname">dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tfield.html#TField.dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tfield.TField.dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a dictionary with all the elements of the <cite>TField</cite>.</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#polymorph.tfield.TField.dict" title="polymorph.tfield.TField.dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a></dt><dd><p>Dictionary with all the attributes of the <cite>TField</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.hex">
+<code class="sig-name descname">hex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tfield.html#TField.hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tfield.TField.hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Returns the value encoded in hexadecimal of the <cite>TField</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.is_hex">
+<code class="sig-name descname">is_hex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tfield.html#TField.is_hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tfield.TField.is_hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns true if value is hex.</p>
+<dl class="simple">
+<dt>value: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>A string that can be or not hex.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.is_int">
+<code class="sig-name descname">is_int</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tfield.html#TField.is_int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tfield.TField.is_int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the <cite>TField</cite> is of type <cite>int</cite> or <cite>long</cite>.</p>
+<dl class="simple">
+<dt>bool</dt><dd><p>True if it is of type <cite>int</cite> or <cite>long</cite>, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.is_str">
+<code class="sig-name descname">is_str</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tfield.html#TField.is_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tfield.TField.is_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the <cite>TField</cite> is of type <cite>str</cite>.</p>
+<dl class="simple">
+<dt>bool</dt><dd><p>True if it is of type <cite>str</cite>, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.layer">
+<em class="property">property </em><code class="sig-name descname">layer</code><a class="headerlink" href="#polymorph.tfield.TField.layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Returns the name of the parent <cite>TLayer</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.mask">
+<em class="property">property </em><code class="sig-name descname">mask</code><a class="headerlink" href="#polymorph.tfield.TField.mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: Returns the mask of the <cite>TField</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#polymorph.tfield.TField.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Name of the <cite>TField</cite> in <cite>str</cite> and lowercase.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.pkt_raw">
+<em class="property">property </em><code class="sig-name descname">pkt_raw</code><a class="headerlink" href="#polymorph.tfield.TField.pkt_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p>bytes: Bytes of the packet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.raw">
+<em class="property">property </em><code class="sig-name descname">raw</code><a class="headerlink" href="#polymorph.tfield.TField.raw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tfield.html#TField.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tfield.TField.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a the properties of the <cite>TField</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#polymorph.tfield.TField.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>int: Returns the size of the <cite>TField</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.slice">
+<em class="property">property </em><code class="sig-name descname">slice</code><a class="headerlink" href="#polymorph.tfield.TField.slice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.type">
+<em class="property">property </em><code class="sig-name descname">type</code><a class="headerlink" href="#polymorph.tfield.TField.type" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code>: Returns the type of the <cite>TField</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tfield.TField.value">
+<em class="property">property </em><code class="sig-name descname">value</code><a class="headerlink" href="#polymorph.tfield.TField.value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.tgenerator">
+<span id="polymorph-tgenerator-module"></span><h2>polymorph.tgenerator module<a class="headerlink" href="#module-polymorph.tgenerator" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.tgenerator.TGenerator">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.tgenerator.</code><code class="sig-name descname">TGenerator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pcapfile</span></em>, <em class="sig-param"><span class="n">userfilter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tgenerator.html#TGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tgenerator.TGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is responsible for generating the templates from tshark packets.</p>
+<dl class="py method">
+<dt id="polymorph.tgenerator.TGenerator.tgenerate">
+<code class="sig-name descname">tgenerate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tshark_pkt</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tgenerator.html#TGenerator.tgenerate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tgenerator.TGenerator.tgenerate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a template from a tshark packet.</p>
+<dl class="simple">
+<dt>tshark_pkt<span class="classifier">:obj:``</span></dt><dd><p>The packet generated by Pyshark.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Obj</dt>
+<dd class="field-odd"><p><cite>Template</cite>
+The <cite>Tempalate</cite> generated from the packets.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.tlayer">
+<span id="polymorph-tlayer-module"></span><h2>polymorph.tlayer module<a class="headerlink" href="#module-polymorph.tlayer" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.tlayer.TLayer">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.tlayer.</code><code class="sig-name descname">TLayer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">pkt_raw</span></em>, <em class="sig-param"><span class="n">lslice</span></em>, <em class="sig-param"><span class="n">fields</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that represents a layer within a <cite>Template</cite>.</p>
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.add_struct">
+<code class="sig-name descname">add_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em>, <em class="sig-param"><span class="n">fdeps</span></em>, <em class="sig-param"><span class="n">start_byte</span></em>, <em class="sig-param"><span class="n">expression</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.add_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.add_struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function creates a structure that relates a field to other
+fields of the layer, so that its value can be calculated dynamically
+at run time. Perform additional processing before sending the data
+to create_struct.</p>
+<dl class="simple">
+<dt>fname: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name of the field which value will be recalculated.</p>
+</dd>
+<dt>fdeps: <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Dependen fields.</p>
+</dd>
+<dt>start_byte: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Byte in which the value of the main field begins. Must be a <cite>str</cite>.
+Fields must be preceded by ‘this’. It can be a complex expression:
+‘70 - this.field_len’</p>
+</dd>
+<dt>expression: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Expression with which the new field value will be calculated
+dynamically. Fields must be preceded by ‘this’. Can be complex:
+‘this.field_len - this.field2_len - 2’</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.addfield">
+<code class="sig-name descname">addfield</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.addfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.addfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a <cite>TField</cite> to the actual <cite>TLayer</cite>.</p>
+<p>If a <cite>TField</cite> with the same name is alreadry in the <cite>TLayer</cite>,
+the name of the field is modified by concatenating a number.</p>
+<dl>
+<dt>field<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TField</span></code></span></dt><dd><p>Field that will be added to the <cite>TLayer</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.create_struct">
+<code class="sig-name descname">create_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tfield</span></em>, <em class="sig-param"><span class="n">fdeps</span></em>, <em class="sig-param"><span class="n">start_byte</span></em>, <em class="sig-param"><span class="n">expression</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.create_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.create_struct" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>This function creates a structure that relates a field to other</dt><dd><dl class="simple">
+<dt>fields of the layer, so that its value can be calculated dynamically</dt><dd><p>at run time.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl>
+<dt>tfield<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TField</span></code></span></dt><dd><p>Field for which the new value will be calculated.</p>
+</dd>
+<dt>fdeps: <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">TField</span></code></dt><dd><p>List of fields on which the previous field depends.</p>
+</dd>
+<dt>start_byte: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Byte in which the value of the main field begins. Must be a <cite>str</cite>.
+Fields must be preceded by ‘this’. It can be a complex expression:
+‘70 - this.field_len’</p>
+</dd>
+<dt>expression: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Expression with which the new field value will be calculated
+dynamically. Fields must be preceded by ‘this’. Can be complex:
+‘this.field_len - this.field2_len - 2’</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Struct</span></code></dt><dd><dl class="simple">
+<dt>Structure that allows to parse the raw bytes of the packet and</dt><dd><p>return the exact value of the field.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.del_struct">
+<code class="sig-name descname">del_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tfieldname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.del_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.del_struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a <cite>Struct</cite> from a <cite>TField</cite>/</p>
+<dl class="simple">
+<dt>tfieldname: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name of the <cite>TField</cite> to be deleted.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.delfield">
+<code class="sig-name descname">delfield</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">field</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.delfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.delfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a <cite>TField</cite> from the <cite>TLayer</cite>.</p>
+<dl>
+<dt>field<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TField</span></code>, str</span></dt><dd><p>Field that will be deleted from the <cite>TLayer</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.dict">
+<code class="sig-name descname">dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a dictionary with all the elements of the <cite>TLayer</cite>.</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#polymorph.tlayer.TLayer.dict" title="polymorph.tlayer.TLayer.dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code></a></dt><dd><p>Dictionary with all the fields and attributes of the <cite>TLayer</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.fieldnames">
+<code class="sig-name descname">fieldnames</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.fieldnames"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.fieldnames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the names of the <cite>TField</cite> of which the <cite>TLayer</cite> is formed.</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>List with the names of the <cite>TField</cite> in <cite>str</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.fields">
+<em class="property">property </em><code class="sig-name descname">fields</code><a class="headerlink" href="#polymorph.tlayer.TLayer.fields" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">TField</span></code>: Obtain all the fields of the
+<cite>TLayer</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.get_struct">
+<code class="sig-name descname">get_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tfieldname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.get_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.get_struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <cite>Struct</cite> for a particula <cite>TField</cite>.</p>
+<dl class="simple">
+<dt>tfieldname: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name of the <cite>TField</cite>.</p>
+</dd>
+</dl>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Struct</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.get_structs">
+<code class="sig-name descname">get_structs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.get_structs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.get_structs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the <cite>Struct</cite> for all the <cite>Tfields</cite> in the <cite>TLayer</cite>.</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">OrderedDict</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.getfield">
+<code class="sig-name descname">getfield</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fieldname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.getfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.getfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Obtain a <cite>TField</cite> from the <cite>TLayer</cite>.</p>
+<dl class="simple">
+<dt>fieldname<span class="classifier">str</span></dt><dd><p>String with the name of a <cite>TField</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">TField</span></code></dt><dd><p>The object that has the name specified.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></dt><dd><p>if there is no field with the specified name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.getfields">
+<code class="sig-name descname">getfields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.getfields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.getfields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the <cite>TFields</cite> in the <cite>TLayer</cite>.</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">TFields</span></code></dt><dd><p>List of all <cite>TField</cite> in the <cite>TLayer</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.is_struct">
+<code class="sig-name descname">is_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tfieldname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.is_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.is_struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if the <cite>TField</cite> has a particular <cite>Struct</cite> associated.</p>
+<dl>
+<dt>tfieldname<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Name of the <cite>TField</cite>.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code></dt><dd><p>True if the <cite>TField</cite> has a <cite>Struct</cite> object associated,
+False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.isfield">
+<code class="sig-name descname">isfield</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fieldname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.isfield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.isfield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if there is a <cite>TField</cite> with that name in the <cite>TLayer</cite>.</p>
+<dl class="simple">
+<dt>fieldname<span class="classifier">str</span></dt><dd><p>Name of the field.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>bool</dt><dd><p>True if exists, False if not.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#polymorph.tlayer.TLayer.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>str: Name of the <cite>TLayer</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.pkt_raw">
+<em class="property">property </em><code class="sig-name descname">pkt_raw</code><a class="headerlink" href="#polymorph.tlayer.TLayer.pkt_raw" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bytearray</span></code> : Packet content in raw (bytes representation).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print of the <cite>TLayer</cite> object with types.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.show_structs">
+<code class="sig-name descname">show_structs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tfname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.show_structs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.show_structs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty Print of the Structs of a <cite>TField</cite>.</p>
+<dl class="simple">
+<dt>tfname: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name of the <cite>TField</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.slice">
+<em class="property">property </em><code class="sig-name descname">slice</code><a class="headerlink" href="#polymorph.tlayer.TLayer.slice" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#polymorph.tlayer.TLayer.slice" title="polymorph.tlayer.TLayer.slice"><code class="xref py py-obj docutils literal notranslate"><span class="pre">slice</span></code></a>: Slice that represents the position of the <cite>TLayer</cite>
+in the raw payload.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlayer.TLayer.test_struct">
+<code class="sig-name descname">test_struct</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fname</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlayer.html#TLayer.test_struct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlayer.TLayer.test_struct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests de result of the Struct for a particula <cite>TField</cite>.</p>
+<dl class="simple">
+<dt>tfieldname: <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name of the <cite>TField</cite> to be tested.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.tlist">
+<span id="polymorph-tlist-module"></span><h2>polymorph.tlist module<a class="headerlink" href="#module-polymorph.tlist" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="polymorph.tlist.TList">
+<em class="property">class </em><code class="sig-prename descclassname">polymorph.tlist.</code><code class="sig-name descname">TList</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tgen</span></em>, <em class="sig-param"><span class="n">pcap_path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlist.html#TList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlist.TList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class provides a container to store a set of templates, with some
+methods that facilitate access to them.</p>
+<dl class="py method">
+<dt id="polymorph.tlist.TList.show">
+<code class="sig-name descname">show</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlist.html#TList.show"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlist.TList.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a list of the templates in the <cite>TList</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="polymorph.tlist.TList.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span><span class="o">=</span><span class="default_value">'../templates'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/tlist.html#TList.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.tlist.TList.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes <cite>TemplateList</cite> to disk.</p>
+<dl class="simple">
+<dt>path<span class="classifier">str</span></dt><dd><p>The path where the <cite>Template</cite> will be written.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-polymorph.utils">
+<span id="polymorph-utils-module"></span><h2>polymorph.utils module<a class="headerlink" href="#module-polymorph.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="polymorph.utils.capture">
+<code class="sig-prename descclassname">polymorph.utils.</code><code class="sig-name descname">capture</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">userfilter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pcapname</span><span class="o">=</span><span class="default_value">'.tmp.pcap'</span></em>, <em class="sig-param"><span class="n">func</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">count</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">time</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/utils.html#capture"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.utils.capture" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is a wrapper function above the sniff scapy function. The
+result is a list of templates.</p>
+<dl>
+<dt>userfilter<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Filters to capture packets in Wireshark format.</p>
+</dd>
+<dt>pcapname<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Path where the pcap will be written.</p>
+</dd>
+<dt>func<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">function</span></code></span></dt><dd><p>Function to be called when a packet arrive, the packet will be passed
+as parameter.</p>
+</dd>
+<dt>count<span class="classifier">int</span></dt><dd><p>Number of packets to capture.</p>
+</dd>
+<dt>time<span class="classifier">int</span></dt><dd><p>Stop sniffing after a given time.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">TList</span></code></dt><dd><p>List of templates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="polymorph.utils.get_arpspoofer">
+<code class="sig-prename descclassname">polymorph.utils.</code><code class="sig-name descname">get_arpspoofer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">targets</span></em>, <em class="sig-param"><span class="n">gateway</span></em>, <em class="sig-param"><span class="n">iface</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">gatewaymac</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">arpmode</span><span class="o">=</span><span class="default_value">'rep'</span></em>, <em class="sig-param"><span class="n">mac</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ip</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/utils.html#get_arpspoofer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.utils.get_arpspoofer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="polymorph.utils.intercept">
+<code class="sig-prename descclassname">polymorph.utils.</code><code class="sig-name descname">intercept</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">template</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/utils.html#intercept"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.utils.intercept" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="polymorph.utils.readpcap">
+<code class="sig-prename descclassname">polymorph.utils.</code><code class="sig-name descname">readpcap</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pcapfile</span></em>, <em class="sig-param"><span class="n">userfilter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/utils.html#readpcap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.utils.readpcap" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is a wrapper function above the generate function from
+<cite>TGenerator</cite> class. The result is a <cite>TList</cite> object.</p>
+<dl>
+<dt>pcapfile<span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code></span></dt><dd><p>Path to a pcap file.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Obj</dt>
+<dd class="field-odd"><p><cite>TList</cite>
+List of templates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="polymorph.utils.readtemplate">
+<code class="sig-prename descclassname">polymorph.utils.</code><code class="sig-name descname">readtemplate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/utils.html#readtemplate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.utils.readtemplate" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function reads a template from disk and returns its
+representation.</p>
+<dl class="simple">
+<dt>path<span class="classifier">str</span></dt><dd><p>The path to the <cite>Template</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="polymorph.utils.set_ip_forwarding">
+<code class="sig-prename descclassname">polymorph.utils.</code><code class="sig-name descname">set_ip_forwarding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/polymorph/utils.html#set_ip_forwarding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#polymorph.utils.set_ip_forwarding" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-polymorph">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-polymorph" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/polymorph.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

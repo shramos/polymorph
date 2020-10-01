@@ -17,7 +17,7 @@ REQUIRES = [
 ]
 
 if platform.system() == "Linux":
-    SCRIPTS = ['bin/polymorph', 'bin/phcli']
+    SCRIPTS = ['bin/polymorph']
     REQUIRES += ['NetfilterQueue']
 elif platform.system() == "Windows":
     SCRIPTS = ['bin/polymorph.bat', 'bin/polymorph']
@@ -25,7 +25,7 @@ elif platform.system() == "Windows":
 
 setup(
     name="polymorph",
-    version="1.0.3",
+    version="2.0",
     packages=find_packages('.'),
     scripts=SCRIPTS,
     license="MIT",

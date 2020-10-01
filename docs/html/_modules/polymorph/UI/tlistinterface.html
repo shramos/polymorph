@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.UI.tlistinterface &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.UI.tlistinterface</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2020 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">from</span> <span class="nn">polymorph.UI.interface</span> <span class="k">import</span> <span class="n">Interface</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit</span> <span class="k">import</span> <span class="n">PromptSession</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit</span> <span class="k">import</span> <span class="n">HTML</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">polymorph.UI.command_parser</span> <span class="k">import</span> <span class="n">CommandParser</span>
+<span class="kn">from</span> <span class="nn">polymorph.UI.templateinterface</span> <span class="k">import</span> <span class="n">TemplateInterface</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.history</span> <span class="k">import</span> <span class="n">FileHistory</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.completion</span> <span class="k">import</span> <span class="n">WordCompleter</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.auto_suggest</span> <span class="k">import</span> <span class="n">AutoSuggestFromHistory</span>
+<span class="kn">from</span> <span class="nn">prompt_toolkit.shortcuts</span> <span class="k">import</span> <span class="n">CompleteStyle</span>
+<span class="kn">import</span> <span class="nn">polymorph</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">join</span>
+
+
+<div class="viewcode-block" id="TListInterface"><a class="viewcode-back" href="../../../polymorph.UI.html#polymorph.UI.tlistinterface.TListInterface">[docs]</a><span class="k">class</span> <span class="nc">TListInterface</span><span class="p">(</span><span class="n">Interface</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class is responsible for parsing and respond to user commands in</span>
+<span class="sd">    the tlist interface, when the user already has a packet capture.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tlist</span><span class="p">,</span> <span class="n">poisoner</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">userfilter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method of the class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tlist : obj:`TList`</span>
+<span class="sd">            The list of `Templates` previously captured.</span>
+<span class="sd">        poisoner : obj:`ARPpoisoner`</span>
+<span class="sd">            The arp poisoner object, if any.</span>
+<span class="sd">        userfilter : obj:str, optional</span>
+<span class="sd">            Filter applied by the user in the capture.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Constructor of the parent class</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TListInterface</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># Class Attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_t</span> <span class="o">=</span> <span class="n">tlist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_poisoner</span> <span class="o">=</span> <span class="n">poisoner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_userfilter</span> <span class="o">=</span> <span class="n">userfilter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_polym_path</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">polymorph</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TListInterface.run"><a class="viewcode-back" href="../../../polymorph.UI.html#polymorph.UI.tlistinterface.TListInterface.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Runs the interface and waits for user input commands.&quot;&quot;&quot;</span>
+        <span class="n">completer</span> <span class="o">=</span> <span class="n">WordCompleter</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="s1">&#39;template&#39;</span><span class="p">,</span> <span class="s1">&#39;wireshark&#39;</span><span class="p">,</span> <span class="s1">&#39;clear&#39;</span><span class="p">,</span> <span class="s1">&#39;back&#39;</span><span class="p">])</span>
+        <span class="n">history</span> <span class="o">=</span> <span class="n">FileHistory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_polym_path</span> <span class="o">+</span> <span class="s1">&#39;/.tlinterface_history&#39;</span><span class="p">)</span>
+        <span class="n">session</span> <span class="o">=</span> <span class="n">PromptSession</span><span class="p">(</span><span class="n">history</span><span class="o">=</span><span class="n">history</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">prompt</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&lt;bold&gt;PH:&lt;red&gt;cap&lt;/red&gt; &gt; &lt;/bold&gt;&quot;</span><span class="p">),</span>
+                                         <span class="n">completer</span><span class="o">=</span><span class="n">completer</span><span class="p">,</span>
+                                         <span class="n">complete_style</span><span class="o">=</span><span class="n">CompleteStyle</span><span class="o">.</span><span class="n">READLINE_LIKE</span><span class="p">,</span>
+                                         <span class="n">auto_suggest</span><span class="o">=</span><span class="n">AutoSuggestFromHistory</span><span class="p">(),</span>
+                                         <span class="n">enable_history_search</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exit_program</span><span class="p">()</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">command</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">EXIT</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">exit_program</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">RET</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;show&quot;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_show</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;template&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_template</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;wireshark&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_wireshark</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;clear&quot;</span><span class="p">:</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_clear</span><span class="p">()</span>
+                <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_wrong_command</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">SystemExit</span><span class="p">:</span>
+                <span class="k">raise</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_print_error</span><span class="p">(</span>
+                    <span class="s2">&quot;Exception: Error processing the previous command. More info:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Shows the list of `Template`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Parsing arguments</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">TListInterface</span><span class="o">.</span><span class="n">_show_opts</span><span class="p">())</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Print the help</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">TListInterface</span><span class="o">.</span><span class="n">_show_help</span><span class="p">())</span>
+        <span class="c1"># Print a particular Template</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-t&quot;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-t&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_show_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the show command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;show a particular template.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;show&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;show [-option]&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Prints information about the list of templates.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_show_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-t&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span>
+
+    <span class="k">def</span> <span class="nf">_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Manages the access to a particular `Template` in the list.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">TListInterface</span><span class="o">.</span><span class="n">_template_help</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Print the help</span>
+            <span class="k">if</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;-h&quot;</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">TListInterface</span><span class="o">.</span><span class="n">_template_help</span><span class="p">())</span>
+            <span class="c1"># Select a particular Template</span>
+            <span class="k">elif</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdecimal</span><span class="p">():</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">):</span>
+                    <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+                    <span class="k">return</span>
+                <span class="n">ti</span> <span class="o">=</span> <span class="n">TemplateInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_poisoner</span><span class="p">)</span>
+                <span class="n">ti</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_template_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the show command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;template&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;template &lt;num&gt;&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Access the content of a particular template.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_wireshark</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Opens Wireshark with the actual `Template` List in pcap format.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_print_info</span><span class="p">(</span><span class="s2">&quot;Opening Wireshark...&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_userfilter</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;nohup wireshark -R </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &amp;&quot;</span> <span class="o">%</span>
+                          <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_userfilter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="o">.</span><span class="n">pcap_path</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;nohup wireshark </span><span class="si">%s</span><span class="s2"> &amp;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="o">.</span><span class="n">pcap_path</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Parsing arguments</span>
+        <span class="n">cp</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="n">TListInterface</span><span class="o">.</span><span class="n">_wireshark_opts</span><span class="p">())</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">cp</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_argument_error</span><span class="p">()</span>
+            <span class="k">return</span>
+        <span class="c1"># Print the help</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-h&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">TListInterface</span><span class="o">.</span><span class="n">_wireshark_help</span><span class="p">())</span>
+        <span class="c1"># Select a new path for the Wireshark binary</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;-p&quot;</span><span class="p">]:</span>
+            <span class="n">Interface</span><span class="o">.</span><span class="n">_print_info</span><span class="p">(</span><span class="s2">&quot;Opening Wireshark...&quot;</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;nohup </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> &amp;&quot;</span> <span class="o">%</span>
+                      <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;-p&quot;</span><span class="p">],</span> <span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_polym_path</span><span class="p">,</span> <span class="s2">&quot;.tmp.pcap&quot;</span><span class="p">)))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_wireshark_help</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Builds the help for the wireshark command.&quot;&quot;&quot;</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;-h&quot;</span><span class="p">,</span> <span class="s2">&quot;prints the help.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;indicate a new path to the wireshark binary.&quot;</span><span class="p">)</span>
+        <span class="p">])</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;wireshark&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;usage&quot;</span><span class="p">,</span> <span class="s2">&quot;wireshark [-option]&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;description&quot;</span><span class="p">,</span> <span class="s2">&quot;Opens the captured file with Wireshark.&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;options&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_wireshark_opts</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;Returns command options in a form that can be handled by the</span>
+<span class="sd">        command parser.&quot;&quot;&quot;</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;-h&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+                <span class="s2">&quot;-p&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                       <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}}</span>
+        <span class="k">return</span> <span class="n">opts</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

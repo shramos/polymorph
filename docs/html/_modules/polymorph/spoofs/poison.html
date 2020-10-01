@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.spoofs.poison &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.spoofs.poison</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2018 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">from</span> <span class="nn">scapy.all</span> <span class="k">import</span> <span class="n">get_if_addr</span><span class="p">,</span> <span class="n">get_if_hwaddr</span><span class="p">,</span> <span class="n">get_working_if</span>
+
+<div class="viewcode-block" id="Poison"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.poison.Poison">[docs]</a><span class="k">class</span> <span class="nc">Poison</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">gateway</span><span class="p">,</span> <span class="n">gatewaymac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">arpmode</span><span class="o">=</span><span class="s1">&#39;rep&#39;</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mac</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iface</span> <span class="o">=</span> <span class="n">iface</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">iface</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_iface</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_iface</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ip</span> <span class="o">=</span> <span class="n">ip</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ip</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ip</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mac</span> <span class="o">=</span> <span class="n">mac</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mac</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mac</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arpmode</span> <span class="o">=</span> <span class="n">arpmode</span>  
+        <span class="bp">self</span><span class="o">.</span><span class="n">_targets</span> <span class="o">=</span> <span class="n">targets</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span> <span class="o">=</span> <span class="n">ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gateway</span> <span class="o">=</span> <span class="n">gateway</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gatewaymac</span> <span class="o">=</span> <span class="n">gatewaymac</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">arpmode</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arpmode</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ip</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">targets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_targets</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ignore</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ignore</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mac</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mac</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">interface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iface</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gateway</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gateway</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gatewaymac</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gatewaymac</span>
+
+<div class="viewcode-block" id="Poison.get_mac"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.poison.Poison.get_mac">[docs]</a>    <span class="k">def</span> <span class="nf">get_mac</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mac_address</span> <span class="o">=</span> <span class="n">get_if_hwaddr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iface</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">mac_address</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error retrieving MAC address from </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iface</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Poison.get_ip"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.poison.Poison.get_ip">[docs]</a>    <span class="k">def</span> <span class="nf">get_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ip_address</span> <span class="o">=</span> <span class="n">get_if_addr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iface</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">ip_address</span> <span class="o">==</span> <span class="s2">&quot;0.0.0.0&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">ip_address</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Interface </span><span class="si">{}</span><span class="s2"> does not have an assigned IP address&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iface</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">ip_address</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error retrieving IP address from </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iface</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Poison.get_iface"><a class="viewcode-back" href="../../../polymorph.spoofs.html#polymorph.spoofs.poison.Poison.get_iface">[docs]</a>    <span class="k">def</span> <span class="nf">get_iface</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">iface</span> <span class="o">=</span> <span class="n">get_working_if</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">iface</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

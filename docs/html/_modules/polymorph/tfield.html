@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.tfield &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.tfield</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2020 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">termcolor</span> <span class="k">import</span> <span class="n">colored</span>
+<span class="kn">from</span> <span class="nn">polymorph.ftype</span> <span class="k">import</span> <span class="n">Ttype</span><span class="p">,</span> <span class="n">Ftype</span>
+<span class="kn">from</span> <span class="nn">polymorph.converter</span> <span class="k">import</span> <span class="n">Converter</span>
+
+
+<div class="viewcode-block" id="TField"><a class="viewcode-back" href="../../polymorph.html#polymorph.tfield.TField">[docs]</a><span class="k">class</span> <span class="nc">TField</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This class represents a field in a `Template`.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">fslice</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">pkt_raw</span><span class="p">,</span> <span class="n">trepr</span><span class="p">,</span>
+                 <span class="n">ttype</span><span class="p">,</span> <span class="n">tmask</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">frepr</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method for the `TField` class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fname : :obj:`str`</span>
+<span class="sd">            The name of the `TField`.</span>
+<span class="sd">        fslice : :obj:`slice`</span>
+<span class="sd">            :obj:`slice` representing the position of the `TField` </span>
+<span class="sd">            in the raw packet data.</span>
+<span class="sd">        fsize : int</span>
+<span class="sd">            Size of the `TField` in bytes.</span>
+<span class="sd">        pkt_raw : :obj:`bytes`</span>
+<span class="sd">            Packet content in bytes.</span>
+<span class="sd">        trepr : :obj:`str`</span>
+<span class="sd">            Custom representation of `TField` according to Tshark.</span>
+<span class="sd">        ttype : :obj:`str`</span>
+<span class="sd">            Type of the `TField` according to Tshark.</span>
+<span class="sd">        tmask : int</span>
+<span class="sd">            Mask for calculate binary fields</span>
+<span class="sd">        layer : :obj:`TLayer`</span>
+<span class="sd">            Parent layer.</span>
+<span class="sd">        ftype : :obj:`Frype`, optional</span>
+<span class="sd">            Type of the field.</span>
+<span class="sd">        frepr : :obj:`obj`, optional</span>
+<span class="sd">            Representation of the field according to its type.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fname</span> <span class="o">=</span> <span class="n">fname</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span> <span class="o">=</span> <span class="n">fslice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pkt_raw</span> <span class="o">=</span> <span class="n">pkt_raw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span> <span class="o">=</span> <span class="n">pkt_raw</span><span class="p">[</span><span class="n">fslice</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ttype</span> <span class="o">=</span> <span class="n">ttype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trepr</span> <span class="o">=</span> <span class="n">trepr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fsize</span> <span class="o">=</span> <span class="n">fsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span> <span class="o">=</span> <span class="n">layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fmask</span> <span class="o">=</span> <span class="n">tmask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">frepr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">ftype</span>
+        <span class="c1"># If you have the ftype but not the frepr</span>
+        <span class="k">if</span> <span class="n">ftype</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">frepr</span><span class="p">:</span>
+            <span class="n">cv</span> <span class="o">=</span> <span class="n">Converter</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">get_frepr</span><span class="p">(</span><span class="n">ftype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">tmask</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+        <span class="c1"># If you not have the ftype</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">ftype</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_ftype_frepr</span><span class="p">(</span><span class="n">ttype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">tmask</span><span class="p">,</span> <span class="n">trepr</span><span class="p">)</span>
+            <span class="c1"># In case of failure, ftype FT_HEX</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">cv</span> <span class="o">=</span> <span class="n">Converter</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;tfield.TField: </span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fname</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fsize</span>
+
+<div class="viewcode-block" id="TField.is_int"><a class="viewcode-back" href="../../polymorph.html#polymorph.tfield.TField.is_int">[docs]</a>    <span class="k">def</span> <span class="nf">is_int</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the `TField` is of type `int` or `long`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if it is of type `int` or `long`, False otherwise.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_BE</span><span class="p">,</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_LE</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TField.is_str"><a class="viewcode-back" href="../../polymorph.html#polymorph.tfield.TField.is_str">[docs]</a>    <span class="k">def</span> <span class="nf">is_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the `TField` is of type `str`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if it is of type `str`, False otherwise.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_STRING</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="TField.is_hex"><a class="viewcode-back" href="../../polymorph.html#polymorph.tfield.TField.is_hex">[docs]</a>    <span class="k">def</span> <span class="nf">is_hex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns true if value is hex.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value: :obj:`str`</span>
+<span class="sd">            A string that can be or not hex.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span><span class="p">]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Name of the `TField` in `str` and lowercase.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fname</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fname</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pkt_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;bytes: Bytes of the packet.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pkt_raw</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span>
+
+<div class="viewcode-block" id="TField.hex"><a class="viewcode-back" href="../../polymorph.html#polymorph.tfield.TField.hex">[docs]</a>    <span class="k">def</span> <span class="nf">hex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Returns the value encoded in hexadecimal of the `TField`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;int: Returns the size of the `TField`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fsize</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">mask</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;int: Returns the mask of the `TField`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fmask</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:obj:`tuple`: Returns the type of the `TField`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Returns the name of the parent `TLayer`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span>
+
+    <span class="nd">@layer</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="TField.show"><a class="viewcode-back" href="../../polymorph.html#polymorph.tfield.TField.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Show a the properties of the `TField`.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">colored</span><span class="p">(</span><span class="s2">&quot;---[ </span><span class="si">%s</span><span class="s2"> ]---&quot;</span> <span class="o">%</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_fname</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">]),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">),</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">),</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span>
+              <span class="n">colored</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span><span class="p">)[</span><span class="mi">6</span><span class="p">:],</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;bytes&quot;</span><span class="p">),</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;hex&quot;</span><span class="p">),</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span> <span class="n">colored</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">),</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span>
+              <span class="n">colored</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fsize</span><span class="p">),</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;slice&quot;</span><span class="p">),</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span>
+              <span class="n">colored</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span><span class="p">),</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;20}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">),</span> <span class="s2">&quot;=&quot;</span><span class="p">,</span>
+              <span class="n">colored</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fmask</span><span class="p">),</span> <span class="s1">&#39;cyan&#39;</span><span class="p">),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TField.dict"><a class="viewcode-back" href="../../polymorph.html#polymorph.tfield.TField.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build a dictionary with all the elements of the `TField`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`dict`</span>
+<span class="sd">            Dictionary with all the attributes of the `TField`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fname</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fraw</span><span class="o">.</span><span class="n">hex</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span><span class="o">.</span><span class="n">value</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;size&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fsize</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;slice&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span><span class="p">)),</span>
+                            <span class="p">(</span><span class="s2">&quot;frepr&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">!=</span>
+                             <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BYTES</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span><span class="o">.</span><span class="n">hex</span><span class="p">()),</span>
+                            <span class="p">(</span><span class="s2">&quot;mask&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fmask</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;ttype&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ttype</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;trepr&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trepr</span><span class="p">)])</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_ftype_frepr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ttype</span><span class="p">,</span> <span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">trepr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extract the field type and representation from the Tshark</span>
+<span class="sd">        type and the raw value.&quot;&quot;&quot;</span>
+        <span class="c1"># Initialization of a type-converting object</span>
+        <span class="n">cv</span> <span class="o">=</span> <span class="n">Converter</span><span class="p">()</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark INT type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">if</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT8</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT16</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT24</span><span class="p">,</span>
+                            <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT32</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT40</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT48</span><span class="p">,</span>
+                            <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT56</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT64</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT8</span><span class="p">,</span>
+                            <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT16</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT24</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT32</span><span class="p">,</span>
+                            <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT40</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT48</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT56</span><span class="p">,</span>
+                            <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_INT64</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_IEEE_11073_SFLOAT</span><span class="p">,</span>
+                            <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_IEEE_11073_FLOAT</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_FLOAT</span><span class="p">,</span>
+                            <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_DOUBLE</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_BOOLEAN</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">fmask</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BIN_BE</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2bin</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">fmask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">trepr</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;0x&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ft_int_be</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+                <span class="n">ft_int_le</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">&#39;little&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ft_int_be</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">trepr</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_BE</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">ft_int_be</span>
+                <span class="k">elif</span> <span class="n">ft_int_le</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">trepr</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_INT_LE</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">ft_int_le</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">prev_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layer</span><span class="o">.</span><span class="n">fields</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev_fields</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">prev_fields</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">slice</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BIN_BE</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fmask</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2maskbin</span><span class="p">(</span>
+                            <span class="n">fraw</span><span class="p">,</span> <span class="n">prev_fields</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mask</span><span class="p">,</span> <span class="n">fsize</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark String and Char type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_CHAR</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_STRING</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_STRINGZ</span><span class="p">,</span>
+                              <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT_STRING</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_STRING</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2string</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark Bytes type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_BYTES</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_UINT_BYTES</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_VINES</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BYTES</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">fraw</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark Hex type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_IPXNET</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_PCRE</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_GUID</span><span class="p">,</span>
+                              <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_OID</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_AX25</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_REL_OID</span><span class="p">,</span>
+                              <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_SYSTEM_ID</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_STRINGZPAD</span><span class="p">,</span>
+                              <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_FCWWN</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_NUM_TYPES</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_FRAMENUM</span><span class="p">,</span>
+                              <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_HEX</span><span class="p">,</span> <span class="n">Ttype</span><span class="o">.</span><span class="n">FT_PROTOCOL</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark Absolute Time type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_ABSOLUTE_TIME</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_ABSOLUTE_TIME</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2absolute</span><span class="p">(</span><span class="n">fraw</span><span class="p">,</span> <span class="n">fsize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fname</span><span class="p">)</span>
+            <span class="c1"># If the date interpretation is wrong</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trepr</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark Relative Time type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_RELATIVE_TIME</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_RELATIVE_TIME</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2relative</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark Ether type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_ETHER</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_ETHER</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2ether</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark ipv4 type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_IPv4</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_IPv4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2ipv4</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark ipv6 type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_IPv6</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_IPv6</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2ipv6</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark Eui64 type evaluation</span>
+        <span class="c1">#</span>
+        <span class="k">elif</span> <span class="n">Ttype</span><span class="p">(</span><span class="n">ttype</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="n">Ttype</span><span class="o">.</span><span class="n">FT_EUI64</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_EUI64</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2eui64</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># Tshark type not specified</span>
+        <span class="c1">#</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ftype</span> <span class="o">=</span> <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_HEX</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_frepr</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">raw2hex</span><span class="p">(</span><span class="n">fraw</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

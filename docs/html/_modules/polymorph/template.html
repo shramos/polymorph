@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>polymorph.template &#8212; Polymorph 2.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for polymorph.template</h1><div class="highlight"><pre>
+<span></span><span class="c1"># File from polymorph project</span>
+<span class="c1"># Copyright (C) 2020 Santiago Hernandez Ramos &lt;shramos@protonmail.com&gt;</span>
+<span class="c1"># For more information about the project: https://github.com/shramos/polymorph</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">polymorph.tlayer</span> <span class="k">import</span> <span class="n">TLayer</span>
+<span class="kn">from</span> <span class="nn">polymorph.tfield</span> <span class="k">import</span> <span class="n">TField</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">dill</span>
+<span class="kn">from</span> <span class="nn">dill.source</span> <span class="k">import</span> <span class="n">getsource</span>
+<span class="kn">from</span> <span class="nn">termcolor</span> <span class="k">import</span> <span class="n">colored</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">dirname</span>
+<span class="kn">import</span> <span class="nn">polymorph.functions</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">listdir</span>
+<span class="kn">from</span> <span class="nn">os.path</span> <span class="k">import</span> <span class="n">isfile</span><span class="p">,</span> <span class="n">join</span>
+<span class="kn">from</span> <span class="nn">polymorph.ftype</span> <span class="k">import</span> <span class="n">Ftype</span>
+<span class="kn">from</span> <span class="nn">texttable</span> <span class="k">import</span> <span class="n">Texttable</span>
+
+
+<div class="viewcode-block" id="Template"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template">[docs]</a><span class="k">class</span> <span class="nc">Template</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Main class that represents a template&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">raw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">from_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;0.1&quot;</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization method of the Template class.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : :obj:`str`, optional</span>
+<span class="sd">            Name with which the template will be identified.</span>
+<span class="sd">        raw : :obj:`bytes`, optional</span>
+<span class="sd">            Packet content int bytes.</span>
+<span class="sd">        from_path : :obj:`str`, optional</span>
+<span class="sd">            Path to a previously created and stored `Template`.</span>
+<span class="sd">        description: :obj:`str`</span>
+<span class="sd">            Template description.</span>
+<span class="sd">        version: :obj:`str`</span>
+<span class="sd">            Template version.</span>
+<span class="sd">        layers: :obj:`OrderedDict`</span>
+<span class="sd">            Dictionary with the layer of the `Template` of the form </span>
+<span class="sd">            {layername : `TLayer`}.</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span> <span class="o">=</span> <span class="n">layers</span> <span class="k">if</span> <span class="n">layers</span> <span class="k">else</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="n">raw</span>
+        <span class="k">if</span> <span class="n">from_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">from_path</span><span class="p">)</span>
+        <span class="c1"># Path to custom functions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_funcs_path</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="n">polymorph</span><span class="o">.</span><span class="n">functions</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;template.Template: </span><span class="si">%s</span><span class="s2">&gt;&quot;</span> <span class="o">%</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layernames</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getlayer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Template.write"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Writes a `Template` to disk.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str, optional</span>
+<span class="sd">            Path where the `Template` will be written, if None</span>
+<span class="sd">            the `Template` will be written in templates folder.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;../templates/&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.json&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dict</span><span class="p">(),</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Name with which the template will be identified.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@name</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Description of the :obj:`Template`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+
+    <span class="nd">@description</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Version of the :obj:`Template`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span>
+
+    <span class="nd">@version</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">timestamp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;str: Creation timestamp of the :obj:`Template`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">layers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:obj:`list` of :obj:`TLayer`: Layers of which the template</span>
+<span class="sd">        is composed.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getlayers</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:obj:`bytearray` : Packet content in raw (bytes representation).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span>
+
+<div class="viewcode-block" id="Template.del_function"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.del_function">[docs]</a>    <span class="k">def</span> <span class="nf">del_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deletes a function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : :obj:`str`</span>
+<span class="sd">            Name of the function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Template.get_function_source"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.get_function_source">[docs]</a>    <span class="k">def</span> <span class="nf">get_function_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a function source code.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : :obj:`str`</span>
+<span class="sd">            Name of the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj: `str`</span>
+<span class="sd">            Source code of the function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">.py&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_funcs_path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s2">&quot;[!] File is not in disk&quot;</span></div>
+
+<div class="viewcode-block" id="Template.function_names"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.function_names">[docs]</a>    <span class="k">def</span> <span class="nf">function_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a list with all the existing functions names.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj: `list` of :obj: `str`</span>
+<span class="sd">            List with the function names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Template.get_function"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.get_function">[docs]</a>    <span class="k">def</span> <span class="nf">get_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a function object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : :obj:`str`</span>
+<span class="sd">            Name of the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj: `function`</span>
+<span class="sd">            Function obtained.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">dill</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Template.add_function"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.add_function">[docs]</a>    <span class="k">def</span> <span class="nf">add_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a new function that will be executed when intercepting packets.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : :obj:`str`</span>
+<span class="sd">            Name to identify the function in the `Template`.</span>
+<span class="sd">        func : :obj:`function`</span>
+<span class="sd">            Pointer to a function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fdump</span> <span class="o">=</span> <span class="n">dill</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">fdump</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Template.change_func_pos"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.change_func_pos">[docs]</a>    <span class="k">def</span> <span class="nf">change_func_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Changes the position of a particular function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        element: :obj:`str`</span>
+<span class="sd">            Name of the function to change.</span>
+<span class="sd">        index: int</span>
+<span class="sd">            New index of the function.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">move_element</span><span class="p">(</span><span class="n">lista</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">lista</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">lista</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="n">lista</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+
+        <span class="n">ordered_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">move_element</span><span class="p">(</span><span class="n">ordered_keys</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">ordered_keys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Template.layernames"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.layernames">[docs]</a>    <span class="k">def</span> <span class="nf">layernames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the names of the `TLayer` of which the `Template` is formed.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`list` of :obj:`str`</span>
+<span class="sd">            List with the names of the `TLayer` in `str`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Template.addlayer"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.addlayer">[docs]</a>    <span class="k">def</span> <span class="nf">addlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a `TLayer` to the actual `Template`.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If a `TLayer` with the same name is already in the `Template`,</span>
+<span class="sd">        we append a random 3 digit number to the name.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        layer : :obj:`Tlayer`</span>
+<span class="sd">            Layer that will be added to the `Template`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lname</span> <span class="o">=</span> <span class="n">layer</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">lname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">lname</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_lname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_lname</span><span class="p">(</span><span class="n">lname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">)</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">new_lname</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">new_lname</span><span class="p">]</span> <span class="o">=</span> <span class="n">layer</span></div>
+
+    <span class="k">def</span> <span class="nf">_new_lname</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lname</span><span class="p">,</span> <span class="n">all_fields</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates new names for fields with duplicate name.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">lname</span> <span class="ow">in</span> <span class="n">all_fields</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lname</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">():</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_lname</span><span class="p">(</span><span class="n">lname</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">lname</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">all_fields</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_lname</span><span class="p">(</span><span class="n">lname</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">all_fields</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lname</span>
+
+<div class="viewcode-block" id="Template.dellayer"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.dellayer">[docs]</a>    <span class="k">def</span> <span class="nf">dellayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deletes a `TLayer` from the `Template`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        layer : :obj:`Tlayer`, str</span>
+<span class="sd">            Layer that will be deleted from the `Template`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span> <span class="ow">is</span> <span class="n">TLayer</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Template.getlayers"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.getlayers">[docs]</a>    <span class="k">def</span> <span class="nf">getlayers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all the `TLayer` in the `Template`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`list` of :obj:`TLayer`</span>
+<span class="sd">            List of all `TLayer` in the `Template`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Template.getlayer"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.getlayer">[docs]</a>    <span class="k">def</span> <span class="nf">getlayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layername</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Obtain a `TLayer` from the `Template`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        layername : str</span>
+<span class="sd">            String with the name of a `TLayer`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`TLayer`</span>
+<span class="sd">            The object that has the name spicified.</span>
+<span class="sd">        :obj:`None`</span>
+<span class="sd">            if there is no layer with the specified name</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">islayer</span><span class="p">(</span><span class="n">layername</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="p">[</span><span class="n">layername</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Template.islayer"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.islayer">[docs]</a>    <span class="k">def</span> <span class="nf">islayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layername</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if there is a layer with that name in the Template.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        layername : str</span>
+<span class="sd">            Name of the layer.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            True if exists, False if not.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">layername</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span></div>
+
+<div class="viewcode-block" id="Template.getfieldvalhex"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.getfieldvalhex">[docs]</a>    <span class="k">def</span> <span class="nf">getfieldvalhex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fieldname</span><span class="p">,</span> <span class="n">layername</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the value in hexadecimal of a `TField` in a `TLayer`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        fieldname : str</span>
+<span class="sd">            The name of the field.</span>
+<span class="sd">        layername : str</span>
+<span class="sd">            The name of the layer.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            The value of the field encoded in hexadecimal.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getlayer</span><span class="p">(</span><span class="n">layername</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">layer</span><span class="p">[</span><span class="n">fieldname</span><span class="p">]</span><span class="o">.</span><span class="n">valuehex</span></div>
+
+<div class="viewcode-block" id="Template.show"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pretty print of the `Template` with field types.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="s2">&quot;---[ </span><span class="si">%s</span><span class="s2"> ]---&quot;</span> <span class="o">%</span>
+                          <span class="n">layer</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;white&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">]))</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">layer</span><span class="o">.</span><span class="n">fields</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0: &lt;35}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">type</span><span class="p">)[</span>
+                      <span class="mi">6</span><span class="p">:]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">,</span> <span class="n">attrs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;bold&#39;</span><span class="p">])</span> <span class="o">+</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;= &quot;</span> <span class="o">+</span> <span class="n">colored</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">value</span><span class="p">),</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Template.show_functions"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.show_functions">[docs]</a>    <span class="k">def</span> <span class="nf">show_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pretty print of the custom functions of the `Template`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: :obj:`str`</span>
+<span class="sd">            Name of a particular function.</span>
+<span class="sd">        verbose: bool</span>
+<span class="sd">            Indicate if the user want to print the source code of the</span>
+<span class="sd">            functions</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_source</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_function_source</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+        <span class="n">t</span> <span class="o">=</span> <span class="n">Texttable</span><span class="p">()</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;Order&quot;</span><span class="p">,</span> <span class="s2">&quot;Functions&quot;</span><span class="p">]]</span>
+        <span class="n">func_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">func_names</span> <span class="ow">and</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">get_source</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">func_names</span><span class="p">):</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx</span><span class="p">,</span> <span class="n">get_source</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">add_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">draw</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">func_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">func_names</span><span class="p">):</span>
+                <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">idx</span><span class="p">,</span> <span class="n">func_name</span><span class="p">])</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">add_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">draw</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Template.show_all_funcs"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.show_all_funcs">[docs]</a>    <span class="k">def</span> <span class="nf">show_all_funcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pretty print of the functions that are on disk.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        verbose: bool</span>
+<span class="sd">            Indicate if the user want to print the source code of the</span>
+<span class="sd">            functions.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">func_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+                      <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_funcs_path</span><span class="p">)</span>
+                      <span class="k">if</span> <span class="n">isfile</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_funcs_path</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
+                      <span class="ow">and</span> <span class="n">f</span> <span class="o">!=</span> <span class="s2">&quot;__init__.py&quot;</span>
+                      <span class="ow">and</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;.py&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">func_names</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;cyan&#39;</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_function_source</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">func_names</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Template.dict"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.dict">[docs]</a>    <span class="k">def</span> <span class="nf">dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build a dictionary with all the elements of the `Template`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :obj:`dict`</span>
+<span class="sd">            Dictionary with all the fields and layers of the template.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">([(</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;Description&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;Version&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;Timestamp&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;Functions&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">),</span>
+                            <span class="p">(</span><span class="s2">&quot;layers&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">l</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+                                        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_layers</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
+                            <span class="p">(</span><span class="s2">&quot;raw&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="o">.</span><span class="n">hex</span><span class="p">())])</span></div>
+
+<div class="viewcode-block" id="Template.read"><a class="viewcode-back" href="../../polymorph.html#polymorph.template.Template.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads a `Template` from disk.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path: str</span>
+<span class="sd">            Path from which the template will be read.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">t</span><span class="p">:</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="c1"># Reading and loading the template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;Name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;Version&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timestamp</span> <span class="o">=</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;Timestamp&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;Description&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raw</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">template</span><span class="p">[</span><span class="s1">&#39;raw&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;Functions&#39;</span><span class="p">]</span>
+        <span class="c1"># Reading and loading the layers</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">template</span><span class="p">[</span><span class="s1">&#39;layers&#39;</span><span class="p">]:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">TLayer</span><span class="p">(</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">pkt_raw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">,</span>
+                       <span class="n">lslice</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="n">layer</span><span class="p">[</span><span class="s1">&#39;lslice&#39;</span><span class="p">]))</span>
+            <span class="c1"># Reading the structs</span>
+            <span class="n">structs</span> <span class="o">=</span> <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;structs&quot;</span><span class="p">]</span>
+            <span class="c1"># Reading and loading the fields</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">layer</span><span class="p">[</span><span class="s1">&#39;fields&#39;</span><span class="p">]:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">TField</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                           <span class="n">fslice</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;slice&#39;</span><span class="p">]),</span>
+                           <span class="n">fsize</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">],</span>
+                           <span class="n">pkt_raw</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw</span><span class="p">,</span>
+                           <span class="n">trepr</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;trepr&#39;</span><span class="p">],</span>
+                           <span class="n">ttype</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;ttype&#39;</span><span class="p">],</span>
+                           <span class="n">tmask</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;mask&#39;</span><span class="p">],</span>
+                           <span class="n">layer</span><span class="o">=</span><span class="n">l</span><span class="p">,</span>
+                           <span class="n">ftype</span><span class="o">=</span><span class="n">Ftype</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]),</span>
+                           <span class="n">frepr</span><span class="o">=</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;frepr&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">Ftype</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span> <span class="o">!=</span>
+                           <span class="n">Ftype</span><span class="o">.</span><span class="n">FT_BYTES</span> <span class="k">else</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">field</span><span class="p">[</span><span class="s1">&#39;frepr&#39;</span><span class="p">]))</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">addfield</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="c1"># Initialization of the structs</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">structs</span><span class="p">:</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">add_struct</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">structs</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="s1">&#39;fdeps&#39;</span><span class="p">],</span>
+                             <span class="n">structs</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="s1">&#39;sb&#39;</span><span class="p">],</span> <span class="n">structs</span><span class="p">[</span><span class="n">f</span><span class="p">][</span><span class="s1">&#39;exp&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">addlayer</span><span class="p">(</span><span class="n">l</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Polymorph</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">polymorph</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Santiago Hernandez Ramos.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
