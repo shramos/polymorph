@@ -1,8 +1,8 @@
 # Polymorph
 
-Polymorph is a tool that facilitates the modification of network traffic in real time by allowing the execution of Python code on network packets that are intercepted in real time.
+Polymorph is a tool that facilitates the modification of network traffic on the fly by allowing the execution of Python code on network packets that are intercepted in real time.
 
-This framework can be used to modify on the fly network packets that implement any publicly specified network protocol. Additionally, it can be used to modify privately specified network protocols by creating custom abstractions and fields.
+This framework can be used to modify in real time network packets that implement any publicly specified network protocol. Additionally, it can be used to modify privately specified network protocols by creating custom abstractions and fields.
 
 # Installation
 
