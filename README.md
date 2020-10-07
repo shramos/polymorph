@@ -8,7 +8,7 @@ This framework can be used to modify in real time network packets that implement
 
 Polymorph is specially designed to be installed and run on a Linux operating system. Before installing the framework, the following requirements must be installed:
 ```
-apt-get install build-essential python-dev libnetfilter-queue-dev tshark tcpdump python3-pip wireshark
+apt-get install build-essential python-dev libnetfilter-queue-dev tshark tcpdump python3-pip wireshark git
 ```
 After the installation of the dependencies, the framework itself can be installed with the Python pip package manager in the following way:
 ```
