@@ -14,6 +14,8 @@ REQUIRES = [
     'construct',
     'netaddr',
     'prompt-toolkit',
+    'texttable',
+    'dateutils'
 ]
 
 if platform.system() == "Linux":
