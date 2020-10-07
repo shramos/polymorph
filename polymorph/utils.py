@@ -12,6 +12,7 @@ from polymorph.spoofs.poison import Poison
 from polymorph.interceptor import Interceptor
 import platform
 import polymorph
+import os
 from os.path import dirname, join
 
 POLYM_PATH = dirname(polymorph.__file__)
