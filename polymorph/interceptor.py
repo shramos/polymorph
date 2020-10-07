@@ -9,6 +9,7 @@ from scapy.all import IP, IPv6
 import struct
 import socket
 import ipaddress
+import array
 
 
 class Interceptor(object):
