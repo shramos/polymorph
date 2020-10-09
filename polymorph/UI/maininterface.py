@@ -126,7 +126,8 @@ class MainInterface(Interface):
             cap = capture(userfilter=args["-f"],
                           count=args["-c"],
                           time=args["-t"],
-                          func=func)
+                          func=func,
+                          iface=args["-i"])
         if cap:
             run_tlistinterface(cap, args["-f"])
         else:
@@ -150,6 +151,8 @@ class MainInterface(Interface):
                        "default": False},
                 "-vv": {"type": bool,
                         "default": False},
+                "-i": {"type": str,
+                       "default": None},
                 "-c": {"type": int,
                        "default": 0},
                 "-t": {"type": int,
@@ -166,6 +169,7 @@ class MainInterface(Interface):
         options = OrderedDict([
             ("-h", "prints the help."),
             ("-f", "allows packet filtering using the BPF notation."),
+            ("-i", "interface for capturing network packets."),
             ("-c", "number of packets to capture."),
             ("-t", "stop sniffing after a given time."),
             ("-file", "read a .pcap file from disk."),

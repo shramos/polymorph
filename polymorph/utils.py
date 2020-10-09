@@ -18,7 +18,7 @@ from os.path import dirname, join
 POLYM_PATH = dirname(polymorph.__file__)
 
 
-def capture(userfilter=None, pcapname=".tmp.pcap", func=None, count=0, time=None):
+def capture(userfilter=None, pcapname=".tmp.pcap", func=None, count=0, time=None, iface=None):
     """This function is a wrapper function above the sniff scapy function. The
     result is a list of templates. 
 
@@ -35,6 +35,8 @@ def capture(userfilter=None, pcapname=".tmp.pcap", func=None, count=0, time=None
         Number of packets to capture.
     time : int
         Stop sniffing after a given time.
+    iface : :obj:`str`
+        Interface for capturing network packets
 
     Returns
     -------
@@ -42,15 +44,10 @@ def capture(userfilter=None, pcapname=".tmp.pcap", func=None, count=0, time=None
         List of templates
 
     """
-    # We manually obtain the available network interfaces
-    if platform.system() == "Linux":
-        interfaces = os.listdir('/sys/class/net/')
-    else:
-        interfaces = None
     if func:
-        plist = sniff(prn=func, count=count, timeout=time, iface=interfaces)
+        plist = sniff(prn=func, count=count, timeout=time, iface=iface)
     else:
-        plist = sniff(count=count, timeout=time, iface=interfaces)
+        plist = sniff(count=count, timeout=time, iface=iface)
     # Save the list of packets to disk for later reading with Pyshark
     if len(plist) > 0:
         pcap_path = join(POLYM_PATH, pcapname)
