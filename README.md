@@ -27,7 +27,7 @@ Below you can find some resources and practical examples with which you can lear
 3. [Case Study. Part 3: Structs](https://github.com/shramos/polymorph/wiki/Case-Study.-Part-3:-Structs) (Modifying MQTT on the fly)
 4. [Case study. Part 4: Creating custom layers and fields](https://github.com/shramos/polymorph/wiki/Case-study.-Part-4:-Creating-custom-layers-and-fields) (Modifying MQTT on the fly)
 
-# Release Notes
+# Important Release Notes 
 [release-notes-2.0.4](https://github.com/shramos/polymorph/releases/tag/v2.0.4)  
 [release-notes-2.0.0](https://github.com/shramos/polymorph/blob/master/docs/release-notes/release-notes-2.0.0.md)  
 [release-notes-1.0.3](https://github.com/shramos/polymorph/blob/master/docs/release-notes/release-notes-1.0.3.md)  
