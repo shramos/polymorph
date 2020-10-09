@@ -196,24 +196,24 @@ class Template:
         fdump = dill.dumps(func)
         self._functions[name] = fdump.hex()
 
-    def change_func_pos(self, element, index):
+    def change_func_pos(self, index, newindex):
         """Changes the position of a particular function.
 
         Parameters
         ----------
-        element: :obj:`str`
-            Name of the function to change.
         index: int
+            Index of the function to change.
+        newindex: int
             New index of the function.
 
         """
 
-        def move_element(lista, name, index):
-            e = lista.pop(lista.index(name))
-            lista.insert(index, e)
+        def move_element(lista, index, newindex):
+            e = lista.pop(index)
+            lista.insert(newindex, e)
 
-        ordered_keys = list(self._functions.keys())
-        move_element(ordered_keys, element, index)
+        ordered_keys = list(self._functions)
+        move_element(ordered_keys, index, newindex)
         self._functions = OrderedDict(
             (k, self._functions[k]) for k in ordered_keys)
 
@@ -352,13 +352,13 @@ class Template:
                       6:] + " ", 'cyan', attrs=['bold']) + field.name) + "= " + colored(str(field.value), 'cyan'))
             print()
 
-    def show_functions(self, name=None, verbose=False):
+    def show_functions(self, fnum=None, verbose=False):
         """Pretty print of the custom functions of the `Template`.
 
         Parameters
         ----------
-        name: :obj:`str`
-            Name of a particular function.
+        fnum: int
+            Function order number
         verbose: bool
             Indicate if the user want to print the source code of the
             functions
@@ -371,7 +371,8 @@ class Template:
         t = Texttable()
         rows = [["Order", "Functions"]]
         func_names = list(self._functions)
-        if name and name in func_names and verbose:
+        if fnum and verbose:
+            name = func_names[fnum]            
             print(get_source(name))
         elif verbose:
             for idx, n in enumerate(func_names):

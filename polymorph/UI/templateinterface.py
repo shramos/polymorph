@@ -238,18 +238,27 @@ class TemplateInterface(Interface):
         else:
             # Select a specific function
             if args['-c']:
-                if args['-s']:
-                    self._t.show_functions(args['-c'], True)
-                elif args['-p']:
-                    try:
-                        index = int(args['-p'])
-                        if index >= 0 and index < len(self._t._functions):
-                            self._t.change_func_pos(args['-c'], index)
-                        else:
-                            Interface._print_error("Wrong index")
-                    except ValueError:
+                if args['-c'].isdecimal():
+                    if int(args['-c']) in range(len(self._t._functions)):
+                        if args['-s']:
+                            self._t.show_functions(int(args['-c']), True)
+                        elif args['-p']:
+                            try:
+                                newindex = int(args['-p'])
+                                if newindex >= 0 and newindex < len(self._t._functions):
+                                    self._t.change_func_pos(int(args['-c']), newindex)
+                                else:
+                                    Interface._print_error("Wrong index")
+                            except ValueError:
+                                Interface._print_error(
+                                    "Please enter a positive integer")
+                    else:
                         Interface._print_error(
-                            "Please enter a positive integer")
+                            "The function %s is not in the list" % str(args['-d']))
+                        return
+                else:
+                    Interface._print_error("Please enter the function order number")
+                    return
             # Deletes a function
             if args['-d']:
                 try:
@@ -356,7 +365,7 @@ class TemplateInterface(Interface):
             ("-a", "name of a new function that will run on intercepted packets"),
             ("-d", "order number of an existing function to be deleted"),
             ("-e", "name of a text editor to edit the functions, by default pico."),
-            ("-c", "name of an existing function to apply a transformation on it."),
+            ("-c", "order number of an existing function to apply a transformation on it."),
             ("-p", "changes the position of an existing function indicated by the -c command"),
             ("-s", "prints on screen the existing functions and their source code."),
             ("-i", "path of a file containing a function to import."),
