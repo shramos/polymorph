@@ -63,7 +63,7 @@ class LayerInterface(Interface):
                 continue
             # Argument parsing
             try:
-                command = command.split(" ")
+                command = command.rstrip().split(" ")
                 if command[0] in self.EXIT:
                     self.exit_program()
                 elif command[0] in self.RET:

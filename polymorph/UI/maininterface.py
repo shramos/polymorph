@@ -41,7 +41,7 @@ class MainInterface(Interface):
                 self.exit_program()
                 continue
             try:
-                command = command.split(" ")
+                command = command.rstrip().split(" ")
                 if command[0] in self.EXIT:
                     self.exit_program()
                 elif command[0] in ["capture", "c"]:

@@ -2,3 +2,9 @@
 __pycache__/*g
 *~
 .DS_Store
+*.finterface_history
+*.linterface_history
+*.minterface_history
+*.tinterface_history
+*.tlinterface_history
+*.tmp.pcap
