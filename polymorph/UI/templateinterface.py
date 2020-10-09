@@ -253,11 +253,19 @@ class TemplateInterface(Interface):
             # Deletes a function
             if args['-d']:
                 try:
-                    self._t.del_function(args['-d'])
-                    Interface._print_info("Function %s deleted" % args['-d'])
-                except KeyError:
-                    Interface._print_error(
-                        "The function %s is not in the list" % args['-d'])
+                    if args['-d'].isdecimal():
+                        if int(args['-d']) in range(len(self._t._functions)):
+                            self._t.del_function(int(args['-d']))
+                            Interface._print_info("Function %s deleted" % str(args['-d']))
+                        else:
+                            Interface._print_error(
+                                "The function %s is not in the list" % str(args['-d']))
+                            return
+                    else:
+                        Interface._print_error("Please enter the function order number")
+                        return
+                except:
+                    Interface._print_error("Error deleting the function")
                     return
             # Adds a function
             elif args['-a']:
@@ -346,7 +354,7 @@ class TemplateInterface(Interface):
         options = OrderedDict([
             ("-h", "prints the help."),
             ("-a", "name of a new function that will run on intercepted packets"),
-            ("-d", "name of an existing function to be deleted"),
+            ("-d", "order number of an existing function to be deleted"),
             ("-e", "name of a text editor to edit the functions, by default pico."),
             ("-c", "name of an existing function to apply a transformation on it."),
             ("-p", "changes the position of an existing function indicated by the -c command"),

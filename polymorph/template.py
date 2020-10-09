@@ -125,16 +125,16 @@ class Template:
         """:obj:`bytearray` : Packet content in raw (bytes representation)."""
         return self._raw
 
-    def del_function(self, name):
+    def del_function(self, fnum):
         """Deletes a function.
 
         Parameters
         ----------
-        name : :obj:`str`
-            Name of the function.
+        fnum : int
+            Order number of the function to be deleted.
 
         """
-        del self._functions[name]
+        del self._functions[list(self._functions)[fnum]]
 
     def get_function_source(self, name):
         """Returns a function source code.
