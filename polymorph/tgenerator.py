@@ -48,6 +48,9 @@ class TGenerator(object):
         except StopIteration:
             self._tshark_pkts.close()
             raise
+        except KeyboardInterrupt:
+            self._tshark_pkts.close()            
+            raise StopIteration
 
     def tgenerate(self, tshark_pkt):
         """Generates a template from a tshark packet.
