@@ -172,7 +172,7 @@ class Interceptor(object):
         pkt_layers = list(packet._layers)
 
         # Calculation of checksums for different layers on IPv4
-        if "IP" in pkt_layers and packet["IP"]["version"] == 4:
+        if "IP" in pkt_layers and (packet["IP"]["version"] == 4 or packet["IP"]["version"][:3] == '0x4'):
 
             # Handling the IPv4 checksum
             packet["IP"]["checksum"] = '0x0000'
