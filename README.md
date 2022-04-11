@@ -10,12 +10,11 @@ Polymorph is specially designed to be installed and run on a Linux operating sys
 ```
 sudo apt install build-essential python3-dev libnetfilter-queue-dev tshark tcpdump python3-pip wireshark git
 ```
-After the installation of the dependencies, the framework itself can be installed with the Python pip package manager in the following way:
+After the installation of the dependencies, the framework itself can be installed with the Python pip package manager in the following way (to avoid errors, install Polymorph with the root user):
 ```
 pip3 install git+https://github.com/kti/python-netfilterqueue
 pip3 install polymorph
 ```
-_\* More info: [Issue 8](https://github.com/shramos/polymorph/issues/8)_
 
 # Using Polymorph
 
