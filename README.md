@@ -1,3 +1,9 @@
+![](https://img.shields.io/github/issues/shramos/polymorph.svg)
+![](https://img.shields.io/github/forks/shramos/polymorph.svg)
+![](https://img.shields.io/github/stars/shramos/polymorph.svg)
+![](https://img.shields.io/github/license/shramos/polymorph.svg)
+[![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat.svg)](https://inventory.rawsec.ml/tools.html#Polymorph)
+
 # Polymorph
 
 Polymorph is a tool that facilitates the modification of network traffic on the fly by allowing the execution of Python code on network packets that are intercepted in real time.
