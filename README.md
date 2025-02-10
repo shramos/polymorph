@@ -12,6 +12,8 @@ sudo apt install build-essential python3-dev libnetfilter-queue-dev tshark tcpdu
 ```
 After the installation of the dependencies, the framework itself can be installed with the Python pip package manager in the following way (to avoid errors, install Polymorph with the root user):
 ```
+python -m venv polymorph_env
+source polymorph_env/bin/activate
 pip install git+https://github.com/kti/python-netfilterqueue
 pip install polymorph
 ```
