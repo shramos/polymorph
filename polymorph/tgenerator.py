@@ -177,10 +177,25 @@ class TGenerator(object):
                     newfield = self._traverse_fields(all_fields[f])
                     parse_fields = self._update(parse_fields, newfield)
             elif type(raw_f[-1]) is list:
-                for subf in range(len(raw_f)):
-                    newfield = self._traverse_fields({f + "_raw": raw_f[subf],
-                                                      f: all_fields[f][subf]})
+                # check for new data format
+                if len(all_fields[f]) != len(raw_f):
+                    newfield = self._traverse_fields({f + "_raw": [raw_f[0], 
+                                                      raw_f[1], raw_f[2], raw_f[3], 
+                                                      raw_f[4]], f: all_fields[f][0]})
                     parse_fields = self._update(parse_fields, newfield)
+
+                    for subf in range(1, len(all_fields[f])):
+                        newfield = self._traverse_fields({f + "_raw": raw_f[subf+4], 
+                                                          f: all_fields[f][subf]})
+                        parse_fields = self._update(parse_fields, newfield)
+            
+                else:
+                #use old format
+                    for subf in range(len(raw_f)):
+                        newfield = self._traverse_fields({f + "_raw": raw_f[subf],
+                                                          f: all_fields[f][subf]})
+                        parse_fields = self._update(parse_fields, newfield)
+
             else:
                 print("[ERROR] Parsing field:", f)
         # Return the parsed fields without duplicates
